@@ -1,0 +1,121 @@
+'use client'
+
+import Image from 'next/image'
+import Link from 'next/link'
+import { useEffect, useState } from 'react'
+import { ArrowUpRight } from 'lucide-react'
+import { MagneticButton } from '@/components/site/magnetic-button'
+import { cn } from '@/lib/utils'
+
+const navLinks = [
+  { label: 'Home', href: '#home' },
+  { label: 'Services', href: '#services' },
+  { label: 'Work', href: '#work' },
+  { label: 'About', href: '#about' },
+  { label: 'Contact', href: '#contact' },
+]
+
+function AnimatedLabel({ text }: { text: string }) {
+  return (
+    <span className="group relative block overflow-hidden">
+      <span className="inline-block transition-transform duration-300 group-hover:-translate-y-full">
+        {text}
+      </span>
+      <span className="absolute left-0 top-full inline-block transition-transform duration-300 group-hover:-translate-y-full">
+        {text}
+      </span>
+    </span>
+  )
+}
+
+export function Navbar() {
+  const [scrolled, setScrolled] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  useEffect(() => {
+    const onScroll = () => setScrolled(window.scrollY > 16)
+    onScroll()
+    window.addEventListener('scroll', onScroll)
+    return () => window.removeEventListener('scroll', onScroll)
+  }, [])
+
+  return (
+    <header
+      className={cn(
+        'fixed inset-x-0 top-0 z-50 border-b border-white/10 transition-all duration-500',
+        scrolled
+          ? 'bg-black/40 backdrop-blur-xl'
+          : 'bg-gradient-to-r from-black/70 via-black/30 to-[#8A6A0A]/30',
+      )}
+    >
+      <div className="content-grid px-6 lg:px-16">
+        <div className="flex h-20 items-center justify-between">
+          <Link href="#home" className="inline-flex shrink-0 items-center gap-3">
+            <Image
+              src="/assets/nebuloid-logo-mark.png"
+              alt="Nebuloid logo"
+              width={64}
+              height={64}
+              className="h-12 w-12 object-contain md:h-14 md:w-14"
+              priority
+            />
+            <span className="leading-tight">
+              <span className="block text-[11px] font-bold tracking-[0.12em] text-[#F1E9DB] sm:text-xs md:text-sm">
+                NEBULOID TECH STUDIO LLP
+              </span>
+              <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#F1E9DB]/55 md:text-[10px]">
+                Your Vision. Our Mission.
+              </span>
+            </span>
+          </Link>
+
+          <nav className="hidden items-center gap-8 lg:flex">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="group relative text-sm font-medium text-[#F1E9DB]"
+              >
+                <AnimatedLabel text={link.label} />
+                <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#d4af37] transition-all duration-300 group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          <MagneticButton size="default" className="hidden lg:inline-flex">
+            Get In Touch <ArrowUpRight size={16} />
+          </MagneticButton>
+
+          <button
+            className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 lg:hidden"
+            onClick={() => setMobileOpen((prev) => !prev)}
+            aria-expanded={mobileOpen}
+            aria-controls="mobile-nav"
+            aria-label="Toggle menu"
+          >
+            <span className="font-mono text-xs">{mobileOpen ? 'CLOSE' : 'MENU'}</span>
+          </button>
+        </div>
+      </div>
+      {mobileOpen && (
+        <div
+          id="mobile-nav"
+          className="border-t border-white/10 bg-black/90 px-6 py-6 backdrop-blur-xl lg:hidden"
+        >
+          <nav className="flex flex-col gap-4">
+            {navLinks.map((link) => (
+              <a
+                key={link.href}
+                href={link.href}
+                className="text-lg font-semibold"
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label}
+              </a>
+            ))}
+          </nav>
+        </div>
+      )}
+    </header>
+  )
+}

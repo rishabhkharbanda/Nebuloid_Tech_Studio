@@ -1,0 +1,105 @@
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: var(--font-space-grotesk);
+  --font-mono: var(--font-jetbrains-mono);
+  --font-display: var(--font-bebas-neue);
+  --color-cream: #f1e9db;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: #090909;
+}
+
+body {
+  font-family: var(--font-space-grotesk), sans-serif;
+  color: #f1e9db;
+}
+
+a,
+button {
+  cursor: none;
+}
+
+::selection {
+  background: rgba(212, 175, 55, 0.25);
+  color: #f1e9db;
+}
+
+.grain-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 60;
+  opacity: 0.08;
+  background-image: radial-gradient(#ffffff 0.45px, transparent 0.45px);
+  background-size: 3px 3px;
+}
+
+.text-gradient-gold {
+  background: linear-gradient(120deg, #f1e9db 0%, #d4af37 50%, #f1e9db 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.text-display-filled {
+  display: inline-block;
+  font-family: var(--font-bebas-neue), "Bebas Neue", sans-serif;
+  font-weight: 400;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  vertical-align: baseline;
+  color: #f1e9db;
+}
+
+.text-outline-display {
+  display: inline-block;
+  font-family: var(--font-bebas-neue), "Bebas Neue", sans-serif !important;
+  font-weight: 400 !important;
+  font-style: normal !important;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  line-height: 1;
+  vertical-align: baseline;
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke: 1.5px #f1e9db;
+  paint-order: stroke fill;
+}
+
+@media (min-width: 768px) {
+  .text-outline-display {
+    letter-spacing: 0.1em;
+    -webkit-text-stroke-width: 2px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .text-outline-display {
+    -webkit-text-stroke-width: 2.5px;
+  }
+}
+
+.section-padding {
+  @apply px-6 py-24 md:px-10 md:py-32 lg:px-16;
+}
+
+.content-grid {
+  @apply mx-auto w-full max-w-[1600px];
+}
+
+@media (max-width: 1024px) {
+  a,
+  button {
+    cursor: pointer;
+  }
+}
