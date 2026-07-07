@@ -50,6 +50,10 @@ export const metadata: Metadata = {
     description:
       'Your Vision. Our Mission. Handcrafted websites and digital experiences.',
   },
+  icons: {
+    icon: '/assets/nebuloid-logo-mark.png',
+    apple: '/assets/nebuloid-logo-mark.png',
+  },
 }
 
 export default function RootLayout({
