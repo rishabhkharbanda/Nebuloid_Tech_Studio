@@ -1,0 +1,213 @@
+export const digitalProjects = [
+  {
+    slug: 'paras-dham-girnar',
+    client: 'Paras Dham Girnar',
+    category: 'Religious Tourism · Interactive Visitor Experience · Digital Experience Platform',
+    title: 'Transforming a Sacred Destination Through Interactive Digital Experiences',
+    overview:
+      'Nebuloid designed and developed a complete digital experience ecosystem for Paras Dham Girnar that enhances visitor engagement through interactive technologies, immersive storytelling, digital platforms, and gamified experiences. The objective was to make the spiritual journey more engaging, informative, and memorable while preserving the sanctity of the destination.',
+    image:
+      'https://images.unsplash.com/photo-1564507592333-c60657eea423?auto=format&fit=crop&w=1400&q=80',
+    contribution: [
+      'Interactive Visitor Experience Platform',
+      'Interactive Gaming Experiences',
+      'Website Design & Development',
+      'Touchscreen Experience Design',
+      'Visitor Engagement Solutions',
+      'Gamification',
+      'Digital Information System',
+      'UI/UX Design',
+      'Responsive Digital Platform',
+    ],
+    interactiveExperiences: {
+      games: [
+        'Quiz Experiences',
+        'Memory Games',
+        'Puzzle Games',
+        'Educational Challenges',
+        'Interactive Learning',
+        'Family & Kids Engagement',
+      ],
+      technologies: [
+        'Interactive Touch Interfaces',
+        'Smart Visitor Information System',
+        'Digital Storytelling',
+        'Multimedia Experiences',
+        'Interactive Learning Modules',
+        'QR Code Experiences',
+        'Digital Knowledge Hub',
+      ],
+    },
+    techStack: [
+      'React / Next.js',
+      'Interactive Web Technologies',
+      'Touchscreen Applications',
+      'CMS',
+      'Responsive UI',
+      'Performance Optimization',
+      'Analytics Integration',
+    ],
+    impact: [
+      'Increased visitor engagement',
+      'Enhanced learning experience',
+      'Better accessibility to information',
+      'Digitized visitor journey',
+      'Modern digital presence',
+      'Memorable interactive experiences',
+    ],
+  },
+  {
+    slug: 'national-book-trust-filbo',
+    client: 'National Book Trust (NBT)',
+    subtitle: 'FILBO – Bogotá International Book Fair',
+    category: 'International Event · AI Experience · Interactive Gaming · Event Technology',
+    title: 'Creating an Immersive AI-Powered Experience at FILBO',
+    overview:
+      'Nebuloid partnered with the National Book Trust (NBT) to transform India\'s pavilion at FILBO into an engaging digital experience through AI-powered activations and interactive gaming. Visitors explored India\'s culture through immersive technology, making the pavilion more interactive, educational, and memorable.',
+    image:
+      'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1400&q=80',
+    contribution: [
+      'AI Selfie Booth',
+      'Interactive Gaming Platform',
+      'Touchscreen Kiosk Software',
+      'Visitor Engagement Experience',
+      'Event Technology',
+      'Digital Experience Design',
+      'Gamification',
+    ],
+    interactiveExperiences: {
+      aiBooth: [
+        'AI-generated themed photos',
+        'Instant branded images',
+        'QR Code download',
+        'Social sharing',
+        'Event branding',
+      ],
+      games: [
+        'India Quiz',
+        'Interactive Map Explorer',
+        'Educational Challenges',
+        'Cultural Discovery Games',
+        'Touchscreen Experience',
+        'Multi-age Engagement',
+      ],
+    },
+    techStack: [
+      'AI Image Generation',
+      'Interactive Kiosk Platform',
+      'Touchscreen Software',
+      'QR Code Integration',
+      'Responsive Web Application',
+      'Content Management',
+      'Analytics Dashboard',
+    ],
+    impact: [
+      'Higher visitor participation',
+      'Increased booth engagement',
+      'Interactive cultural learning',
+      'Stronger brand recall',
+      'Memorable AI-powered experiences',
+      'Enhanced visitor interaction',
+    ],
+  },
+  {
+    slug: 'cish-digital-platform',
+    client: 'Central Institute for Subtropical Horticulture (CISH)',
+    category: 'Government Digital Platform · Digital Transformation',
+    title: 'Building a Modern Digital Platform for Research & Public Engagement',
+    overview:
+      'Nebuloid designed and developed a modern digital platform for CISH that improves accessibility, simplifies information delivery, and strengthens the institute\'s online presence through a scalable and user-friendly web experience.',
+    image:
+      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1400&q=80',
+    contribution: [
+      'Website Design',
+      'Website Development',
+      'UI/UX Design',
+      'Information Architecture',
+      'CMS Development',
+      'Mobile Optimization',
+      'SEO Optimization',
+    ],
+    techStack: [
+      'Modern Frontend Stack',
+      'CMS',
+      'Responsive Design',
+      'Accessibility Standards',
+      'Performance Optimization',
+      'SEO Best Practices',
+    ],
+    impact: [
+      'Improved institutional visibility',
+      'Better accessibility',
+      'Faster information access',
+      'Enhanced user experience',
+      'Modern government digital presence',
+    ],
+  },
+] as const
+
+export const digitalSolutions = [
+  'Interactive Experience Platforms',
+  'AI Selfie Booths',
+  'AI-Powered Visitor Experiences',
+  'Interactive Gaming Solutions',
+  'Touchscreen Kiosks',
+  'Website Design & Development',
+  'Government Digital Platforms',
+  'Event Technology',
+  'Digital Storytelling',
+  'Visitor Engagement Systems',
+  'QR Code Experiences',
+  'Analytics Dashboards',
+  'CMS Development',
+  'API Integrations',
+  'Performance Optimization',
+] as const
+
+export const digitalSpecializations = [
+  'AI Experiences',
+  'AI Selfie Booths',
+  'Interactive Games',
+  'Touchscreen Kiosks',
+  'Interactive Web Applications',
+  'Event Technology',
+  'Digital Storytelling',
+  'Responsive Web Platforms',
+  'QR Code Experiences',
+  'Visitor Engagement',
+  'Gamification',
+  'Digital Information Systems',
+  'CMS Solutions',
+  'API Integrations',
+  'Analytics Dashboards',
+  'SEO Optimization',
+] as const
+
+export const digitalWorkflow = [
+  { step: 'Understand', description: 'We study your audience, goals, and the experience you want to create.' },
+  { step: 'Design', description: 'We craft interfaces, flows, and interactions that feel intuitive and premium.' },
+  { step: 'Develop', description: 'We engineer scalable platforms with performance and reliability at the core.' },
+  { step: 'Deploy', description: 'We launch across venues, devices, and environments — ready for real-world use.' },
+  { step: 'Engage Visitors', description: 'We optimize touchpoints so every interaction feels seamless and memorable.' },
+  { step: 'Measure Performance', description: 'We track engagement, usage, and outcomes with live analytics.' },
+  { step: 'Optimize & Scale', description: 'We refine, expand, and evolve the experience based on real data.' },
+] as const
+
+export const whyChooseNebuloid = [
+  { title: 'AI-first Experiences', description: 'Intelligent activations woven into every layer of the digital journey.' },
+  { title: 'Interactive Visitor Engagement', description: 'Touch, play, learn — experiences that turn audiences into participants.' },
+  { title: 'Enterprise-grade Software', description: 'Built for scale, reliability, and the demands of high-traffic environments.' },
+  { title: 'Event Technology Solutions', description: 'Kiosks, AI booths, and engagement systems engineered for live events.' },
+  { title: 'Government Digital Platforms', description: 'Accessible, compliant, and modern platforms for public institutions.' },
+  { title: 'Scalable Architecture', description: 'Systems designed to grow with your organization and your audience.' },
+  { title: 'Premium UI/UX', description: 'Every interface crafted with intent — elegant, intuitive, and on-brand.' },
+  { title: 'End-to-End Development', description: 'From concept to deployment — one partner for the complete digital experience.' },
+] as const
+
+export const digitalImpactStats = [
+  { value: '3', suffix: '+', label: 'Major Digital Experience Projects' },
+  { value: 'AI', suffix: '', label: 'Powered Event Activations', isText: true },
+  { value: 'Interactive', suffix: '', label: 'Gaming Experiences', isText: true },
+  { value: 'Government', suffix: '', label: 'Digital Platforms', isText: true },
+  { value: '100', suffix: '%', label: 'Custom-Built Solutions' },
+] as const

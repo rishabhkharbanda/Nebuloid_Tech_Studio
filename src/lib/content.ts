@@ -1,3 +1,4 @@
+import { digitalProjects } from '@/lib/digital-data'
 import {
   blogPosts,
   industries,
@@ -71,4 +72,12 @@ export function getAllIndustrySlugs() {
 
 export function getAllTechnologySlugs() {
   return technologies.map((technology) => technology.slug)
+}
+
+export function getDigitalProjectBySlug(slug: string) {
+  return digitalProjects.find((project) => project.slug === slug) ?? null
+}
+
+export function getAllDigitalProjectSlugs() {
+  return digitalProjects.map((project) => project.slug)
 }

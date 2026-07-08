@@ -12,6 +12,7 @@ const navLinks = [
   { label: 'Home', href: '/' },
   { label: 'Solutions', href: '/solutions' },
   { label: 'Experiences', href: '/experiences' },
+  { label: 'Digital', href: '/digital-experiences' },
   { label: 'Insights', href: '/insights' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
@@ -67,7 +68,7 @@ export function Navbar() {
                 NEBULOID TECH STUDIO LLP
               </span>
               <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#F1E9DB]/55 md:text-[10px]">
-                Event Experience & Creative Technology
+                Digital Experience & Event Technology
               </span>
             </span>
           </Link>

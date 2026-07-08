@@ -1,6 +1,12 @@
 import type { Metadata } from 'next'
 import { AboutSection } from '@/components/site/about-section'
 import { BlogSection } from '@/components/site/blog-section'
+import { DigitalCtaSection } from '@/components/site/digital-cta-section'
+import { DigitalExperiencesSection } from '@/components/site/digital-experiences-section'
+import { DigitalImpactStatsSection } from '@/components/site/digital-impact-stats-section'
+import { DigitalSolutionsSection } from '@/components/site/digital-solutions-section'
+import { DigitalSpecializationsSection } from '@/components/site/digital-specializations-section'
+import { DigitalWorkflowSection } from '@/components/site/digital-workflow-section'
 import { FaqSection } from '@/components/site/faq-section'
 import { Footer } from '@/components/site/footer'
 import { HeroSection } from '@/components/site/hero-section'
@@ -13,21 +19,23 @@ import { StatsSection } from '@/components/site/stats-section'
 import { TechnologySection } from '@/components/site/technology-section'
 import { TestimonialsSection } from '@/components/site/testimonials-section'
 import { TrustedBySection } from '@/components/site/trusted-by-section'
+import { WhyChooseSection } from '@/components/site/why-choose-section'
 import { WorkSection } from '@/components/site/work-section'
 import { createPageMetadata, getFaqSchema } from '@/lib/seo'
 import { faqs } from '@/lib/site-data'
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Event Experience & Creative Technology Company in India',
+  title: 'Digital Experience & Event Technology Studio in India',
   description:
-    'Nebuloid Tech Studio designs complete event ecosystems — branding, interactive kiosks, AI experiences, registration systems, LED content, and digital engagement for corporate events, conferences, and brand activations.',
+    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, government digital platforms, and immersive digital storytelling for organizations worldwide.',
   path: '/',
   keywords: [
-    'event experience company Gurugram',
-    'corporate event creative technology',
-    'event branding agency India',
-    'interactive event solutions',
-    'conference experience design',
+    'digital experience studio India',
+    'event technology company Gurugram',
+    'interactive visitor experience',
+    'AI selfie booth development',
+    'government digital platform',
+    'touchscreen kiosk software',
   ],
 })
 
@@ -42,11 +50,18 @@ export default function Home() {
         <TrustedBySection />
         <ServicesSection />
         <WorkSection />
+        <DigitalExperiencesSection />
+        <DigitalSolutionsSection />
+        <DigitalSpecializationsSection />
+        <DigitalWorkflowSection />
         <IndustriesSection />
         <AboutSection />
         <ProcessSection />
         <TechnologySection />
         <StatsSection />
+        <WhyChooseSection />
+        <DigitalImpactStatsSection />
+        <DigitalCtaSection />
         <TestimonialsSection />
         <BlogSection />
         <FaqSection />
