@@ -1,8 +1,10 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailLayout } from '@/components/site/detail-layout'
+import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { getAllProjectSlugs, getProjectBySlug } from '@/lib/content'
+import { createPageMetadata, getBreadcrumbSchema } from '@/lib/seo'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -17,10 +19,17 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const project = getProjectBySlug(slug)
   if (!project) return { title: 'Experience Not Found' }
 
-  return {
+  return createPageMetadata({
     title: project.title,
     description: project.intro,
-  }
+    path: `/experiences/${slug}`,
+    image: project.image,
+    keywords: [
+      project.category.toLowerCase(),
+      ...project.tech.split(' · ').map((item) => item.toLowerCase()),
+      'event case study',
+    ],
+  })
 }
 
 export default async function ExperiencePage({ params }: PageProps) {
@@ -30,6 +39,13 @@ export default async function ExperiencePage({ params }: PageProps) {
 
   return (
     <PageShell>
+      <JsonLd
+        data={getBreadcrumbSchema([
+          { name: 'Home', path: '/' },
+          { name: 'Experiences', path: '/experiences' },
+          { name: project.title, path: `/experiences/${slug}` },
+        ])}
+      />
       <DetailLayout
         backHref="/experiences"
         backLabel="All Experiences"

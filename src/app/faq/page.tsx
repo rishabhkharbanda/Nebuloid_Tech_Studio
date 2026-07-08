@@ -1,18 +1,27 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
+import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { faqs } from '@/lib/site-data'
+import { createPageMetadata, getFaqSchema } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'FAQs',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Frequently Asked Questions',
   description:
-    'Frequently asked questions about Nebuloid Tech Studio event experience and creative technology services.',
-}
+    'Answers to common questions about Nebuloid Tech Studio event experience services, creative technology, timelines, and multi-city event support.',
+  path: '/faq',
+  keywords: [
+    'event agency FAQ',
+    'creative technology event questions',
+    'corporate event planning help',
+  ],
+})
 
 export default function FaqPage() {
   return (
     <PageShell>
+      <JsonLd data={getFaqSchema([...faqs])} />
       <div className="section-padding pb-32">
         <div className="content-grid">
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">

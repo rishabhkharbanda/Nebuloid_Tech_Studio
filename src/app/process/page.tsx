@@ -3,12 +3,19 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { PageShell } from '@/components/site/page-shell'
 import { processSteps } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Our Process',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Our Event Experience Process',
   description:
-    'How Nebuloid designs and delivers complete event experiences — from discovery to measurement.',
-}
+    'Discover how Nebuloid delivers event experiences — Discover, Imagine, Design, Build, Experience, and Measure — from concept to post-event insight.',
+  path: '/process',
+  keywords: [
+    'event design process',
+    'creative technology workflow',
+    'corporate event planning steps',
+  ],
+})
 
 export default function ProcessPage() {
   return (

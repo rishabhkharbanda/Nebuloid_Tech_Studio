@@ -60,7 +60,7 @@ export function HeroSection() {
             >
               <Image
                 src={active.image}
-                alt={active.title}
+                alt={`${active.title.replace('.', '')} — event experience by Nebuloid Tech Studio`}
                 fill
                 priority={activeIndex === 0}
                 unoptimized

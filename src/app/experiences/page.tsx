@@ -3,12 +3,19 @@ import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
 import { getProjectBySlug } from '@/lib/content'
 import { projects } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Featured Experiences',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Featured Event Experiences',
   description:
-    'Explore event experiences designed and delivered by Nebuloid Tech Studio.',
-}
+    'Explore corporate event experiences by Nebuloid — conferences, brand activations, AI installations, registration systems, and complete event ecosystems.',
+  path: '/experiences',
+  keywords: [
+    'corporate event portfolio',
+    'conference experience examples',
+    'brand activation case studies',
+  ],
+})
 
 export default function ExperiencesIndexPage() {
   const items = projects.map((project) => {

@@ -1,10 +1,14 @@
 import type { Metadata } from 'next'
 import { PageShell } from '@/components/site/page-shell'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Privacy Policy',
-  description: 'Privacy policy for Nebuloid Tech Studio LLP.',
-}
+  description:
+    'Privacy policy for Nebuloid Tech Studio LLP — how we collect, use, and protect your personal information.',
+  path: '/privacy',
+  noIndex: false,
+})
 
 export default function PrivacyPage() {
   return (

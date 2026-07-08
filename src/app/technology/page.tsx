@@ -3,12 +3,20 @@ import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
 import { getTechnologyBySlug } from '@/lib/content'
 import { technologies } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Technology',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Event Technology Systems',
   description:
-    'Event technology systems engineered by Nebuloid — kiosks, AI, navigation, registration, and live intelligence.',
-}
+    'Event technology by Nebuloid — touchscreen kiosks, QR check-in, AI photo booths, LED content, venue navigation, event apps, and live dashboards.',
+  path: '/technology',
+  keywords: [
+    'event technology India',
+    'touchscreen kiosk events',
+    'QR check-in corporate events',
+    'event live dashboards',
+  ],
+})
 
 export default function TechnologyIndexPage() {
   const items = technologies.map((tech) => {

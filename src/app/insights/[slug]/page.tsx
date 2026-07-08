@@ -3,8 +3,15 @@ import Link from 'next/link'
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { getAllBlogSlugs, getBlogPostBySlug } from '@/lib/content'
+import {
+  createPageMetadata,
+  getArticleSchema,
+  getBreadcrumbSchema,
+  parseBlogDate,
+} from '@/lib/seo'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -19,10 +26,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const post = getBlogPostBySlug(slug)
   if (!post) return { title: 'Insight Not Found' }
 
-  return {
+  return createPageMetadata({
     title: post.title,
     description: post.excerpt,
-  }
+    path: `/insights/${slug}`,
+    image: post.image,
+    type: 'article',
+    keywords: [post.category.toLowerCase(), 'event insights', 'event technology blog'],
+  })
 }
 
 export default async function InsightPage({ params }: PageProps) {
@@ -32,6 +43,23 @@ export default async function InsightPage({ params }: PageProps) {
 
   return (
     <PageShell>
+      <JsonLd
+        data={[
+          getBreadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Insights', path: '/insights' },
+            { name: post.title, path: `/insights/${slug}` },
+          ]),
+          getArticleSchema({
+            title: post.title,
+            description: post.excerpt,
+            path: `/insights/${slug}`,
+            image: post.image,
+            datePublished: parseBlogDate(post.date),
+            category: post.category,
+          }),
+        ]}
+      />
       <article className="section-padding pb-32">
         <div className="content-grid">
           <Link
@@ -45,7 +73,7 @@ export default async function InsightPage({ params }: PageProps) {
           <div className="mt-8 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">
             <span className="text-[#d4af37]">{post.category}</span>
             <span>·</span>
-            <span>{post.date}</span>
+            <time dateTime={parseBlogDate(post.date)}>{post.date}</time>
             <span>·</span>
             <span>{post.readTime}</span>
           </div>

@@ -1,10 +1,13 @@
 import type { Metadata } from 'next'
 import { PageShell } from '@/components/site/page-shell'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
+export const metadata: Metadata = createPageMetadata({
   title: 'Terms of Service',
-  description: 'Terms of service for Nebuloid Tech Studio LLP.',
-}
+  description:
+    'Terms of service for Nebuloid Tech Studio LLP event experience and creative technology services.',
+  path: '/terms',
+})
 
 export default function TermsPage() {
   return (

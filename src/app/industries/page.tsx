@@ -3,12 +3,19 @@ import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
 import { getIndustryBySlug } from '@/lib/content'
 import { industries } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Industries',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Industries We Serve',
   description:
-    'Event experience and creative technology solutions across corporate, healthcare, education, government, and more.',
-}
+    'Event experience and creative technology for corporate, healthcare, education, government, technology, and exhibition industries across India.',
+  path: '/industries',
+  keywords: [
+    'corporate event agency',
+    'healthcare conference technology',
+    'exhibition event solutions',
+  ],
+})
 
 export default function IndustriesIndexPage() {
   const items = industries.map((industry) => {

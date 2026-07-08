@@ -2,12 +2,20 @@ import type { Metadata } from 'next'
 import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
 import { blogPosts } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'Insights',
+export const metadata: Metadata = createPageMetadata({
+  title: 'Event Industry Insights',
   description:
-    'Thinking on events, experience, and creative technology from Nebuloid Tech Studio.',
-}
+    'Expert insights on event branding, corporate events, experiential marketing, AI for events, and creative technology from Nebuloid Tech Studio.',
+  path: '/insights',
+  keywords: [
+    'event branding insights',
+    'corporate event trends',
+    'experiential marketing blog',
+    'AI for events articles',
+  ],
+})
 
 export default function InsightsIndexPage() {
   const items = blogPosts.map((post) => ({

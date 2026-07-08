@@ -3,12 +3,19 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { PageShell } from '@/components/site/page-shell'
 import { processSteps, stats } from '@/lib/site-data'
+import { createPageMetadata } from '@/lib/seo'
 
-export const metadata: Metadata = {
-  title: 'About',
+export const metadata: Metadata = createPageMetadata({
+  title: 'About Nebuloid Tech Studio',
   description:
-    'Nebuloid Tech Studio is an event experience and creative technology company designing complete event ecosystems.',
-}
+    'Learn about Nebuloid Tech Studio — an event experience and creative technology company designing complete event ecosystems for corporate brands in India.',
+  path: '/about',
+  keywords: [
+    'about Nebuloid Tech Studio',
+    'event experience company India',
+    'creative technology studio Gurugram',
+  ],
+})
 
 export default function AboutPage() {
   return (
