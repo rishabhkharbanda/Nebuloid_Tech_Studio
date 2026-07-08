@@ -9,8 +9,8 @@ import { cn } from '@/lib/utils'
 
 const navLinks = [
   { label: 'Home', href: '#home' },
-  { label: 'Services', href: '#services' },
-  { label: 'Work', href: '#work' },
+  { label: 'Solutions', href: '#services' },
+  { label: 'Experiences', href: '#work' },
   { label: 'About', href: '#about' },
   { label: 'Contact', href: '#contact' },
 ]
@@ -64,7 +64,7 @@ export function Navbar() {
                 NEBULOID TECH STUDIO LLP
               </span>
               <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#F1E9DB]/55 md:text-[10px]">
-                Your Vision. Our Mission.
+                Event Experience & Creative Technology
               </span>
             </span>
           </Link>
@@ -82,7 +82,13 @@ export function Navbar() {
             ))}
           </nav>
 
-          <MagneticButton size="default" className="hidden lg:inline-flex">
+          <MagneticButton
+            size="default"
+            className="hidden lg:inline-flex"
+            onClick={() =>
+              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
+            }
+          >
             Get In Touch <ArrowUpRight size={16} />
           </MagneticButton>
 

@@ -44,7 +44,7 @@ export function TestimonialsSection() {
             Testimonials
           </p>
           <h2 className="mt-4 max-w-3xl text-[clamp(2rem,4.5vw,4rem)] font-bold leading-tight tracking-[-0.03em] text-[#F1E9DB]">
-            Trusted by teams who expect more than ordinary.
+            What changes when the experience is designed as one.
           </h2>
         </SectionReveal>
 

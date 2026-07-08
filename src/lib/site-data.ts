@@ -1,161 +1,426 @@
+export const heroStates = [
+  {
+    title: 'Corporate Events.',
+    image:
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#131111]/60 via-[#1a1a2e]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(212,175,55,.14),transparent_52%)]',
+  },
+  {
+    title: 'Conferences.',
+    image:
+      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.16),transparent_45%)]',
+  },
+  {
+    title: 'Brand Activations.',
+    image:
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(229,112,255,.14),transparent_50%)]',
+  },
+  {
+    title: 'Product Launches.',
+    image:
+      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.14),transparent_45%)]',
+  },
+  {
+    title: 'Annual Meetings.',
+    image:
+      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
+  },
+  {
+    title: 'Award Nights.',
+    image:
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.16),transparent_45%)]',
+  },
+  {
+    title: 'AI Experiences.',
+    image:
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(112,192,255,.14),transparent_50%)]',
+  },
+  {
+    title: 'Interactive Kiosks.',
+    image:
+      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
+  },
+  {
+    title: 'LED Experiences.',
+    image:
+      'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.16),transparent_52%)]',
+  },
+  {
+    title: 'Venue Navigation.',
+    image:
+      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.14),transparent_45%)]',
+  },
+  {
+    title: 'Event Graphics.',
+    image:
+      'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.14),transparent_45%)]',
+  },
+  {
+    title: 'Motion Design.',
+    image:
+      'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(229,112,255,.12),transparent_50%)]',
+  },
+  {
+    title: 'Creative Production.',
+    image:
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
+  },
+  {
+    title: 'Registration Systems.',
+    image:
+      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
+  },
+  {
+    title: 'Touchscreen Experiences.',
+    image:
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80',
+    classes:
+      'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.16),transparent_45%)]',
+  },
+] as const
+
+export const trustedBy = [
+  'Corporate',
+  'Healthcare',
+  'Education',
+  'Government',
+  'Technology',
+  'Hospitality',
+  'Retail',
+  'Manufacturing',
+] as const
+
+export const industries = [
+  {
+    title: 'Corporate & Enterprise',
+    description:
+      'Town halls, leadership summits, and internal events that align teams and elevate culture.',
+  },
+  {
+    title: 'Healthcare & Pharma',
+    description:
+      'Medical conferences, symposiums, and compliant experiences built for clarity and trust.',
+  },
+  {
+    title: 'Education & Institutions',
+    description:
+      'Convocations, academic conferences, and campus activations designed for engagement.',
+  },
+  {
+    title: 'Government & Public Sector',
+    description:
+      'Ceremonies, forums, and public-facing events with precision, protocol, and polish.',
+  },
+  {
+    title: 'Technology & Startups',
+    description:
+      'Product launches, demo days, and brand moments engineered for momentum.',
+  },
+  {
+    title: 'Exhibitions & Conferences',
+    description:
+      'Booth ecosystems, wayfinding, and interactive layers that keep audiences moving.',
+  },
+] as const
+
 export const services = [
   {
     id: '01',
-    title: 'Website Development',
+    title: 'Event Branding & Creative Production',
     description:
-      'High-performance, cinematic web experiences built for conversion, credibility, and long-term brand growth.',
-    tags: ['Next.js', 'Motion UI', 'SEO'],
-    image:
-      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: '02',
-    title: 'Software Development',
-    description:
-      'Scalable software products, internal tools, and platform architecture engineered to evolve with your business.',
-    tags: ['React', 'Node.js', 'Cloud'],
-    image:
-      'https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: '03',
-    title: 'Social Media Management',
-    description:
-      'Narrative-driven social systems with campaign visuals, content calendars, and measurable audience impact.',
-    tags: ['Strategy', 'Content', 'Analytics'],
-    image:
-      'https://images.unsplash.com/photo-1611162617474-5b21e939e113?auto=format&fit=crop&w=1200&q=80',
-  },
-  {
-    id: '04',
-    title: 'Creative Designing',
-    description:
-      'Brand identity, marketing creatives, motion assets, and visual storytelling crafted with editorial precision.',
-    tags: ['Branding', 'Motion', 'Art Direction'],
+      'The visual language of your event — before anyone walks through the door.',
+    detail:
+      'From conference identity to stage backdrops, LED content, motion graphics, and invitation systems — every touchpoint speaks the same story.',
+    tags: ['Branding', 'Motion', 'LED Content', 'Stage Design'],
     image:
       'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80',
   },
   {
-    id: '05',
-    title: 'Event Technology',
+    id: '02',
+    title: 'Registration & Guest Journey',
     description:
-      'Hybrid event platforms, kiosk experiences, and production-grade digital systems for on-ground engagement.',
-    tags: ['Kiosks', 'WebGL', 'Live Tech'],
+      'The first impression sets the tone for everything that follows.',
+    detail:
+      'QR check-in, badge printing, touchscreen registration, and seamless guest flow — designed to feel effortless at scale.',
+    tags: ['QR Check-in', 'Badges', 'Kiosks', 'Guest Flow'],
     image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: '03',
+    title: 'Interactive Installations',
+    description:
+      'Moments people pause for — and remember long after the event ends.',
+    detail:
+      'Touchscreen experiences, digital signage, gamification, and on-ground installations that turn passive audiences into participants.',
+    tags: ['Kiosks', 'Gamification', 'Signage', 'Installations'],
+    image:
+      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: '04',
+    title: 'AI-Powered Experiences',
+    description:
+      'Intelligence woven into the experience — not bolted on as an afterthought.',
+    detail:
+      'AI photo booths, personalized interactions, and smart engagement layers that feel magical, not mechanical.',
+    tags: ['AI Booth', 'Vision AI', 'Personalization', 'Engagement'],
+    image:
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: '05',
+    title: 'Event Websites & Applications',
+    description:
+      'Your event lives online before, during, and after the physical moment.',
+    detail:
+      'Event websites, mobile apps, venue navigation, and digital companion experiences — unified under one ecosystem.',
+    tags: ['Event Web', 'Mobile App', 'Navigation', 'Live Updates'],
+    image:
+      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    id: '06',
+    title: 'Analytics & Event Intelligence',
+    description:
+      'Every interaction tells a story. We help you read it clearly.',
+    detail:
+      'Lead capture systems, live dashboards, and post-event analytics that translate engagement into actionable insight.',
+    tags: ['Dashboards', 'Lead Capture', 'Analytics', 'Reporting'],
+    image:
+      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
   },
 ] as const
 
 export const projects = [
   {
-    title: 'Corporate Website',
-    category: 'Brand Experience',
-    tech: 'Next.js / Motion',
+    title: 'Global Leadership Summit',
+    category: 'Conference Experience',
+    tech: 'Branding · Registration · LED Stage',
     image:
-      'https://images.unsplash.com/photo-1498050108023-c5249f4df085?auto=format&fit=crop&w=1400&q=80',
+      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1400&q=80',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },
   {
-    title: 'Restaurant POS',
-    category: 'Product Design',
-    tech: 'React / Node',
+    title: 'Annual Awards Night',
+    category: 'Corporate Celebration',
+    tech: 'Stage Graphics · Motion · Signage',
     image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=900&q=80',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
-    title: 'Event Kiosk',
-    category: 'Experiential Tech',
-    tech: 'Three.js / GSAP',
+    title: 'Product Launch Activation',
+    category: 'Brand Activation',
+    tech: 'Interactive · Kiosk · LED Wall',
     image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
-    title: 'AI Photo Booth',
+    title: 'AI Photo Booth Experience',
     category: 'AI Experience',
-    tech: 'R3F / Vision APIs',
+    tech: 'Vision AI · Touch · Social Share',
     image:
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=80',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
+    title: 'Exhibition Booth Ecosystem',
+    category: 'Experiential Marketing',
+    tech: 'Booth Design · Signage · Games',
+    image:
+      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=900&q=80',
+    aspect: 'aspect-[4/5]',
+    span: '',
+  },
+  {
     title: 'Venue Navigation System',
-    category: 'Spatial UI',
-    tech: 'Maps / WebGL',
+    category: 'Spatial Experience',
+    tech: 'Wayfinding · Maps · Digital Layer',
     image:
       'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=900&q=80',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
-    title: 'CRM Dashboard',
-    category: 'Enterprise UX',
-    tech: 'Next.js / Charts',
+    title: 'Registration Command Center',
+    category: 'Guest Journey',
+    tech: 'QR Check-in · Badges · Kiosks',
     image:
-      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },
   {
-    title: 'Marketing Dashboard',
-    category: 'Data Storytelling',
-    tech: 'React / Analytics',
+    title: 'Event Intelligence Dashboard',
+    category: 'Analytics & Insights',
+    tech: 'Live Data · Lead Capture · Reports',
     image:
-      'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&w=900&q=80',
+      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },
+] as const
+
+export const processSteps = [
+  { step: 'Discover', description: 'We listen to your vision, audience, and objectives.' },
+  { step: 'Imagine', description: 'We explore concepts that make your event unforgettable.' },
+  { step: 'Design', description: 'Brand, motion, space, and technology — unified.' },
+  { step: 'Build', description: 'We engineer every layer of the experience ecosystem.' },
+  { step: 'Experience', description: 'Flawless execution on the ground, at scale.' },
+  { step: 'Measure', description: 'Data, insight, and clarity for what comes next.' },
+] as const
+
+export const technologies = [
+  'Touchscreen Kiosks',
+  'QR Check-in Systems',
+  'AI Photo Booths',
+  'LED Wall Content',
+  'Venue Navigation',
+  'Event Websites',
+  'Mobile Applications',
+  'Digital Signage',
+  'Interactive Games',
+  'Live Dashboards',
+  'Lead Capture',
+  'Motion Graphics',
+] as const
+
+export const stats = [
+  { label: 'Events Delivered', value: 50, suffix: '+' },
+  { label: 'Cities Served', value: 10, suffix: '+' },
+  { label: 'Attendees Engaged', value: 100, suffix: 'K+' },
+  { label: 'Years Crafting Experiences', value: 5, suffix: '+' },
 ] as const
 
 export const testimonials = [
   {
     quote:
-      'Nebuloid transformed our brand presence with a digital experience that instantly elevated trust.',
+      'Our annual summit went from a standard corporate event to an experience people talked about for months. Nebuloid connected branding, technology, and production into one seamless ecosystem.',
     name: 'Aditi Mehra',
-    role: 'Director, Lumina Spaces',
+    role: 'Director of Events, Lumina Corporate',
   },
   {
     quote:
-      'From strategy to execution, their team delivered craftsmanship and speed rarely seen together.',
+      'Registration used to be our biggest bottleneck. Nebuloid redesigned the entire guest journey — check-in, badges, navigation — and our lines disappeared.',
     name: 'Karan Verma',
-    role: 'Founder, Eventorix',
+    role: 'Head of Marketing, Eventorix',
   },
   {
     quote:
-      'The website feels like a premium product. Our conversion quality improved from day one.',
+      'The AI photo booth became the most shared moment of our product launch. It wasn\'t a gimmick — it was a beautifully integrated part of the experience.',
     name: 'Rehan Siddiqui',
-    role: 'CMO, Vistara Labs',
+    role: 'Brand Lead, Vistara Labs',
   },
 ] as const
 
 export const blogPosts = [
   {
-    title: 'How Premium Interaction Design Builds Brand Trust',
+    title: 'Why Event Branding Starts Before the Venue Doors Open',
     excerpt:
-      'Why animation restraint and visual hierarchy matter more than visual noise in agency websites.',
+      'The most memorable events begin with a visual language that attendees feel before they arrive.',
     date: 'June 2026',
-    category: 'Design',
+    category: 'Event Branding',
     readTime: '6 min read',
   },
   {
-    title: 'Designing Event Tech That Feels Invisible',
+    title: 'Designing Registration That Disappears Into the Experience',
     excerpt:
-      'Building intuitive systems for kiosks, crowd flow, and live audience engagement.',
+      'When check-in feels effortless, your event starts on the right note — every single time.',
     date: 'May 2026',
-    category: 'Event Tech',
+    category: 'Guest Journey',
     readTime: '5 min read',
   },
   {
-    title: 'From Website to Digital Ecosystem',
+    title: 'AI at Events: Beyond the Photo Booth',
     excerpt:
-      'A framework for moving from static pages to integrated growth platforms.',
+      'How intelligent experiences are reshaping engagement at corporate gatherings worldwide.',
     date: 'April 2026',
-    category: 'Strategy',
+    category: 'AI Experiences',
     readTime: '7 min read',
+  },
+  {
+    title: 'The Art of Stage Design in Corporate Celebrations',
+    excerpt:
+      'When the backdrop becomes the narrative — and the audience becomes part of the story.',
+    date: 'March 2026',
+    category: 'Event Design',
+    readTime: '6 min read',
+  },
+  {
+    title: 'Experiential Marketing That Earns Attention, Not Just Impressions',
+    excerpt:
+      'Why interactive installations outperform passive displays at every exhibition.',
+    date: 'February 2026',
+    category: 'Experiential Marketing',
+    readTime: '5 min read',
+  },
+  {
+    title: 'Conference Experiences That People Actually Remember',
+    excerpt:
+      'The difference between a well-run event and one that changes how people think.',
+    date: 'January 2026',
+    category: 'Conference Experiences',
+    readTime: '8 min read',
+  },
+] as const
+
+export const faqs = [
+  {
+    question: 'What makes Nebuloid different from an event management company?',
+    answer:
+      'We don\'t coordinate logistics — we design and build the entire creative technology ecosystem. Branding, motion, kiosks, AI, registration, navigation, and analytics — unified under one partner.',
+  },
+  {
+    question: 'Do you handle both creative and technology?',
+    answer:
+      'Yes. That\'s our core strength. We combine event branding, creative production, and interactive technology into one seamless experience — so you work with one team, not five vendors.',
+  },
+  {
+    question: 'What types of events do you work on?',
+    answer:
+      'Corporate conferences, product launches, award nights, exhibitions, brand activations, annual meetings, and experiential marketing campaigns across industries.',
+  },
+  {
+    question: 'Can you support events across multiple cities?',
+    answer:
+      'We\'ve delivered experiences across 10+ cities. Our systems are built for scale — whether your event is in one venue or across a multi-city tour.',
+  },
+  {
+    question: 'How early should we reach out?',
+    answer:
+      'The earlier, the better — especially for custom installations, AI experiences, and large-scale branding. We recommend starting conversations 8–12 weeks before your event date.',
   },
 ] as const

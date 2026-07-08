@@ -13,10 +13,10 @@ export function WorkSection() {
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            Work
+            Featured Experiences
           </p>
           <h2 className="mt-4 max-w-4xl text-[clamp(2rem,5vw,5.2rem)] font-bold leading-tight tracking-[-0.03em]">
-            Selected projects across digital products, events, and brand systems.
+            Moments we designed, built, and brought to life.
           </h2>
         </SectionReveal>
 
@@ -53,7 +53,7 @@ export function WorkSection() {
                   <div className="mt-3 flex items-center justify-between gap-4 text-sm text-[#F1E9DB]/75">
                     <span>{project.tech}</span>
                     <span className="inline-flex shrink-0 items-center gap-1 opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                      View Project <ArrowUpRight size={15} />
+                      View Experience <ArrowUpRight size={15} />
                     </span>
                   </div>
                 </div>

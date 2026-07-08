@@ -3,13 +3,7 @@
 import { useInView } from 'framer-motion'
 import { useEffect, useRef, useState } from 'react'
 import { SectionReveal } from '@/components/site/section-reveal'
-
-const stats = [
-  { label: 'Projects', value: 50, suffix: '+' },
-  { label: 'Countries', value: 10, suffix: '+' },
-  { label: 'Client Satisfaction', value: 100, suffix: '%' },
-  { label: 'Years Experience', value: 5, suffix: '+' },
-]
+import { stats } from '@/lib/site-data'
 
 function Counter({ target, suffix }: { target: number; suffix: string }) {
   const ref = useRef<HTMLSpanElement>(null)

@@ -23,23 +23,27 @@ const jetBrainsMono = JetBrains_Mono({
 export const metadata: Metadata = {
   metadataBase: new URL('https://nebuloid.tech'),
   title: {
-    default: 'Nebuloid Tech Studio LLP | Your Vision. Our Mission.',
+    default: 'Nebuloid Tech Studio LLP | Event Experience & Creative Technology',
     template: '%s | Nebuloid Tech Studio LLP',
   },
   description:
-    'Nebuloid Tech Studio LLP is a premium digital agency crafting websites, software, social media systems, event solutions, and high-end creative experiences.',
+    'Nebuloid Tech Studio designs, builds, and delivers complete event ecosystems — event branding, interactive installations, AI experiences, registration systems, and digital engagement for corporate events.',
   keywords: [
     'Nebuloid Tech Studio LLP',
-    'Creative Agency',
-    'Website Development',
-    'Software Development',
-    'Social Media Management',
-    'Event Solutions',
+    'Event Experience Company',
+    'Creative Technology',
+    'Event Branding',
+    'Corporate Events',
+    'Interactive Installations',
+    'AI Experiences',
+    'Registration Systems',
+    'Experiential Marketing',
+    'Conference Branding',
   ],
   openGraph: {
-    title: 'Nebuloid Tech Studio LLP',
+    title: 'Nebuloid Tech Studio LLP | Event Experience & Creative Technology',
     description:
-      'We build premium digital experiences that help brands launch, grow, and dominate online.',
+      'We design, build, and deliver complete event ecosystems — from branding and motion to kiosks, AI, and digital engagement.',
     type: 'website',
     url: 'https://nebuloid.tech',
     siteName: 'Nebuloid Tech Studio LLP',
@@ -48,7 +52,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: 'Nebuloid Tech Studio LLP',
     description:
-      'Your Vision. Our Mission. Handcrafted websites and digital experiences.',
+      'Event experience & creative technology — designed, built, and delivered as one.',
   },
   icons: {
     icon: '/assets/nebuloid-logo-mark.png',

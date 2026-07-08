@@ -13,12 +13,15 @@ export function ServicesSection() {
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            Services
+            What We Create
           </p>
           <h2 className="mt-4 max-w-5xl text-[clamp(2rem,5.5vw,5.8rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
-            We engineer digital presence with strategy, speed, and artistic
-            precision.
+            One event ecosystem. Every layer connected.
           </h2>
+          <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
+            Branding, technology, and production — unified into a single
+            experience that attendees feel from invitation to encore.
+          </p>
         </SectionReveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10">
@@ -53,6 +56,9 @@ export function ServicesSection() {
                     <p className="mt-5 max-w-lg text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
                       {service.description}
                     </p>
+                    <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#F1E9DB]/50 md:text-base">
+                      {service.detail}
+                    </p>
 
                     <div className="mt-6 flex flex-wrap gap-2">
                       {service.tags.map((tag) => (
@@ -66,7 +72,7 @@ export function ServicesSection() {
                     </div>
 
                     <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-all duration-300 group-hover:gap-3 group-hover:text-[#d4af37]">
-                      Explore Service
+                      Explore Layer
                       <ArrowUpRight
                         size={16}
                         className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"

@@ -53,11 +53,11 @@ export function ContactSection() {
             Contact
           </p>
           <h2 className="mt-4 max-w-5xl text-display-filled text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.9] tracking-[0.02em] text-[#F1E9DB]">
-            Let&apos;s Build Something Amazing.
+            Let&apos;s Create Your Next Experience.
           </h2>
           <p className="mt-6 max-w-xl text-base text-[#F1E9DB]/60 md:text-lg">
-            Tell us about your project and we&apos;ll get back within one business
-            day.
+            Share your vision, timeline, and audience. We&apos;ll respond within
+            one business day with ideas worth exploring.
           </p>
         </SectionReveal>
 
@@ -66,7 +66,7 @@ export function ContactSection() {
             {/* Contact info */}
             <div className="md:col-span-4 lg:col-span-5">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45">
-                Get in Touch
+                Start a Collaboration
               </p>
 
               <div className="mt-8 divide-y divide-white/10">
@@ -126,12 +126,12 @@ export function ContactSection() {
                     htmlFor="project-type"
                     className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/45"
                   >
-                    Project Type
+                    Event Type
                   </label>
                   <Input
                     id="project-type"
                     name="project-type"
-                    placeholder="Website, App, Event..."
+                    placeholder="Conference, launch, activation..."
                   />
                 </div>
                 <div className="space-y-2 md:col-span-2">
@@ -144,7 +144,7 @@ export function ContactSection() {
                   <Textarea
                     id="message"
                     name="message"
-                    placeholder="Tell us about your vision, goals, and timeline..."
+                    placeholder="Tell us about your event, audience, and what you want people to feel..."
                     className="min-h-44"
                   />
                 </div>
@@ -157,7 +157,7 @@ export function ContactSection() {
                   size="lg"
                   className="group h-16 w-full gap-3 px-10 text-base font-semibold tracking-wide shadow-[0_0_36px_rgba(241,233,219,0.18)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#d4af37] hover:text-[#090909] hover:shadow-[0_0_48px_rgba(212,175,55,0.45)] md:w-auto md:min-w-[300px]"
                 >
-                  Send Inquiry
+                  Begin the Conversation
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#090909]/10 transition-colors group-hover:bg-[#090909]/15">
                     <ArrowUpRight size={18} />
                   </span>

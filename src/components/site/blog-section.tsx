@@ -13,10 +13,10 @@ export function BlogSection() {
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            Journal
+            Insights
           </p>
           <h2 className="mt-4 max-w-3xl text-[clamp(2rem,4.5vw,4rem)] font-bold leading-tight tracking-[-0.03em] text-[#F1E9DB]">
-            Insights, ideas, and thinking from the studio.
+            Thinking on events, experience, and creative technology.
           </h2>
         </SectionReveal>
 

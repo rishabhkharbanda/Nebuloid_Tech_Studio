@@ -13,7 +13,7 @@ export function Footer() {
         {/* Top row — CTA + socials */}
         <div className="grid items-center gap-10 md:grid-cols-[1fr_auto_1fr]">
           <p className="font-mono text-xs text-[#F1E9DB]/65 md:text-sm">
-            — Ready to work with us?
+            — Ready to design something unforgettable?
           </p>
 
           <a
@@ -48,14 +48,18 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Middle row — massive brand name */}
-        <div className="select-none">
+        {/* Middle row — brand statement */}
+        <div className="select-none space-y-4">
           <h2 className="text-display-filled text-[clamp(3.2rem,13vw,12rem)] leading-[0.82] tracking-[0.03em]">
             NEBULOID
           </h2>
           <h2 className="text-display-filled text-[clamp(3.2rem,13vw,12rem)] leading-[0.82] tracking-[0.03em]">
             TECH STUDIO
           </h2>
+          <p className="max-w-xl font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45 md:text-sm">
+            Event experience & creative technology — designed, built, and delivered
+            as one.
+          </p>
         </div>
 
         {/* Bottom row — utility links */}
