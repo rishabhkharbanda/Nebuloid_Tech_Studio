@@ -424,3 +424,21 @@ export const faqs = [
       'The earlier, the better — especially for custom installations, AI experiences, and large-scale branding. We recommend starting conversations 8–12 weeks before your event date.',
   },
 ] as const
+
+export const contactDetails = {
+  address: {
+    lines: ['H no. 944, Block - C, Sushant Lok 1', 'Gurugram, Haryana, India 122001'],
+  },
+  phone: '+91 7303922260',
+  phoneHref: 'tel:+917303922260',
+  email: 'nebuloidtechstudio1@gmail.com',
+  emailHref: 'mailto:nebuloidtechstudio1@gmail.com',
+} as const
+
+export const footerLinks = [
+  { label: 'Home', href: '/' },
+  { label: 'Solutions', href: '/#services' },
+  { label: 'Experiences', href: '/#work' },
+  { label: 'About', href: '/#about' },
+  { label: 'Contact', href: '/contact' },
+] as const

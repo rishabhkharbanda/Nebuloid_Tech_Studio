@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { gsap } from 'gsap'
@@ -13,6 +14,7 @@ import { cn } from '@/lib/utils'
 const SLIDE_INTERVAL = 3900
 
 export function HeroSection() {
+  const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
   const { scrollYProgress } = useScroll()
   const y = useTransform(scrollYProgress, [0, 1], [0, -120])
@@ -105,12 +107,7 @@ export function HeroSection() {
         </p>
 
         <div className="mt-10 flex flex-wrap items-center gap-4">
-          <MagneticButton
-            size="lg"
-            onClick={() =>
-              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-            }
-          >
+          <MagneticButton size="lg" onClick={() => router.push('/contact')}>
             Start Your Experience <ArrowUpRight size={18} />
           </MagneticButton>
           <Button

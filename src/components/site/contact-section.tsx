@@ -5,16 +5,17 @@ import { SectionReveal } from '@/components/site/section-reveal'
 import { MagneticButton } from '@/components/site/magnetic-button'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
+import { contactDetails } from '@/lib/site-data'
 
-const contactDetails = [
+const contactItems = [
   {
     label: 'Office Address',
     icon: MapPin,
     content: (
       <>
-        H no. : 944, Block - C, Sushant Lok 1
+        {contactDetails.address.lines[0]}
         <br />
-        Gurugram, Haryana, India, 122001
+        {contactDetails.address.lines[1]}
       </>
     ),
   },
@@ -23,10 +24,10 @@ const contactDetails = [
     icon: Phone,
     content: (
       <a
-        href="tel:+917303922260"
+        href={contactDetails.phoneHref}
         className="transition-colors hover:text-[#d4af37]"
       >
-        +91 7303922260
+        {contactDetails.phone}
       </a>
     ),
   },
@@ -35,10 +36,10 @@ const contactDetails = [
     icon: Mail,
     content: (
       <a
-        href="mailto:nebuloidtechstudio1@gmail.com"
+        href={contactDetails.emailHref}
         className="break-all transition-colors hover:text-[#d4af37]"
       >
-        nebuloidtechstudio1@gmail.com
+        {contactDetails.email}
       </a>
     ),
   },
@@ -52,9 +53,9 @@ export function ContactSection() {
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
             Contact
           </p>
-          <h2 className="mt-4 max-w-5xl text-display-filled text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.9] tracking-[0.02em] text-[#F1E9DB]">
+          <h1 className="mt-4 max-w-5xl text-display-filled text-[clamp(2.5rem,7vw,6.5rem)] leading-[0.9] tracking-[0.02em] text-[#F1E9DB]">
             Let&apos;s Create Your Next Experience.
-          </h2>
+          </h1>
           <p className="mt-6 max-w-xl text-base text-[#F1E9DB]/60 md:text-lg">
             Share your vision, timeline, and audience. We&apos;ll respond within
             one business day with ideas worth exploring.
@@ -63,14 +64,13 @@ export function ContactSection() {
 
         <SectionReveal delay={0.1} className="mt-14 border-y border-white/10">
           <div className="grid gap-12 py-12 md:grid-cols-12 md:gap-16 md:py-16 lg:py-20">
-            {/* Contact info */}
             <div className="md:col-span-4 lg:col-span-5">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45">
                 Start a Collaboration
               </p>
 
               <div className="mt-8 divide-y divide-white/10">
-                {contactDetails.map((item) => (
+                {contactItems.map((item) => (
                   <div key={item.label} className="py-7 first:pt-0 last:pb-0">
                     <div className="flex items-center gap-2">
                       <item.icon size={14} className="text-[#d4af37]" />
@@ -86,7 +86,6 @@ export function ContactSection() {
               </div>
             </div>
 
-            {/* Form */}
             <form className="md:col-span-8 lg:col-span-7">
               <div className="grid gap-6 md:grid-cols-2">
                 <div className="space-y-2">

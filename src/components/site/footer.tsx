@@ -1,6 +1,8 @@
 'use client'
 
-import { AtSign, Globe, Send } from 'lucide-react'
+import Link from 'next/link'
+import { ArrowUpRight, AtSign, Globe, Send } from 'lucide-react'
+import { footerLinks } from '@/lib/site-data'
 
 export function Footer() {
   const scrollToTop = () => {
@@ -8,87 +10,110 @@ export function Footer() {
   }
 
   return (
-    <footer className="relative border-t border-[#F1E9DB]/10 px-6 py-16 md:px-10 md:py-20 lg:px-16">
-      <div className="content-grid space-y-14 md:space-y-20">
-        {/* Top row — CTA + socials */}
-        <div className="grid items-center gap-10 md:grid-cols-[1fr_auto_1fr]">
-          <p className="font-mono text-xs text-[#F1E9DB]/65 md:text-sm">
-            — Ready to design something unforgettable?
-          </p>
+    <footer className="relative border-t border-[#F1E9DB]/10">
+      <div className="content-grid section-padding pb-10 pt-16 md:pb-12 md:pt-20">
+        <div className="grid gap-14 lg:grid-cols-12 lg:gap-10">
+          <div className="lg:col-span-6">
+            <h2 className="text-display-filled text-[clamp(2.8rem,9vw,6rem)] leading-[0.88] tracking-[0.04em]">
+              NEBULOID
+            </h2>
+            <h2 className="text-outline-display text-[clamp(2.8rem,9vw,6rem)] leading-[0.88] tracking-[0.04em]">
+              TECH STUDIO
+            </h2>
+            <p className="mt-6 max-w-md text-base leading-relaxed text-[#F1E9DB]/55 md:text-lg">
+              Event experience & creative technology — designed, built, and
+              delivered as one seamless ecosystem.
+            </p>
+            <Link
+              href="/contact"
+              className="group mt-8 inline-flex items-center gap-3 rounded-full border border-[#F1E9DB]/25 px-6 py-3.5 text-sm font-medium text-[#F1E9DB] transition-all duration-300 hover:border-[#d4af37]/50 hover:bg-[#F1E9DB]/5 md:px-8 md:py-4 md:text-base"
+            >
+              Start a Collaboration
+              <span className="flex h-8 w-8 items-center justify-center rounded-full border border-[#F1E9DB]/20 transition-all duration-300 group-hover:border-[#d4af37]/40 group-hover:bg-[#d4af37]/10">
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform duration-300 group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </span>
+            </Link>
+          </div>
 
-          <a
-            href="mailto:nebuloidtechstudio1@gmail.com"
-            className="inline-flex w-full items-center justify-center rounded-full border border-[#F1E9DB]/35 px-6 py-4 text-center text-base font-medium text-[#F1E9DB] transition-all duration-300 hover:border-[#F1E9DB] hover:bg-[#F1E9DB]/5 md:w-auto md:px-10 md:py-5 md:text-xl"
-          >
-            nebuloidtechstudio1@gmail.com
-          </a>
+          <div className="grid gap-10 sm:grid-cols-2 lg:col-span-6 lg:gap-8">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">
+                Navigate
+              </p>
+              <nav className="mt-6 flex flex-col gap-3">
+                {footerLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    href={link.href}
+                    className="w-fit text-sm text-[#F1E9DB]/65 transition-colors duration-300 hover:text-[#F1E9DB]"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+              </nav>
+            </div>
 
-          <div className="flex items-center gap-3 md:justify-end">
-            <a
-              href="#"
-              aria-label="Instagram"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#F1E9DB]/25 text-[#F1E9DB]/80 transition-colors hover:border-[#F1E9DB]/60 hover:text-[#F1E9DB]"
-            >
-              <AtSign size={17} />
-            </a>
-            <a
-              href="#"
-              aria-label="LinkedIn"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#F1E9DB]/25 text-[#F1E9DB]/80 transition-colors hover:border-[#F1E9DB]/60 hover:text-[#F1E9DB]"
-            >
-              <Send size={17} />
-            </a>
-            <a
-              href="#"
-              aria-label="Website"
-              className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-[#F1E9DB]/25 text-[#F1E9DB]/80 transition-colors hover:border-[#F1E9DB]/60 hover:text-[#F1E9DB]"
-            >
-              <Globe size={17} />
-            </a>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">
+                Connect
+              </p>
+              <div className="mt-6 flex items-center gap-3">
+                <a
+                  href="#"
+                  aria-label="Instagram"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
+                >
+                  <AtSign size={16} />
+                </a>
+                <a
+                  href="#"
+                  aria-label="LinkedIn"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
+                >
+                  <Send size={16} />
+                </a>
+                <a
+                  href="#"
+                  aria-label="Website"
+                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
+                >
+                  <Globe size={16} />
+                </a>
+              </div>
+              <p className="mt-6 text-sm leading-relaxed text-[#F1E9DB]/45">
+                For project inquiries, visit our{' '}
+                <Link href="/contact" className="text-[#F1E9DB]/70 underline-offset-4 hover:text-[#d4af37] hover:underline">
+                  contact page
+                </Link>
+                .
+              </p>
+            </div>
           </div>
         </div>
 
-        {/* Middle row — brand statement */}
-        <div className="select-none space-y-4">
-          <h2 className="text-display-filled text-[clamp(3.2rem,13vw,12rem)] leading-[0.82] tracking-[0.03em]">
-            NEBULOID
-          </h2>
-          <h2 className="text-display-filled text-[clamp(3.2rem,13vw,12rem)] leading-[0.82] tracking-[0.03em]">
-            TECH STUDIO
-          </h2>
-          <p className="max-w-xl font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45 md:text-sm">
-            Event experience & creative technology — designed, built, and delivered
-            as one.
+        <div className="mt-14 flex flex-col gap-6 border-t border-white/10 pt-8 md:flex-row md:items-center md:justify-between">
+          <p className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/40">
+            © {new Date().getFullYear()} Nebuloid Tech Studio LLP
           </p>
-        </div>
 
-        {/* Bottom row — utility links */}
-        <div className="grid gap-8 md:grid-cols-[1fr_auto_1fr] md:items-end">
-          <div className="flex flex-wrap gap-6 font-mono text-xs text-[#F1E9DB]/55">
+          <div className="flex flex-wrap gap-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/40">
             <a href="#" className="transition-colors hover:text-[#F1E9DB]">
-              Privacy Policy
+              Privacy
             </a>
             <a href="#" className="transition-colors hover:text-[#F1E9DB]">
               Terms
             </a>
           </div>
 
-          <div className="space-y-2 text-center font-mono text-xs text-[#F1E9DB]/55">
-            <p>© {new Date().getFullYear()} Nebuloid Tech Studio LLP.</p>
-            <a
-              href="tel:+917303922260"
-              className="inline-block transition-colors hover:text-[#F1E9DB]"
-            >
-              +91 7303922260
-            </a>
-          </div>
-
           <button
             type="button"
             onClick={scrollToTop}
-            className="font-mono text-xs text-[#F1E9DB]/55 transition-colors hover:text-[#F1E9DB] md:text-right"
+            className="font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/40 transition-colors hover:text-[#F1E9DB] md:text-right"
           >
-            Scroll Up ↑
+            Back to Top ↑
           </button>
         </div>
       </div>

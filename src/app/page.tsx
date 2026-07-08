@@ -1,6 +1,5 @@
 import { AboutSection } from '@/components/site/about-section'
 import { BlogSection } from '@/components/site/blog-section'
-import { ContactSection } from '@/components/site/contact-section'
 import { FaqSection } from '@/components/site/faq-section'
 import { Footer } from '@/components/site/footer'
 import { HeroSection } from '@/components/site/hero-section'
@@ -32,7 +31,6 @@ export default function Home() {
         <TestimonialsSection />
         <BlogSection />
         <FaqSection />
-        <ContactSection />
       </main>
       <Footer />
     </div>

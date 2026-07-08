@@ -2,17 +2,18 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { MagneticButton } from '@/components/site/magnetic-button'
 import { cn } from '@/lib/utils'
 
 const navLinks = [
-  { label: 'Home', href: '#home' },
-  { label: 'Solutions', href: '#services' },
-  { label: 'Experiences', href: '#work' },
-  { label: 'About', href: '#about' },
-  { label: 'Contact', href: '#contact' },
+  { label: 'Home', href: '/' },
+  { label: 'Solutions', href: '/#services' },
+  { label: 'Experiences', href: '/#work' },
+  { label: 'About', href: '/#about' },
+  { label: 'Contact', href: '/contact' },
 ]
 
 function AnimatedLabel({ text }: { text: string }) {
@@ -29,6 +30,7 @@ function AnimatedLabel({ text }: { text: string }) {
 }
 
 export function Navbar() {
+  const router = useRouter()
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -50,7 +52,7 @@ export function Navbar() {
     >
       <div className="content-grid px-6 lg:px-16">
         <div className="flex h-20 items-center justify-between">
-          <Link href="#home" className="inline-flex shrink-0 items-center gap-3">
+          <Link href="/" className="inline-flex shrink-0 items-center gap-3">
             <Image
               src="/assets/nebuloid-logo-mark.png"
               alt="Nebuloid logo"
@@ -71,23 +73,21 @@ export function Navbar() {
 
           <nav className="hidden items-center gap-8 lg:flex">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="group relative text-sm font-medium text-[#F1E9DB]"
               >
                 <AnimatedLabel text={link.label} />
                 <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#d4af37] transition-all duration-300 group-hover:w-full" />
-              </a>
+              </Link>
             ))}
           </nav>
 
           <MagneticButton
             size="default"
             className="hidden lg:inline-flex"
-            onClick={() =>
-              document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })
-            }
+            onClick={() => router.push('/contact')}
           >
             Get In Touch <ArrowUpRight size={16} />
           </MagneticButton>
@@ -110,14 +110,14 @@ export function Navbar() {
         >
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (
-              <a
+              <Link
                 key={link.href}
                 href={link.href}
                 className="text-lg font-semibold"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
-              </a>
+              </Link>
             ))}
           </nav>
         </div>
