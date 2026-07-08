@@ -6,7 +6,9 @@ import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { industries } from '@/lib/site-data'
 
-export function IndustriesSection() {
+export function IndustriesSection({ limit }: { limit?: number }) {
+  const items = limit ? industries.slice(0, limit) : industries
+
   return (
     <section id="industries" className="section-padding">
       <div className="content-grid">
@@ -28,7 +30,7 @@ export function IndustriesSection() {
         </SectionReveal>
 
         <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-          {industries.map((industry, index) => (
+          {items.map((industry, index) => (
             <SectionReveal key={industry.slug} delay={index * 0.06}>
               <Link href={`/industries/${industry.slug}`} className="block h-full">
                 <motion.article

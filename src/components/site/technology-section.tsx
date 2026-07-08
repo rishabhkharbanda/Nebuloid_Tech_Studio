@@ -6,7 +6,9 @@ import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { technologies } from '@/lib/site-data'
 
-export function TechnologySection() {
+export function TechnologySection({ limit }: { limit?: number }) {
+  const items = limit ? technologies.slice(0, limit) : technologies
+
   return (
     <section id="technology" className="section-padding">
       <div className="content-grid">
@@ -33,7 +35,7 @@ export function TechnologySection() {
 
         <SectionReveal delay={0.1} className="mt-14">
           <div className="flex flex-wrap gap-3 md:gap-4">
-            {technologies.map((tech, index) => (
+            {items.map((tech, index) => (
               <motion.div
                 key={tech.slug}
                 initial={{ opacity: 0, y: 12 }}

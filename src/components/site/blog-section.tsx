@@ -6,8 +6,11 @@ import { motion } from 'framer-motion'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { blogPosts } from '@/lib/site-data'
 
-export function BlogSection() {
-  const [featured, ...rest] = blogPosts
+export function BlogSection({ limit }: { limit?: number }) {
+  const posts = limit ? blogPosts.slice(0, limit) : blogPosts
+  const [featured, ...rest] = posts
+
+  if (!featured) return null
 
   return (
     <section id="insights" className="section-padding">

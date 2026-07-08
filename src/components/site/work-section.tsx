@@ -9,9 +9,10 @@ import { SectionReveal } from '@/components/site/section-reveal'
 import { projects } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-export function WorkSection() {
+export function WorkSection({ limit }: { limit?: number }) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
-  const activeProject = activeIndex !== null ? projects[activeIndex] : null
+  const visibleProjects = limit ? projects.slice(0, limit) : projects
+  const activeProject = activeIndex !== null ? visibleProjects[activeIndex] : null
 
   return (
     <section id="work" className="section-padding">
@@ -34,7 +35,7 @@ export function WorkSection() {
 
         <div className="relative mt-14 grid gap-12 lg:grid-cols-12 lg:gap-16">
           <div className="divide-y divide-white/10 border-y border-white/10 lg:col-span-7">
-            {projects.map((project, index) => (
+            {visibleProjects.map((project, index) => (
               <SectionReveal key={project.title} delay={index * 0.04}>
                 <Link href={`/experiences/${project.slug}`} className="block">
                 <article

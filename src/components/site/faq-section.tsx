@@ -8,8 +8,9 @@ import { SectionReveal } from '@/components/site/section-reveal'
 import { faqs } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-export function FaqSection() {
+export function FaqSection({ limit }: { limit?: number }) {
   const [openIndex, setOpenIndex] = useState<number | null>(0)
+  const items = limit ? faqs.slice(0, limit) : faqs
 
   return (
     <section id="faq" className="section-padding">
@@ -31,7 +32,7 @@ export function FaqSection() {
         </SectionReveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10">
-          {faqs.map((faq, index) => {
+          {items.map((faq, index) => {
             const isOpen = openIndex === index
 
             return (

@@ -8,7 +8,9 @@ import { SectionReveal } from '@/components/site/section-reveal'
 import { services } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-export function ServicesSection() {
+export function ServicesSection({ limit, compact }: { limit?: number; compact?: boolean }) {
+  const items = limit ? services.slice(0, limit) : services
+
   return (
     <section id="services" className="section-padding">
       <div className="content-grid">
@@ -33,7 +35,7 @@ export function ServicesSection() {
         </SectionReveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10">
-          {services.map((service, index) => {
+          {items.map((service, index) => {
             const isEven = index % 2 === 1
 
             return (
@@ -42,7 +44,7 @@ export function ServicesSection() {
                 <motion.article
                   whileHover={{ x: isEven ? -4 : 4 }}
                   transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
-                  className="group grid gap-8 py-12 md:grid-cols-12 md:items-center md:gap-10 md:py-16 lg:py-20"
+                  className="group grid gap-8 py-10 md:grid-cols-12 md:items-center md:gap-10 md:py-12 lg:py-14"
                 >
                   <span
                     className={cn(
@@ -65,20 +67,24 @@ export function ServicesSection() {
                     <p className="mt-5 max-w-lg text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
                       {service.description}
                     </p>
-                    <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#F1E9DB]/50 md:text-base">
-                      {service.detail}
-                    </p>
+                    {!compact && (
+                      <>
+                        <p className="mt-4 max-w-lg text-sm leading-relaxed text-[#F1E9DB]/50 md:text-base">
+                          {service.detail}
+                        </p>
 
-                    <div className="mt-6 flex flex-wrap gap-2">
-                      {service.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/55 transition-colors duration-300 group-hover:border-[#d4af37]/35 group-hover:text-[#F1E9DB]/80"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+                        <div className="mt-6 flex flex-wrap gap-2">
+                          {service.tags.map((tag) => (
+                            <span
+                              key={tag}
+                              className="rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/55 transition-colors duration-300 group-hover:border-[#d4af37]/35 group-hover:text-[#F1E9DB]/80"
+                            >
+                              {tag}
+                            </span>
+                          ))}
+                        </div>
+                      </>
+                    )}
 
                     <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-all duration-300 group-hover:gap-3 group-hover:text-[#d4af37]">
                       Explore Layer
