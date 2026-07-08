@@ -10,9 +10,10 @@ import { cn } from '@/lib/utils'
 
 const navLinks = [
   { label: 'Home', href: '/' },
-  { label: 'Solutions', href: '/#services' },
-  { label: 'Experiences', href: '/#work' },
-  { label: 'About', href: '/#about' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'Experiences', href: '/experiences' },
+  { label: 'Insights', href: '/insights' },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ]
 
@@ -50,7 +51,7 @@ export function Navbar() {
           : 'bg-gradient-to-r from-black/70 via-black/30 to-[#8A6A0A]/30',
       )}
     >
-      <div className="content-grid px-6 lg:px-16">
+      <div className="content-grid pl-4 pr-6 md:pl-6 md:pr-10 lg:pl-8 lg:pr-16">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="inline-flex shrink-0 items-center gap-3">
             <Image
@@ -106,7 +107,7 @@ export function Navbar() {
       {mobileOpen && (
         <div
           id="mobile-nav"
-          className="border-t border-white/10 bg-black/90 px-6 py-6 backdrop-blur-xl lg:hidden"
+          className="border-t border-white/10 bg-black/90 pl-4 pr-6 py-6 backdrop-blur-xl lg:hidden"
         >
           <nav className="flex flex-col gap-4">
             {navLinks.map((link) => (

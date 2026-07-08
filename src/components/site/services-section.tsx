@@ -1,6 +1,7 @@
 'use client'
 
 import Image from 'next/image'
+import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
@@ -22,6 +23,13 @@ export function ServicesSection() {
             Branding, technology, and production — unified into a single
             experience that attendees feel from invitation to encore.
           </p>
+          <Link
+            href="/solutions"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+          >
+            View all solutions
+            <ArrowUpRight size={16} />
+          </Link>
         </SectionReveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10">
@@ -30,6 +38,7 @@ export function ServicesSection() {
 
             return (
               <SectionReveal key={service.id} delay={index * 0.06}>
+                <Link href={`/solutions/${service.slug}`} className="block">
                 <motion.article
                   whileHover={{ x: isEven ? -4 : 4 }}
                   transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
@@ -96,6 +105,7 @@ export function ServicesSection() {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-40" />
                   </div>
                 </motion.article>
+                </Link>
               </SectionReveal>
             )
           })}

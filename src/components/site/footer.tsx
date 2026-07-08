@@ -100,10 +100,10 @@ export function Footer() {
           </p>
 
           <div className="flex flex-wrap gap-6 font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/40">
-            <a href="#" className="transition-colors hover:text-[#F1E9DB]">
+            <a href="/privacy" className="transition-colors hover:text-[#F1E9DB]">
               Privacy
             </a>
-            <a href="#" className="transition-colors hover:text-[#F1E9DB]">
+            <a href="/terms" className="transition-colors hover:text-[#F1E9DB]">
               Terms
             </a>
           </div>

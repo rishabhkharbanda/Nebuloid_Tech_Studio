@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 import { ContactSection } from '@/components/site/contact-section'
-import { Footer } from '@/components/site/footer'
-import { Navbar } from '@/components/site/navbar'
+import { PageShell } from '@/components/site/page-shell'
 
 export const metadata: Metadata = {
   title: 'Contact',
@@ -11,13 +10,8 @@ export const metadata: Metadata = {
 
 export default function ContactPage() {
   return (
-    <div className="relative overflow-clip bg-[#090909] text-[#F1E9DB]">
-      <div className="grain-overlay" />
-      <Navbar />
-      <main className="pt-28">
-        <ContactSection />
-      </main>
-      <Footer />
-    </div>
+    <PageShell>
+      <ContactSection />
+    </PageShell>
   )
 }

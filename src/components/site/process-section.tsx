@@ -1,6 +1,8 @@
 'use client'
 
+import Link from 'next/link'
 import { motion } from 'framer-motion'
+import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { processSteps } from '@/lib/site-data'
 
@@ -15,6 +17,13 @@ export function ProcessSection() {
           <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4.5vw,4.8rem)] font-bold tracking-[-0.03em]">
             From first conversation to final insight — an experience journey.
           </h2>
+          <Link
+            href="/process"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+          >
+            View full process
+            <ArrowUpRight size={16} />
+          </Link>
         </SectionReveal>
         <div className="mt-14 overflow-x-auto pb-3">
           <div className="min-w-[920px]">

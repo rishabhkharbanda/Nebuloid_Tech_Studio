@@ -119,40 +119,59 @@ export const trustedBy = [
 
 export const industries = [
   {
+    slug: 'corporate-enterprise',
     title: 'Corporate & Enterprise',
     description:
       'Town halls, leadership summits, and internal events that align teams and elevate culture.',
+    image:
+      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
   },
   {
+    slug: 'healthcare-pharma',
     title: 'Healthcare & Pharma',
     description:
       'Medical conferences, symposiums, and compliant experiences built for clarity and trust.',
+    image:
+      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
   },
   {
+    slug: 'education-institutions',
     title: 'Education & Institutions',
     description:
       'Convocations, academic conferences, and campus activations designed for engagement.',
+    image:
+      'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
   },
   {
+    slug: 'government-public-sector',
     title: 'Government & Public Sector',
     description:
       'Ceremonies, forums, and public-facing events with precision, protocol, and polish.',
+    image:
+      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1200&q=80',
   },
   {
+    slug: 'technology-startups',
     title: 'Technology & Startups',
     description:
       'Product launches, demo days, and brand moments engineered for momentum.',
+    image:
+      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=1200&q=80',
   },
   {
+    slug: 'exhibitions-conferences',
     title: 'Exhibitions & Conferences',
     description:
       'Booth ecosystems, wayfinding, and interactive layers that keep audiences moving.',
+    image:
+      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1200&q=80',
   },
 ] as const
 
 export const services = [
   {
     id: '01',
+    slug: 'event-branding-creative-production',
     title: 'Event Branding & Creative Production',
     description:
       'The visual language of your event — before anyone walks through the door.',
@@ -164,6 +183,7 @@ export const services = [
   },
   {
     id: '02',
+    slug: 'registration-guest-journey',
     title: 'Registration & Guest Journey',
     description:
       'The first impression sets the tone for everything that follows.',
@@ -175,6 +195,7 @@ export const services = [
   },
   {
     id: '03',
+    slug: 'interactive-installations',
     title: 'Interactive Installations',
     description:
       'Moments people pause for — and remember long after the event ends.',
@@ -186,6 +207,7 @@ export const services = [
   },
   {
     id: '04',
+    slug: 'ai-powered-experiences',
     title: 'AI-Powered Experiences',
     description:
       'Intelligence woven into the experience — not bolted on as an afterthought.',
@@ -197,6 +219,7 @@ export const services = [
   },
   {
     id: '05',
+    slug: 'event-websites-applications',
     title: 'Event Websites & Applications',
     description:
       'Your event lives online before, during, and after the physical moment.',
@@ -208,6 +231,7 @@ export const services = [
   },
   {
     id: '06',
+    slug: 'analytics-event-intelligence',
     title: 'Analytics & Event Intelligence',
     description:
       'Every interaction tells a story. We help you read it clearly.',
@@ -221,6 +245,7 @@ export const services = [
 
 export const projects = [
   {
+    slug: 'global-leadership-summit',
     title: 'Global Leadership Summit',
     category: 'Conference Experience',
     tech: 'Branding · Registration · LED Stage',
@@ -230,6 +255,7 @@ export const projects = [
     span: 'sm:col-span-2 xl:col-span-2',
   },
   {
+    slug: 'annual-awards-night',
     title: 'Annual Awards Night',
     category: 'Corporate Celebration',
     tech: 'Stage Graphics · Motion · Signage',
@@ -239,6 +265,7 @@ export const projects = [
     span: '',
   },
   {
+    slug: 'product-launch-activation',
     title: 'Product Launch Activation',
     category: 'Brand Activation',
     tech: 'Interactive · Kiosk · LED Wall',
@@ -248,6 +275,7 @@ export const projects = [
     span: '',
   },
   {
+    slug: 'ai-photo-booth-experience',
     title: 'AI Photo Booth Experience',
     category: 'AI Experience',
     tech: 'Vision AI · Touch · Social Share',
@@ -257,6 +285,7 @@ export const projects = [
     span: '',
   },
   {
+    slug: 'exhibition-booth-ecosystem',
     title: 'Exhibition Booth Ecosystem',
     category: 'Experiential Marketing',
     tech: 'Booth Design · Signage · Games',
@@ -266,6 +295,7 @@ export const projects = [
     span: '',
   },
   {
+    slug: 'venue-navigation-system',
     title: 'Venue Navigation System',
     category: 'Spatial Experience',
     tech: 'Wayfinding · Maps · Digital Layer',
@@ -275,6 +305,7 @@ export const projects = [
     span: '',
   },
   {
+    slug: 'registration-command-center',
     title: 'Registration Command Center',
     category: 'Guest Journey',
     tech: 'QR Check-in · Badges · Kiosks',
@@ -284,6 +315,7 @@ export const projects = [
     span: 'sm:col-span-2 xl:col-span-2',
   },
   {
+    slug: 'event-intelligence-dashboard',
     title: 'Event Intelligence Dashboard',
     category: 'Analytics & Insights',
     tech: 'Live Data · Lead Capture · Reports',
@@ -304,18 +336,78 @@ export const processSteps = [
 ] as const
 
 export const technologies = [
-  'Touchscreen Kiosks',
-  'QR Check-in Systems',
-  'AI Photo Booths',
-  'LED Wall Content',
-  'Venue Navigation',
-  'Event Websites',
-  'Mobile Applications',
-  'Digital Signage',
-  'Interactive Games',
-  'Live Dashboards',
-  'Lead Capture',
-  'Motion Graphics',
+  {
+    slug: 'touchscreen-kiosks',
+    title: 'Touchscreen Kiosks',
+    image:
+      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'qr-check-in-systems',
+    title: 'QR Check-in Systems',
+    image:
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'ai-photo-booths',
+    title: 'AI Photo Booths',
+    image:
+      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'led-wall-content',
+    title: 'LED Wall Content',
+    image:
+      'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'venue-navigation',
+    title: 'Venue Navigation',
+    image:
+      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'event-websites',
+    title: 'Event Websites',
+    image:
+      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'mobile-applications',
+    title: 'Mobile Applications',
+    image:
+      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'digital-signage',
+    title: 'Digital Signage',
+    image:
+      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'interactive-games',
+    title: 'Interactive Games',
+    image:
+      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'live-dashboards',
+    title: 'Live Dashboards',
+    image:
+      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'lead-capture',
+    title: 'Lead Capture',
+    image:
+      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+  },
+  {
+    slug: 'motion-graphics',
+    title: 'Motion Graphics',
+    image:
+      'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80',
+  },
 ] as const
 
 export const stats = [
@@ -348,6 +440,7 @@ export const testimonials = [
 
 export const blogPosts = [
   {
+    slug: 'why-event-branding-starts-before-venue-doors-open',
     title: 'Why Event Branding Starts Before the Venue Doors Open',
     excerpt:
       'The most memorable events begin with a visual language that attendees feel before they arrive.',
@@ -356,6 +449,7 @@ export const blogPosts = [
     readTime: '6 min read',
   },
   {
+    slug: 'designing-registration-that-disappears-into-the-experience',
     title: 'Designing Registration That Disappears Into the Experience',
     excerpt:
       'When check-in feels effortless, your event starts on the right note — every single time.',
@@ -364,6 +458,7 @@ export const blogPosts = [
     readTime: '5 min read',
   },
   {
+    slug: 'ai-at-events-beyond-the-photo-booth',
     title: 'AI at Events: Beyond the Photo Booth',
     excerpt:
       'How intelligent experiences are reshaping engagement at corporate gatherings worldwide.',
@@ -372,6 +467,7 @@ export const blogPosts = [
     readTime: '7 min read',
   },
   {
+    slug: 'the-art-of-stage-design-in-corporate-celebrations',
     title: 'The Art of Stage Design in Corporate Celebrations',
     excerpt:
       'When the backdrop becomes the narrative — and the audience becomes part of the story.',
@@ -380,6 +476,7 @@ export const blogPosts = [
     readTime: '6 min read',
   },
   {
+    slug: 'experiential-marketing-that-earns-attention-not-just-impressions',
     title: 'Experiential Marketing That Earns Attention, Not Just Impressions',
     excerpt:
       'Why interactive installations outperform passive displays at every exhibition.',
@@ -388,6 +485,7 @@ export const blogPosts = [
     readTime: '5 min read',
   },
   {
+    slug: 'conference-experiences-that-people-actually-remember',
     title: 'Conference Experiences That People Actually Remember',
     excerpt:
       'The difference between a well-run event and one that changes how people think.',
@@ -437,8 +535,9 @@ export const contactDetails = {
 
 export const footerLinks = [
   { label: 'Home', href: '/' },
-  { label: 'Solutions', href: '/#services' },
-  { label: 'Experiences', href: '/#work' },
-  { label: 'About', href: '/#about' },
+  { label: 'Solutions', href: '/solutions' },
+  { label: 'Experiences', href: '/experiences' },
+  { label: 'Insights', href: '/insights' },
+  { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ] as const

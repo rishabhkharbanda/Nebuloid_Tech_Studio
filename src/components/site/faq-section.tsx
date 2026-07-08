@@ -1,6 +1,7 @@
 'use client'
 
-import { ChevronDown } from 'lucide-react'
+import Link from 'next/link'
+import { ChevronDown, ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SectionReveal } from '@/components/site/section-reveal'
@@ -20,6 +21,13 @@ export function FaqSection() {
           <h2 className="mt-4 max-w-3xl text-[clamp(2rem,4.5vw,4rem)] font-bold leading-tight tracking-[-0.03em]">
             Questions worth asking before your next event.
           </h2>
+          <Link
+            href="/faq"
+            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+          >
+            View all FAQs
+            <ArrowUpRight size={16} />
+          </Link>
         </SectionReveal>
 
         <div className="mt-14 divide-y divide-white/10 border-y border-white/10">

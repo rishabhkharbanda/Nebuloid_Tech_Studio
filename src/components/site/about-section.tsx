@@ -1,3 +1,5 @@
+import Link from 'next/link'
+import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 
 export function AboutSection() {
@@ -13,6 +15,13 @@ export function AboutSection() {
             <br />
             <span className="text-gradient-gold">We create experiences.</span>
           </h2>
+          <Link
+            href="/about"
+            className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+          >
+            Read our story
+            <ArrowUpRight size={16} />
+          </Link>
         </SectionReveal>
         <SectionReveal delay={0.15} className="lg:col-span-5">
           <div className="rounded-3xl border border-white/10 bg-white/[0.02] p-8 text-[#F1E9DB]/78 md:p-10">
