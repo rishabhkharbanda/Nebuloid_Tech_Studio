@@ -1,15 +1,13 @@
 export const heroStates = [
   {
     title: 'AI Experiences.',
-    image:
-      'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/ai-experiences.png',
     classes:
       'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(112,192,255,.14),transparent_50%)]',
   },
   {
     title: 'Interactive Kiosks.',
-    image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/interactive-kiosks.png',
     classes:
       'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
   },
@@ -43,15 +41,13 @@ export const heroStates = [
   },
   {
     title: 'Creative Production.',
-    image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/creative-production.png',
     classes:
       'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
   },
   {
     title: 'Registration Systems.',
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/registration-systems.png',
     classes:
       'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
   },
