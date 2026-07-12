@@ -8,12 +8,12 @@ import { createPageMetadata } from '@/lib/seo'
 export const metadata: Metadata = createPageMetadata({
   title: 'Industries We Serve',
   description:
-    'Event experience and creative technology for corporate, healthcare, education, government, technology, and exhibition industries across India.',
+    'Event experience and creative technology for entertainment, textile, tourism, tech, agriculture, religious, and more sectors across India.',
   path: '/industries',
   keywords: [
-    'corporate event agency',
-    'healthcare conference technology',
-    'exhibition event solutions',
+    'entertainment event technology',
+    'tourism digital experience',
+    'textile exhibition solutions',
   ],
 })
 
@@ -34,7 +34,7 @@ export default function IndustriesIndexPage() {
       <ListingPage
         label="Industries We Serve"
         title="Every industry has its own rhythm."
-        description="We design experiences that match yours — from corporate summits to medical conferences, exhibitions, and public ceremonies."
+        description="Entertainment, textile, tourism, tech, agriculture, religious, and more — we design experiences that match the rhythm of your industry."
         items={items}
       />
     </PageShell>

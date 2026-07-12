@@ -70,52 +70,54 @@ export const trustedBy = [
 
 export const industries = [
   {
-    slug: 'corporate-enterprise',
-    title: 'Corporate & Enterprise',
+    slug: 'entertainment',
+    title: 'Entertainment',
     description:
-      'Town halls, leadership summits, and internal events that align teams and elevate culture.',
-    image:
-      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
+      'Concerts, award nights, launches, and live experiences with stage graphics, LED content, and immersive audience engagement.',
+    image: '/assets/hero/creative-production.png',
   },
   {
-    slug: 'healthcare-pharma',
-    title: 'Healthcare & Pharma',
+    slug: 'textile',
+    title: 'Textile',
     description:
-      'Medical conferences, symposiums, and compliant experiences built for clarity and trust.',
-    image:
-      'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?auto=format&fit=crop&w=1200&q=80',
+      'Trade fairs, fashion showcases, and textile exhibitions with interactive booths, digital signage, and lead capture.',
+    image: '/assets/hero/interactive-kiosks.png',
   },
   {
-    slug: 'education-institutions',
-    title: 'Education & Institutions',
+    slug: 'tourism',
+    title: 'Tourism',
     description:
-      'Convocations, academic conferences, and campus activations designed for engagement.',
-    image:
-      'https://images.unsplash.com/photo-1523050854058-8df90110c9f1?auto=format&fit=crop&w=1200&q=80',
+      'Destination activations, visitor experiences, and digital platforms that make journeys more engaging and memorable.',
+    image: '/assets/hero/venue-navigation.png',
   },
   {
-    slug: 'government-public-sector',
-    title: 'Government & Public Sector',
+    slug: 'tech',
+    title: 'Tech',
     description:
-      'Ceremonies, forums, and public-facing events with precision, protocol, and polish.',
-    image:
-      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1200&q=80',
+      'Product launches, demo days, and innovation forums with AI activations, kiosks, and high-impact digital layers.',
+    image: '/assets/hero/ai-experiences.png',
   },
   {
-    slug: 'technology-startups',
-    title: 'Technology & Startups',
+    slug: 'agriculture',
+    title: 'Agriculture',
     description:
-      'Product launches, demo days, and brand moments engineered for momentum.',
+      'Agri expos, farmer outreach, and institutional platforms with clear information design and interactive engagement.',
     image:
-      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=1200&q=80',
+      'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80',
   },
   {
-    slug: 'exhibitions-conferences',
-    title: 'Exhibitions & Conferences',
+    slug: 'religious',
+    title: 'Religious',
     description:
-      'Booth ecosystems, wayfinding, and interactive layers that keep audiences moving.',
-    image:
-      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1200&q=80',
+      'Pilgrimage destinations, cultural gatherings, and sacred spaces enhanced through respectful digital storytelling.',
+    image: '/assets/digital-experiences/filbo/wedding-theme.png',
+  },
+  {
+    slug: 'more-sectors',
+    title: 'And More',
+    description:
+      'Corporate, healthcare, education, government, exhibitions, and emerging sectors — tailored to your audience and protocol.',
+    image: '/assets/hero/touchscreen-experiences.png',
   },
 ] as const
 

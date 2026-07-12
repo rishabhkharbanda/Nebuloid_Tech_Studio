@@ -29,9 +29,8 @@ export function IndustriesSection({ limit }: IndustriesSectionProps) {
             yours.
           </h2>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
-            From corporate summits and medical conferences to government ceremonies,
-            exhibitions, and tourism destinations — we tailor digital experiences
-            to the audience, protocol, and pace of your sector.
+            Entertainment, textile, tourism, tech, agriculture, religious, and more —
+            we tailor digital experiences to the audience, protocol, and pace of your sector.
           </p>
           <Link
             href="/industries"

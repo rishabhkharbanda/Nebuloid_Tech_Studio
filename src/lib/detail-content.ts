@@ -515,107 +515,124 @@ export const industryDetails: Record<
     highlights: string[]
   }
 > = {
-  'corporate-enterprise': {
+  entertainment: {
     intro:
-      'Internal events that align leadership vision with team culture — designed to feel premium, purposeful, and unmistakably on-brand.',
+      'Live entertainment experiences where visual impact, audience energy, and flawless production technology must work in perfect sync.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Town halls, leadership summits, annual meetings, and employee celebrations with unified branding, seamless registration, and stage experiences that command attention.',
+          'Stage graphics, LED content, motion design, interactive moments, and event technology built for concerts, award nights, launches, and live showcases.',
       },
       {
         title: 'Why It Works',
         content:
-          'Corporate audiences expect polish. We combine creative production with event technology so internal events feel as considered as external brand moments.',
+          'Entertainment audiences expect spectacle. We combine creative production with reliable on-ground systems so every visual moment lands with impact.',
       },
     ],
-    highlights: ['Leadership summits', 'Town halls & all-hands', 'Annual meetings', 'Award ceremonies', 'Internal brand activations'],
+    highlights: ['Award nights', 'Live showcases', 'LED stage content', 'Motion graphics', 'Audience engagement'],
   },
-  'healthcare-pharma': {
+  textile: {
     intro:
-      'Medical conferences and symposiums where clarity, compliance, and credibility are non-negotiable — and the experience still feels human.',
+      'Textile trade fairs and fashion-forward exhibitions where brands need to stand out, capture leads, and tell a tactile story through digital layers.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Conference branding, registration systems, session navigation, and digital engagement layers built for healthcare audiences and regulatory environments.',
+          'Exhibition booth ecosystems, interactive kiosks, digital signage, product storytelling, and lead capture systems designed for high footfall.',
       },
       {
         title: 'Why It Works',
         content:
-          'Complex information demands clear design. We create experiences that communicate with precision while maintaining warmth and trust.',
+          'Textile buyers move fast on the floor. We design experiences that stop traffic, communicate clearly, and convert interest into qualified engagement.',
       },
     ],
-    highlights: ['Medical conferences', 'Symposium branding', 'Speaker session systems', 'Attendee registration', 'Digital companion apps'],
+    highlights: ['Trade fair booths', 'Interactive lookbooks', 'Digital signage', 'Lead capture', 'Brand activations'],
   },
-  'education-institutions': {
+  tourism: {
     intro:
-      'Campus events and academic gatherings designed for engagement — convocations, conferences, and activations that honor tradition while feeling contemporary.',
+      'Tourism and destination experiences that help visitors discover, navigate, and connect — before arrival, on-site, and long after they leave.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Convocation branding, academic conference systems, campus activations, and interactive installations that connect institutions with students and stakeholders.',
+          'Visitor platforms, touchscreen experiences, wayfinding systems, gamified discovery, and digital storytelling for destinations and hospitality brands.',
       },
       {
         title: 'Why It Works',
         content:
-          'Educational events serve diverse audiences. We design flexible ecosystems that work for formal ceremonies and energetic student-facing activations alike.',
+          'Tourism experiences must feel welcoming and intuitive. We build technology that enhances the journey without overwhelming the sense of place.',
       },
     ],
-    highlights: ['Convocations', 'Academic conferences', 'Campus activations', 'Alumni events', 'Interactive campus installations'],
+    highlights: ['Visitor platforms', 'Wayfinding systems', 'Interactive kiosks', 'Digital storytelling', 'Mobile companion apps'],
   },
-  'government-public-sector': {
+  tech: {
     intro:
-      'Public-facing events with the precision, protocol, and polish that government and institutional gatherings demand.',
+      'Technology sector events where innovation, speed, and shareability matter — from product launches to demo days and innovation summits.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Ceremony branding, forum staging, registration with protocol considerations, and digital systems that support large-scale public events.',
+          'Launch activations, AI-powered experiences, interactive demos, event websites, and digital engagement layers engineered for tech audiences.',
       },
       {
         title: 'Why It Works',
         content:
-          'Public sector events carry symbolic weight. We design experiences that reflect authority, accessibility, and national or institutional identity.',
+          'Tech audiences expect the unexpected. We build experiences that feel cutting-edge while performing reliably under live event pressure.',
       },
     ],
-    highlights: ['Ceremonies & forums', 'Public conferences', 'Protocol-aware registration', 'Stage & signage systems', 'Multi-venue coordination'],
+    highlights: ['Product launches', 'AI activations', 'Interactive demos', 'Demo day branding', 'Event websites'],
   },
-  'technology-startups': {
+  agriculture: {
     intro:
-      'Product launches, demo days, and brand moments engineered for momentum — where speed, innovation, and shareability matter most.',
+      'Agriculture expos, farmer outreach programs, and institutional platforms where clarity, accessibility, and trust are essential.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Launch activations, demo day branding, interactive product experiences, AI-powered engagement, and digital layers that amplify reach.',
+          'Exhibition systems, information kiosks, digital platforms, and interactive education layers for agri fairs, institutes, and public engagement.',
       },
       {
         title: 'Why It Works',
         content:
-          'Tech audiences expect the unexpected. We build experiences that feel cutting-edge without sacrificing reliability on event day.',
+          'Agricultural audiences need practical, clear communication. We design experiences that simplify complex information and drive meaningful engagement.',
       },
     ],
-    highlights: ['Product launches', 'Demo days', 'Interactive kiosks', 'AI experiences', 'Launch event websites'],
+    highlights: ['Agri expos', 'Information kiosks', 'Digital platforms', 'Interactive learning', 'Institutional websites'],
   },
-  'exhibitions-conferences': {
+  religious: {
     intro:
-      'Booth ecosystems, wayfinding, and interactive layers that keep audiences moving — and keep your brand at the center of the floor.',
+      'Sacred destinations and cultural gatherings enhanced through respectful digital experiences that preserve atmosphere while improving access and engagement.',
     sections: [
       {
         title: 'What We Deliver',
         content:
-          'Exhibition booth design, digital signage, gamification, lead capture, venue navigation, and registration systems scaled for high footfall.',
+          'Visitor information systems, touchscreen experiences, interactive storytelling, and digital platforms designed with cultural sensitivity and scale in mind.',
       },
       {
         title: 'Why It Works',
         content:
-          'Exhibitions are competitive environments. We design ecosystems that stop traffic, capture leads, and extend engagement beyond the booth.',
+          'Religious and cultural spaces demand thoughtful design. We build technology that supports the visitor journey without disrupting the sanctity of the experience.',
       },
     ],
-    highlights: ['Booth ecosystems', 'Exhibition graphics', 'Wayfinding systems', 'Lead capture', 'Interactive floor games'],
+    highlights: ['Visitor information', 'Touchscreen kiosks', 'Digital storytelling', 'Wayfinding', 'Multilingual content'],
+  },
+  'more-sectors': {
+    intro:
+      'Beyond our core sectors, we partner with organizations across corporate, healthcare, education, government, exhibitions, and emerging industries.',
+    sections: [
+      {
+        title: 'What We Deliver',
+        content:
+          'Event branding, registration systems, interactive installations, AI experiences, and full digital ecosystems — adapted to your sector\'s protocol and audience.',
+      },
+      {
+        title: 'Why It Works',
+        content:
+          'Every industry has its own rhythm. We bring the same production discipline and technology expertise to each new context we serve.',
+      },
+    ],
+    highlights: ['Corporate events', 'Healthcare conferences', 'Education & campus', 'Government forums', 'Exhibitions'],
   },
 }
 
