@@ -1,49 +1,8 @@
 export const heroStates = [
   {
-    title: 'Corporate Events.',
-    image: '/assets/hero/corporate-events.png',
-    classes:
-      'from-[#131111]/60 via-[#1a1a2e]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(212,175,55,.14),transparent_52%)]',
-  },
-  {
-    title: 'Conferences.',
-    image:
-      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1920&q=80',
-    classes:
-      'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.16),transparent_45%)]',
-  },
-  {
-    title: 'Brand Activations.',
-    image:
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1920&q=80',
-    classes:
-      'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(229,112,255,.14),transparent_50%)]',
-  },
-  {
-    title: 'Product Launches.',
-    image:
-      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=1920&q=80',
-    classes:
-      'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.14),transparent_45%)]',
-  },
-  {
-    title: 'Annual Meetings.',
-    image:
-      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1920&q=80',
-    classes:
-      'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
-  },
-  {
-    title: 'Award Nights.',
-    image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1920&q=80',
-    classes:
-      'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.16),transparent_45%)]',
-  },
-  {
     title: 'AI Experiences.',
     image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1920&q=80',
+      'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1920&q=80',
     classes:
       'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(112,192,255,.14),transparent_50%)]',
   },
@@ -85,14 +44,14 @@ export const heroStates = [
   {
     title: 'Creative Production.',
     image:
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1920&q=80',
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1920&q=80',
     classes:
       'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
   },
   {
     title: 'Registration Systems.',
     image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1920&q=80',
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1920&q=80',
     classes:
       'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
   },
