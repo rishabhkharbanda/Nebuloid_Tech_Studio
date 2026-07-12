@@ -351,9 +351,58 @@ export const whyChooseNebuloid = [
 ] as const
 
 export const digitalImpactStats = [
-  { value: '3', suffix: '+', label: 'Major Digital Experience Projects' },
-  { value: 'AI', suffix: '', label: 'Powered Event Activations', isText: true },
-  { value: 'Interactive', suffix: '', label: 'Gaming Experiences', isText: true },
-  { value: 'Government', suffix: '', label: 'Digital Platforms', isText: true },
-  { value: '100', suffix: '%', label: 'Custom-Built Solutions' },
+  {
+    id: '01',
+    value: '3',
+    suffix: '+',
+    label: 'Major Digital Experience Projects',
+    description:
+      'Complete digital ecosystems delivered across religious tourism, international exhibitions, and government institutions.',
+    featured: true,
+  },
+  {
+    id: '02',
+    value: 'AI',
+    suffix: '',
+    label: 'Powered Event Activations',
+    description:
+      'Selfie booths, intelligent interactions, and immersive activations engineered for live audiences.',
+    isText: true,
+  },
+  {
+    id: '03',
+    value: 'Interactive',
+    suffix: '',
+    label: 'Gaming Experiences',
+    description:
+      'Touch-driven quizzes, puzzles, and educational games that turn visitors into participants.',
+    isText: true,
+  },
+  {
+    id: '04',
+    value: 'Government',
+    suffix: '',
+    label: 'Digital Platforms',
+    description:
+      'Accessible, scalable public-facing platforms built for institutions and research organizations.',
+    isText: true,
+  },
+  {
+    id: '05',
+    value: '100',
+    suffix: '%',
+    label: 'Custom-Built Solutions',
+    description:
+      'Every system designed and developed from the ground up — no templates, no shortcuts.',
+    featured: false,
+  },
+] as const
+
+export const impactOutcomes = [
+  'Increased Visitor Engagement',
+  'Higher Booth Participation',
+  'Modern Digital Presence',
+  'Memorable Brand Recall',
+  'Faster Information Access',
+  'Enhanced Learning Experiences',
 ] as const
