@@ -7,6 +7,12 @@ type DetailSection = {
   content: string
 }
 
+type DetailGalleryItem = {
+  src: string
+  alt: string
+  label?: string
+}
+
 type DetailLayoutProps = {
   backHref: string
   backLabel: string
@@ -17,6 +23,8 @@ type DetailLayoutProps = {
   sections: DetailSection[]
   highlights?: string[]
   meta?: string[]
+  gallery?: DetailGalleryItem[]
+  galleryTitle?: string
 }
 
 export function DetailLayout({
@@ -29,6 +37,8 @@ export function DetailLayout({
   sections,
   highlights = [],
   meta = [],
+  gallery = [],
+  galleryTitle = 'Sample Outputs',
 }: DetailLayoutProps) {
   return (
     <article className="section-padding pb-32">
@@ -129,6 +139,40 @@ export function DetailLayout({
             </div>
           </div>
         </div>
+
+        {gallery.length > 0 && (
+          <div className="mt-20 border-t border-white/10 pt-16 md:mt-24 md:pt-20">
+            <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
+              {galleryTitle}
+            </p>
+            <h2 className="mt-4 max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-semibold tracking-[-0.03em]">
+              Branded AI-generated photos from the pavilion experience
+            </h2>
+            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+              {gallery.map((item) => (
+                <figure
+                  key={item.src}
+                  className="overflow-hidden rounded-2xl border border-white/10 bg-[#0c0c0c]"
+                >
+                  <div className="relative aspect-[4/5]">
+                    <Image
+                      src={item.src}
+                      alt={item.alt}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 20vw"
+                    />
+                  </div>
+                  {item.label && (
+                    <figcaption className="border-t border-white/10 px-4 py-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/55">
+                      {item.label}
+                    </figcaption>
+                  )}
+                </figure>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </article>
   )

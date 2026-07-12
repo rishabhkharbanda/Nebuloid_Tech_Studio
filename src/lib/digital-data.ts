@@ -64,8 +64,34 @@ export const digitalProjects = [
     title: 'Creating an Immersive AI-Powered Experience at FILBO',
     overview:
       'Nebuloid partnered with the National Book Trust (NBT) to transform India\'s pavilion at FILBO into an engaging digital experience through AI-powered activations and interactive gaming. Visitors explored India\'s culture through immersive technology, making the pavilion more interactive, educational, and memorable.',
-    image:
-      'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/digital-experiences/filbo/heritage-taj-mahal.png',
+    gallery: [
+      {
+        src: '/assets/digital-experiences/filbo/heritage-taj-mahal.png',
+        alt: 'AI selfie booth output — visitor at the Taj Mahal with FILBO branding',
+        label: 'Heritage · Taj Mahal',
+      },
+      {
+        src: '/assets/digital-experiences/filbo/wedding-theme.png',
+        alt: 'AI selfie booth output — visitor in traditional Indian wedding attire',
+        label: 'Cultural · Wedding',
+      },
+      {
+        src: '/assets/digital-experiences/filbo/wildlife-elephant.png',
+        alt: 'AI selfie booth output — visitor with an elephant in a forest setting',
+        label: 'Wildlife · Elephant',
+      },
+      {
+        src: '/assets/digital-experiences/filbo/wildlife-lioness.png',
+        alt: 'AI selfie booth output — visitor with a lioness on the savanna',
+        label: 'Wildlife · Lioness',
+      },
+      {
+        src: '/assets/digital-experiences/filbo/heritage-gandhi.png',
+        alt: 'AI selfie booth output — literary heritage portrait with Mahatma Gandhi',
+        label: 'Heritage · Literary Portrait',
+      },
+    ],
     contribution: [
       'AI Selfie Booth',
       'Interactive Gaming Platform',

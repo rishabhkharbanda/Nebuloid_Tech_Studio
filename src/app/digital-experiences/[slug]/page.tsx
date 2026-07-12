@@ -90,6 +90,8 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
         sections={buildSections(project)}
         highlights={[...project.contribution]}
         meta={[...project.techStack]}
+        gallery={'gallery' in project ? [...project.gallery] : undefined}
+        galleryTitle={'gallery' in project ? 'AI Selfie Booth' : undefined}
       />
     </PageShell>
   )
