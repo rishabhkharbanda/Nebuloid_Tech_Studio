@@ -335,76 +335,108 @@ export const processSteps = [
   { step: 'Measure', description: 'Data, insight, and clarity for what comes next.' },
 ] as const
 
+export const technologyCategories = [
+  'All',
+  'Interactive',
+  'AI',
+  'Digital',
+  'Analytics',
+] as const
+
 export const technologies = [
   {
     slug: 'touchscreen-kiosks',
     title: 'Touchscreen Kiosks',
+    category: 'Interactive',
+    tagline: 'Self-service interfaces that scale under live event pressure.',
     image:
       'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'qr-check-in-systems',
     title: 'QR Check-in Systems',
+    category: 'Interactive',
+    tagline: 'Frictionless arrivals with scan-to-enter guest flows.',
     image:
       'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'ai-photo-booths',
     title: 'AI Photo Booths',
+    category: 'AI',
+    tagline: 'AI-generated moments built for shareability and brand recall.',
     image:
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'led-wall-content',
     title: 'LED Wall Content',
+    category: 'Digital',
+    tagline: 'Motion-led visuals that command attention at scale.',
     image:
       'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'venue-navigation',
     title: 'Venue Navigation',
+    category: 'Digital',
+    tagline: 'Wayfinding systems that keep audiences moving effortlessly.',
     image:
       'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'event-websites',
     title: 'Event Websites',
+    category: 'Digital',
+    tagline: 'Digital hubs for your event before, during, and after.',
     image:
       'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'mobile-applications',
     title: 'Mobile Applications',
+    category: 'Digital',
+    tagline: 'Companion apps that extend the experience into every pocket.',
     image:
       'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'digital-signage',
     title: 'Digital Signage',
+    category: 'Digital',
+    tagline: 'Dynamic on-venue displays synced to your event narrative.',
     image:
       'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'interactive-games',
     title: 'Interactive Games',
+    category: 'Interactive',
+    tagline: 'Touch-driven games that turn visitors into participants.',
     image:
       'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'live-dashboards',
     title: 'Live Dashboards',
+    category: 'Analytics',
+    tagline: 'Real-time intelligence for operations and engagement teams.',
     image:
       'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'lead-capture',
     title: 'Lead Capture',
+    category: 'Analytics',
+    tagline: 'Structured data collection woven into the experience flow.',
     image:
       'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'motion-graphics',
     title: 'Motion Graphics',
+    category: 'Digital',
+    tagline: 'Animated content systems for stages, screens, and environments.',
     image:
       'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80',
   },
