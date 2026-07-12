@@ -57,10 +57,10 @@ export function Navbar() {
           <Link href="/" className="inline-flex shrink-0 items-center gap-3">
             <Image
               src="/assets/nebuloid-logo-mark.png"
-              alt="Nebuloid logo"
-              width={64}
-              height={64}
-              className="h-12 w-12 object-contain md:h-14 md:w-14"
+              alt="Nebuloid Tech Studio"
+              width={56}
+              height={56}
+              className="h-11 w-11 shrink-0 object-contain md:h-12 md:w-12"
               priority
             />
             <span className="leading-tight">

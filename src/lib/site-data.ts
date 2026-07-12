@@ -327,12 +327,48 @@ export const projects = [
 ] as const
 
 export const processSteps = [
-  { step: 'Discover', description: 'We listen to your vision, audience, and objectives.' },
-  { step: 'Imagine', description: 'We explore concepts that make your event unforgettable.' },
-  { step: 'Design', description: 'Brand, motion, space, and technology — unified.' },
-  { step: 'Build', description: 'We engineer every layer of the experience ecosystem.' },
-  { step: 'Experience', description: 'Flawless execution on the ground, at scale.' },
-  { step: 'Measure', description: 'Data, insight, and clarity for what comes next.' },
+  {
+    step: 'Discover',
+    description: 'We listen to your vision, audience, and objectives.',
+    detail:
+      'Stakeholder alignment, audience mapping, and technical feasibility — so every decision starts from clarity.',
+    outputs: ['Experience brief', 'Audience insights', 'Technical scope'],
+  },
+  {
+    step: 'Imagine',
+    description: 'We explore concepts that make your event unforgettable.',
+    detail:
+      'Creative territories, interaction models, and experience narratives shaped around your brand and venue.',
+    outputs: ['Concept directions', 'Experience storyboard', 'Activation ideas'],
+  },
+  {
+    step: 'Design',
+    description: 'Brand, motion, space, and technology — unified.',
+    detail:
+      'UI/UX, visual systems, content architecture, and interaction design engineered as one cohesive layer.',
+    outputs: ['Design systems', 'User flows', 'Prototype screens'],
+  },
+  {
+    step: 'Build',
+    description: 'We engineer every layer of the experience ecosystem.',
+    detail:
+      'Frontend development, kiosk software, AI integrations, and platform engineering built for real-world scale.',
+    outputs: ['Production systems', 'Kiosk software', 'Platform deployment'],
+  },
+  {
+    step: 'Experience',
+    description: 'Flawless execution on the ground, at scale.',
+    detail:
+      'On-site deployment, live monitoring, and rapid response so every touchpoint performs under pressure.',
+    outputs: ['Live deployment', 'On-ground support', 'Guest-ready systems'],
+  },
+  {
+    step: 'Measure',
+    description: 'Data, insight, and clarity for what comes next.',
+    detail:
+      'Engagement analytics, performance reporting, and optimization insights that inform your next experience.',
+    outputs: ['Analytics dashboards', 'Engagement reports', 'Optimization roadmap'],
+  },
 ] as const
 
 export const technologyCategories = [

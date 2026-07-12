@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
+import { AboutProcessSection } from '@/components/site/about-process-section'
 import { PageShell } from '@/components/site/page-shell'
-import { processSteps, stats } from '@/lib/site-data'
+import { stats } from '@/lib/site-data'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
@@ -57,32 +58,7 @@ export default function AboutPage() {
             </div>
           </div>
 
-          <div className="mt-20 border-t border-white/10 pt-16">
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-              Our Process
-            </p>
-            <div className="mt-10 grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-              {processSteps.map((step, index) => (
-                <div
-                  key={step.step}
-                  className="rounded-3xl border border-white/10 bg-white/[0.02] p-8"
-                >
-                  <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45">
-                    {String(index + 1).padStart(2, '0')}
-                  </p>
-                  <h2 className="mt-4 text-2xl font-semibold">{step.step}</h2>
-                  <p className="mt-3 text-[#F1E9DB]/65">{step.description}</p>
-                </div>
-              ))}
-            </div>
-            <Link
-              href="/process"
-              className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
-            >
-              View full process
-              <ArrowUpRight size={16} />
-            </Link>
-          </div>
+          <AboutProcessSection />
 
           <div className="mt-20 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => (
