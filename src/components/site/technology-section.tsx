@@ -2,12 +2,10 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { ArrowUpRight, Cpu, Radar, Sparkles } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { SectionReveal } from '@/components/site/section-reveal'
-import { GravityCapsuleField } from '@/components/site/gravity-capsule-field'
-import { technologyDetails } from '@/lib/detail-content'
 import { technologies, technologyCategories } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
@@ -21,37 +19,24 @@ const pillars = [
   { icon: Cpu, label: 'End-to-End Engineering' },
 ]
 
+const categoryAccent: Record<string, string> = {
+  Interactive: 'border-[#6c9eff]/30 text-[#6c9eff]',
+  AI: 'border-[#d4af37]/30 text-[#d4af37]',
+  Digital: 'border-[#9b8cff]/30 text-[#9b8cff]',
+  Analytics: 'border-[#5fd4a4]/30 text-[#5fd4a4]',
+}
+
 export function TechnologySection({ limit }: TechnologySectionProps) {
   const baseItems = useMemo(
     () => (limit ? technologies.slice(0, limit) : [...technologies]),
     [limit],
   )
   const [activeCategory, setActiveCategory] = useState<(typeof technologyCategories)[number]>('All')
-  const [activeSlug, setActiveSlug] = useState<string | null>(baseItems[0]?.slug ?? null)
 
   const filteredItems = useMemo(() => {
     if (activeCategory === 'All') return baseItems
     return baseItems.filter((tech) => tech.category === activeCategory)
   }, [activeCategory, baseItems])
-
-  const activeTech = useMemo(() => {
-    if (filteredItems.length === 0) return null
-    return filteredItems.find((tech) => tech.slug === activeSlug) ?? filteredItems[0]
-  }, [filteredItems, activeSlug])
-
-  const handleCategoryChange = (category: (typeof technologyCategories)[number]) => {
-    setActiveCategory(category)
-    const nextItems =
-      category === 'All' ? baseItems : baseItems.filter((tech) => tech.category === category)
-    setActiveSlug(nextItems[0]?.slug ?? null)
-  }
-  const activeDetails = activeTech ? technologyDetails[activeTech.slug] : null
-
-  const capsules = filteredItems.map((tech) => ({
-    slug: tech.slug,
-    label: tech.title,
-    category: tech.category,
-  }))
 
   return (
     <section id="technology" className="section-padding border-y border-white/10">
@@ -99,110 +84,77 @@ export function TechnologySection({ limit }: TechnologySectionProps) {
               <button
                 key={category}
                 type="button"
-                onClick={() => handleCategoryChange(category)}
+                onClick={() => setActiveCategory(category)}
                 className={cn(
-                  'relative rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors',
+                  'rounded-full border px-4 py-2 font-mono text-[10px] uppercase tracking-[0.16em] transition-colors',
                   isActive
                     ? 'border-[#d4af37]/45 bg-[#d4af37]/10 text-[#F1E9DB]'
-                    : 'border-white/10 bg-white/[0.02] text-[#F1E9DB]/50 hover:border-white/20 hover:text-[#F1E9DB]/75',
+                    : 'border-white/10 bg-white/[0.02] text-[#F1E9DB]/50',
                 )}
               >
                 {category}
                 <span className="ml-2 text-[#F1E9DB]/35">{count}</span>
-                {isActive && (
-                  <motion.span
-                    layoutId="tech-category-pill"
-                    className="absolute inset-0 -z-10 rounded-full bg-[#d4af37]/10"
-                    transition={{ type: 'spring', stiffness: 300, damping: 28 }}
-                  />
-                )}
               </button>
             )
           })}
         </SectionReveal>
 
-        <div className="mt-12 grid gap-8 lg:grid-cols-12 lg:items-start">
-          <SectionReveal delay={0.08} className="lg:col-span-7">
-            <GravityCapsuleField
-              key={activeCategory}
-              items={capsules}
-              hrefPrefix="/technology"
-              activeSlug={activeTech?.slug ?? null}
-              onActiveChange={setActiveSlug}
-            />
-          </SectionReveal>
-
-          <SectionReveal delay={0.12} className="lg:col-span-5">
-            <div className="sticky top-32">
-              <AnimatePresence mode="wait">
-                {activeTech && (
-                  <motion.article
-                    key={activeTech.slug}
-                    initial={{ opacity: 0, y: 20, filter: 'blur(8px)' }}
-                    animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
-                    exit={{ opacity: 0, y: -16, filter: 'blur(8px)' }}
-                    transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
-                    className="overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] backdrop-blur-xl"
-                  >
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      <Image
-                        src={activeTech.image}
-                        alt={activeTech.title}
-                        fill
-                        className="object-cover"
-                        sizes="(max-width: 1024px) 100vw, 40vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/25 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-6">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]">
-                          {activeTech.category}
-                        </p>
-                        <h3 className="mt-2 text-2xl font-semibold tracking-[-0.02em] text-[#F1E9DB]">
-                          {activeTech.title}
-                        </h3>
-                      </div>
-                    </div>
-
-                    <div className="p-6 md:p-8">
-                      <p className="leading-relaxed text-[#F1E9DB]/70">
-                        {activeDetails?.intro ?? activeTech.tagline}
-                      </p>
-
-                      {activeDetails?.highlights && (
-                        <div className="mt-5 flex flex-wrap gap-2">
-                          {activeDetails.highlights.slice(0, 4).map((highlight) => (
-                            <span
-                              key={highlight}
-                              className="rounded-full border border-white/10 bg-white/[0.04] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#F1E9DB]/55"
-                            >
-                              {highlight}
-                            </span>
-                          ))}
-                        </div>
-                      )}
-
-                      <Link
-                        href={`/technology/${activeTech.slug}`}
-                        className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/55 transition-all hover:gap-3 hover:text-[#d4af37]"
+        <div className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
+          {filteredItems.map((tech, index) => (
+            <SectionReveal key={tech.slug} delay={index * 0.05}>
+              <Link href={`/technology/${tech.slug}`} className="group block h-full">
+                <motion.article
+                  layout
+                  className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-[#d4af37]/25"
+                >
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <Image
+                      src={tech.image}
+                      alt={tech.title}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                    <div className="absolute left-5 top-5">
+                      <span
+                        className={cn(
+                          'rounded-full border bg-black/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] backdrop-blur-md',
+                          categoryAccent[tech.category],
+                        )}
                       >
-                        Explore {activeTech.title}
-                        <ArrowUpRight size={16} />
-                      </Link>
+                        {tech.category}
+                      </span>
                     </div>
-                  </motion.article>
-                )}
-              </AnimatePresence>
+                  </div>
 
-              <Link
-                href="/technology"
-                className="mt-6 inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/45 transition-colors hover:text-[#d4af37]"
-              >
-                View full technology stack
-                <ArrowUpRight size={14} />
+                  <div className="flex flex-1 flex-col p-6">
+                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
+                      {tech.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/60">
+                      {tech.tagline}
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/45 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+                      Explore technology
+                      <ArrowUpRight size={16} />
+                    </span>
+                  </div>
+                </motion.article>
               </Link>
-            </div>
-          </SectionReveal>
+            </SectionReveal>
+          ))}
         </div>
+
+        <SectionReveal delay={0.1} className="mt-10">
+          <Link
+            href="/technology"
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/45 transition-colors hover:text-[#d4af37]"
+          >
+            View full technology stack
+            <ArrowUpRight size={14} />
+          </Link>
+        </SectionReveal>
       </div>
     </section>
   )
