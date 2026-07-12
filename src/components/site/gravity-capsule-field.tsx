@@ -1,8 +1,13 @@
 'use client'
 
 import Link from 'next/link'
-import { motion, useReducedMotion } from 'framer-motion'
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import {
+  motion,
+  useInView,
+  useReducedMotion,
+  type Transition,
+} from 'framer-motion'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { cn } from '@/lib/utils'
 
 type CapsuleItem = {
@@ -16,22 +21,59 @@ type GravityCapsuleFieldProps = {
   className?: string
 }
 
-type LayoutPoint = {
+type StackPose = {
   x: number
   y: number
-  floatDuration: number
-  floatDelay: number
+  rotateZ: number
+  rotateX: number
+  zIndex: number
 }
 
-function buildLayout(count: number): LayoutPoint[] {
+type ScatterPose = {
+  x: number
+  y: number
+  rotateZ: number
+  scale: number
+}
+
+const spring: Transition = {
+  type: 'spring',
+  stiffness: 140,
+  damping: 18,
+  mass: 0.85,
+}
+
+const dropSpring: Transition = {
+  type: 'spring',
+  stiffness: 120,
+  damping: 14,
+  mass: 1,
+}
+
+function buildStackPoses(count: number): StackPose[] {
+  const stackHeight = (count - 1) * 34
+
+  return Array.from({ length: count }, (_, index) => ({
+    x: (index % 2 === 0 ? -1 : 1) * Math.min(8 + index * 5, 28),
+    y: index * 34 - stackHeight / 2,
+    rotateZ: (index % 2 === 0 ? -1 : 1) * (2 + (index % 3) * 1.2),
+    rotateX: 8,
+    zIndex: index + 1,
+  }))
+}
+
+function buildScatterPoses(count: number): ScatterPose[] {
   return Array.from({ length: count }, (_, index) => {
-    const angle = index * 2.399963
-    const radius = 72 + (index % 5) * 28
+    const angle = (index / count) * Math.PI * 2 - Math.PI / 2
+    const ring = index % 3
+    const radiusX = 118 + ring * 38
+    const radiusY = 88 + ring * 32
+
     return {
-      x: 50 + Math.cos(angle) * (radius / 9.5),
-      y: 48 + Math.sin(angle) * (radius / 7.5),
-      floatDuration: 4.2 + (index % 4) * 0.65,
-      floatDelay: index * 0.18,
+      x: Math.cos(angle + index * 0.15) * radiusX,
+      y: Math.sin(angle + index * 0.1) * radiusY,
+      rotateZ: Math.sin(index * 1.7) * 12,
+      scale: 1,
     }
   })
 }
@@ -42,12 +84,14 @@ export function GravityCapsuleField({
   className,
 }: GravityCapsuleFieldProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const [pointer, setPointer] = useState({ x: 0.5, y: 0.5 })
-  const [hoveredSlug, setHoveredSlug] = useState<string | null>(null)
+  const inView = useInView(containerRef, { once: true, margin: '-8% 0px' })
+  const [scattered, setScattered] = useState(false)
+  const [activeSlug, setActiveSlug] = useState<string | null>(null)
   const [compact, setCompact] = useState(false)
   const reduceMotion = useReducedMotion()
 
-  const layouts = useMemo(() => buildLayout(items.length), [items.length])
+  const stackPoses = useMemo(() => buildStackPoses(items.length), [items.length])
+  const scatterPoses = useMemo(() => buildScatterPoses(items.length), [items.length])
 
   useEffect(() => {
     const media = window.matchMedia('(max-width: 768px)')
@@ -57,41 +101,23 @@ export function GravityCapsuleField({
     return () => media.removeEventListener('change', update)
   }, [])
 
-  const handlePointerMove = useCallback((event: React.PointerEvent<HTMLDivElement>) => {
-    const bounds = containerRef.current?.getBoundingClientRect()
-    if (!bounds) return
-
-    setPointer({
-      x: (event.clientX - bounds.left) / bounds.width,
-      y: (event.clientY - bounds.top) / bounds.height,
-    })
-  }, [])
-
-  const resetPointer = useCallback(() => {
-    setPointer({ x: 0.5, y: 0.5 })
-    setHoveredSlug(null)
-  }, [])
-
-  const hoveredLayout = hoveredSlug
-    ? layouts[items.findIndex((item) => item.slug === hoveredSlug)]
-    : null
-
   if (compact) {
     return (
-      <div className={cn('flex flex-wrap justify-center gap-3 md:gap-4', className)}>
+      <div className={cn('flex flex-wrap justify-center gap-3', className)}>
         {items.map((item, index) => (
           <motion.div
             key={item.slug}
-            initial={{ opacity: 0, y: 14 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: index * 0.04, duration: 0.45 }}
-            whileHover={reduceMotion ? undefined : { scale: 1.05, y: -4 }}
+            whileHover={reduceMotion ? undefined : { scale: 1.04, y: -3 }}
           >
             <Link
               href={`${hrefPrefix}/${item.slug}`}
-              className="inline-flex items-center rounded-full border border-white/10 bg-white/[0.05] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/75 backdrop-blur-md transition-colors hover:border-[#d4af37]/45 hover:text-[#F1E9DB]"
+              className="inline-flex items-center gap-2 rounded-full border border-white/12 bg-white/[0.06] px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] text-[#F1E9DB]/75 backdrop-blur-xl transition-colors hover:border-[#d4af37]/45 hover:text-[#F1E9DB]"
             >
+              <span className="h-1.5 w-1.5 rounded-full bg-[#F1E9DB]/35" />
               {item.label}
             </Link>
           </motion.div>
@@ -103,87 +129,99 @@ export function GravityCapsuleField({
   return (
     <div
       ref={containerRef}
-      onPointerMove={handlePointerMove}
-      onPointerLeave={resetPointer}
+      onMouseEnter={() => !reduceMotion && setScattered(true)}
+      onMouseLeave={() => {
+        setScattered(false)
+        setActiveSlug(null)
+      }}
       className={cn(
-        'relative min-h-[440px] overflow-hidden rounded-[2rem] border border-white/10 bg-[radial-gradient(circle_at_30%_20%,rgba(212,175,55,0.08),transparent_42%),radial-gradient(circle_at_75%_75%,rgba(108,124,255,0.06),transparent_38%)] backdrop-blur-sm',
+        'relative min-h-[500px] overflow-hidden rounded-[2rem] border border-white/10',
+        'bg-[radial-gradient(circle_at_50%_100%,rgba(212,175,55,0.1),transparent_55%),linear-gradient(180deg,rgba(255,255,255,0.02),rgba(9,9,9,0.4))]',
         className,
       )}
+      style={{ perspective: '1400px' }}
     >
-      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_bottom,transparent,rgba(9,9,9,0.35))]" />
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.03)_1px,transparent_1px)] bg-[size:28px_28px] [mask-image:radial-gradient(ellipse_at_center,black,transparent_75%)]" />
 
-      <div className="pointer-events-none absolute left-1/2 top-1/2 h-56 w-56 -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#d4af37]/10 blur-3xl" />
+      <div className="pointer-events-none absolute left-1/2 top-[58%] h-28 w-[72%] -translate-x-1/2 rounded-[100%] bg-black/50 blur-2xl" />
 
-      {items.map((item, index) => {
-        const layout = layouts[index]
-        const isHovered = hoveredSlug === item.slug
+      <div
+        className="absolute inset-0 flex items-center justify-center"
+        style={{ transformStyle: 'preserve-3d' }}
+      >
+        {items.map((item, index) => {
+          const stack = stackPoses[index]
+          const scatter = scatterPoses[index]
+          const isActive = activeSlug === item.slug
+          const isScattered = scattered && !reduceMotion
+          const pose = isScattered ? scatter : stack
 
-        const pointerPullX = reduceMotion ? 0 : (pointer.x - 0.5) * 42
-        const pointerPullY = reduceMotion ? 0 : (pointer.y - 0.5) * 28
-
-        let clusterX = 0
-        let clusterY = 0
-        if (!reduceMotion && hoveredLayout && !isHovered) {
-          const dx = hoveredLayout.x - layout.x
-          const dy = hoveredLayout.y - layout.y
-          const distance = Math.hypot(dx, dy) || 1
-          const pull = Math.max(0, 1 - distance / 34) * 10
-          clusterX = (dx / distance) * pull
-          clusterY = (dy / distance) * pull
-        }
-
-        return (
-          <motion.div
-            key={item.slug}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${layout.x}%`, top: `${layout.y}%` }}
-            animate={
-              reduceMotion
-                ? { x: 0, y: 0, scale: isHovered ? 1.06 : 1 }
-                : {
-                    x: pointerPullX + clusterX,
-                    y: pointerPullY + clusterY,
-                    scale: isHovered ? 1.1 : 1,
-                  }
-            }
-            transition={{ type: 'spring', stiffness: 110, damping: 16, mass: 0.7 }}
-          >
+          return (
             <motion.div
-              animate={
+              key={item.slug}
+              className="absolute left-1/2 top-1/2"
+              style={{
+                zIndex: isActive ? 100 : isScattered ? 20 + index : stack.zIndex,
+                transformStyle: 'preserve-3d',
+              }}
+              initial={
                 reduceMotion
-                  ? undefined
-                  : { y: [0, -7, 0, 5, 0] }
+                  ? { opacity: 0, x: 0, y: 0 }
+                  : { opacity: 0, x: 0, y: -420, rotateZ: 0, rotateX: 18, scale: 0.92 }
+              }
+              animate={
+                !inView
+                  ? { opacity: 0, x: 0, y: -420, rotateZ: 0, rotateX: 18, scale: 0.92 }
+                  : {
+                      opacity: 1,
+                      x: pose.x,
+                      y: pose.y,
+                      rotateZ: isActive ? 0 : pose.rotateZ,
+                      rotateX: isScattered ? 0 : stack.rotateX,
+                      scale: isActive ? 1.08 : isScattered ? scatter.scale : 1,
+                    }
               }
               transition={{
-                duration: layout.floatDuration,
-                repeat: Infinity,
-                ease: 'easeInOut',
-                delay: layout.floatDelay,
+                ...spring,
+                delay: reduceMotion ? 0 : inView ? index * 0.07 : 0,
+                ...(inView && !scattered && !reduceMotion
+                  ? { y: { ...dropSpring, delay: index * 0.09 } }
+                  : {}),
               }}
             >
               <Link
                 href={`${hrefPrefix}/${item.slug}`}
-                onMouseEnter={() => setHoveredSlug(item.slug)}
-                onMouseLeave={() => setHoveredSlug(null)}
+                onMouseEnter={() => setActiveSlug(item.slug)}
+                onMouseLeave={() => setActiveSlug(null)}
                 className={cn(
-                  'group inline-flex items-center gap-2 rounded-full border px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] backdrop-blur-xl transition-colors duration-300',
-                  isHovered
-                    ? 'border-[#d4af37]/55 bg-[#d4af37]/15 text-[#F1E9DB] shadow-[0_0_30px_rgba(212,175,55,0.2)]'
-                    : 'border-white/12 bg-white/[0.06] text-[#F1E9DB]/72 hover:border-[#d4af37]/35 hover:text-[#F1E9DB]',
+                  'group relative inline-flex items-center gap-2.5 whitespace-nowrap rounded-full border px-5 py-3 font-mono text-[11px] uppercase tracking-[0.14em] backdrop-blur-xl transition-[border-color,background-color,color,box-shadow] duration-300',
+                  isActive || isScattered
+                    ? 'border-[#d4af37]/55 bg-[#d4af37]/14 text-[#F1E9DB] shadow-[0_12px_40px_rgba(212,175,55,0.22),0_2px_0_rgba(255,255,255,0.08)_inset]'
+                    : 'border-white/14 bg-white/[0.07] text-[#F1E9DB]/78 shadow-[0_10px_30px_rgba(0,0,0,0.35),0_1px_0_rgba(255,255,255,0.06)_inset] hover:border-[#d4af37]/40 hover:text-[#F1E9DB]',
                 )}
+                style={{
+                  transform: 'translateZ(12px)',
+                  transformStyle: 'preserve-3d',
+                }}
               >
                 <span
                   className={cn(
                     'h-1.5 w-1.5 rounded-full transition-colors',
-                    isHovered ? 'bg-[#d4af37]' : 'bg-[#F1E9DB]/35 group-hover:bg-[#d4af37]/70',
+                    isActive ? 'bg-[#d4af37]' : 'bg-[#F1E9DB]/35 group-hover:bg-[#d4af37]/80',
                   )}
                 />
                 {item.label}
               </Link>
             </motion.div>
-          </motion.div>
-        )
-      })}
+          )
+        })}
+      </div>
+
+      <div className="pointer-events-none absolute inset-x-0 bottom-5 flex justify-center">
+        <span className="rounded-full border border-white/10 bg-black/30 px-4 py-1.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/40 backdrop-blur-md">
+          {scattered ? 'Releasing…' : 'Hover to scatter'}
+        </span>
+      </div>
     </div>
   )
 }

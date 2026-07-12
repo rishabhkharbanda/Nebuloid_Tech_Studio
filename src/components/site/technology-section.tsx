@@ -44,7 +44,7 @@ export function TechnologySection({ limit }: TechnologySectionProps) {
 
           <SectionReveal delay={0.08} className="lg:col-span-7">
             <p className="mb-4 font-mono text-[10px] uppercase tracking-[0.18em] text-[#F1E9DB]/40">
-              Move to attract · Hover to group
+              Hover to scatter · Release to restack
             </p>
             <GravityCapsuleField items={capsules} hrefPrefix="/technology" />
           </SectionReveal>
