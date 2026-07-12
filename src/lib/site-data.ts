@@ -20,15 +20,13 @@ export const heroStates = [
   },
   {
     title: 'Venue Navigation.',
-    image:
-      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/venue-navigation.png',
     classes:
       'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.14),transparent_45%)]',
   },
   {
     title: 'Event Graphics.',
-    image:
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/event-graphics.png',
     classes:
       'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.14),transparent_45%)]',
   },
@@ -53,8 +51,7 @@ export const heroStates = [
   },
   {
     title: 'Touchscreen Experiences.',
-    image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/touchscreen-experiences.png',
     classes:
       'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.16),transparent_45%)]',
   },
