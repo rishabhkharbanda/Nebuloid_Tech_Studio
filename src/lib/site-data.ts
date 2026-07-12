@@ -196,52 +196,38 @@ export const services = [
 
 export const projects = [
   {
-    slug: 'global-leadership-summit',
-    title: 'Global Leadership Summit',
-    category: 'Conference Experience',
-    tech: 'Branding · Registration · LED Stage',
-    image:
-      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1400&q=80',
-    aspect: 'aspect-[16/10]',
-    span: 'sm:col-span-2 xl:col-span-2',
-  },
-  {
-    slug: 'annual-awards-night',
-    title: 'Annual Awards Night',
-    category: 'Corporate Celebration',
-    tech: 'Stage Graphics · Motion · Signage',
-    image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=900&q=80',
-    aspect: 'aspect-[4/5]',
-    span: '',
-  },
-  {
-    slug: 'product-launch-activation',
-    title: 'Product Launch Activation',
-    category: 'Brand Activation',
-    tech: 'Interactive · Kiosk · LED Wall',
-    image:
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=900&q=80',
-    aspect: 'aspect-[4/5]',
-    span: '',
-  },
-  {
     slug: 'ai-photo-booth-experience',
     title: 'AI Photo Booth Experience',
     category: 'AI Experience',
-    tech: 'Vision AI · Touch · Social Share',
-    image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=900&q=80',
+    tech: 'Vision AI · Instant Sharing · Custom Branding',
+    image: '/assets/hero/ai-experiences.png',
+    aspect: 'aspect-[4/5]',
+    span: '',
+  },
+  {
+    slug: 'ar-vr-experiences',
+    title: 'Immersive Virtual Experiences',
+    category: 'AR / VR Experiences',
+    tech: 'AR Filters · VR Simulations · Interactive Demos',
+    image: '/assets/hero/touchscreen-experiences.png',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
     slug: 'exhibition-booth-ecosystem',
-    title: 'Exhibition Booth Ecosystem',
-    category: 'Experiential Marketing',
-    tech: 'Booth Design · Signage · Games',
-    image:
-      'https://images.unsplash.com/photo-1505376975894-3469c43a9772?auto=format&fit=crop&w=900&q=80',
+    title: 'Event Engagement Games',
+    category: 'Interactive Games',
+    tech: 'Quiz · Spin Wheel · Leaderboard · Touch Games',
+    image: '/assets/hero/interactive-kiosks.png',
+    aspect: 'aspect-[4/5]',
+    span: '',
+  },
+  {
+    slug: 'annual-awards-night',
+    title: 'Creative Event Design',
+    category: 'Event Graphics',
+    tech: 'Stage Graphics · LED Content · Signage · Branding',
+    image: '/assets/hero/event-graphics.png',
     aspect: 'aspect-[4/5]',
     span: '',
   },
@@ -260,8 +246,7 @@ export const projects = [
     title: 'Registration Command Center',
     category: 'Guest Journey',
     tech: 'QR Check-in · Badges · Kiosks',
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/hero/registration-systems.png',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },

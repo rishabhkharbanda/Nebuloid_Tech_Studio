@@ -92,7 +92,7 @@ export const projectDetails: Record<
   },
   'ai-photo-booth-experience': {
     intro:
-      'An AI-powered photo experience that became the most shared moment of a major product launch — intelligent, on-brand, and seamlessly integrated into the event flow.',
+      'An AI-powered photo experience that became the most shared moment of a major brand activation — intelligent, on-brand, and seamlessly integrated into the event flow.',
     sections: [
       {
         title: 'The Challenge',
@@ -102,7 +102,7 @@ export const projectDetails: Record<
       {
         title: 'Our Approach',
         content:
-          'We developed a custom AI photo experience with branded overlays, instant social sharing, and a touchscreen interface designed to match the launch aesthetic.',
+          'We developed a custom AI photo experience with branded overlays, instant sharing, and a touchscreen interface designed to match the event aesthetic.',
       },
       {
         title: 'The Outcome',
@@ -111,11 +111,39 @@ export const projectDetails: Record<
       },
     ],
     highlights: [
-      'Custom AI vision pipeline',
-      'Branded photo overlays',
-      'Touchscreen interface',
-      'Instant social sharing',
+      'Vision AI photo generation',
+      'Instant sharing & QR download',
+      'Custom branded overlays',
+      'Touchscreen booth interface',
       'Live usage analytics',
+    ],
+  },
+  'ar-vr-experiences': {
+    intro:
+      'Immersive AR and VR activations that transport audiences into branded worlds — from filter-driven social moments to full-scale virtual demos built for high-footfall events.',
+    sections: [
+      {
+        title: 'The Challenge',
+        content:
+          'The brand needed more than static displays — they wanted visitors to step inside the story through augmented and virtual experiences that felt polished, intuitive, and worth sharing.',
+      },
+      {
+        title: 'Our Approach',
+        content:
+          'We designed AR filters, VR simulation environments, and interactive demo stations calibrated for live event throughput — with branded UI, guided onboarding, and staff-ready workflows.',
+      },
+      {
+        title: 'The Outcome',
+        content:
+          'Dwell time and participation exceeded booth targets. Visitors left with memorable branded moments while the client captured engagement data across every touchpoint.',
+      },
+    ],
+    highlights: [
+      'Custom AR filters & effects',
+      'VR simulation environments',
+      'Interactive demo stations',
+      'Branded experience UI',
+      'Live engagement tracking',
     ],
   },
   'exhibition-booth-ecosystem': {
