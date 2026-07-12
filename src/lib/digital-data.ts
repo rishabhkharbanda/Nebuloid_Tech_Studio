@@ -146,23 +146,169 @@ export const digitalProjects = [
   },
 ] as const
 
-export const digitalSolutions = [
-  'Interactive Experience Platforms',
-  'AI Selfie Booths',
-  'AI-Powered Visitor Experiences',
-  'Interactive Gaming Solutions',
-  'Touchscreen Kiosks',
-  'Website Design & Development',
-  'Government Digital Platforms',
+export const digitalCapabilityCategories = [
+  'Interactive Experiences',
+  'AI & Engagement',
+  'Platforms & Web',
   'Event Technology',
-  'Digital Storytelling',
-  'Visitor Engagement Systems',
-  'QR Code Experiences',
-  'Analytics Dashboards',
-  'CMS Development',
-  'API Integrations',
-  'Performance Optimization',
+  'Data & Systems',
 ] as const
+
+export const digitalCapabilities = [
+  {
+    id: '01',
+    slug: 'interactive-experience-platforms',
+    title: 'Interactive Experience Platforms',
+    category: 'Interactive Experiences',
+    description:
+      'Unified platforms where visitors touch, play, learn, and explore — engineered for destinations, venues, and high-traffic environments.',
+    href: '/technology/interactive-games',
+    featured: true,
+  },
+  {
+    id: '02',
+    slug: 'ai-selfie-booths',
+    title: 'AI Selfie Booths',
+    category: 'AI & Engagement',
+    description:
+      'AI-generated themed photos with instant branded output, QR downloads, and social sharing built for events and activations.',
+    href: '/technology/ai-photo-booths',
+    featured: true,
+  },
+  {
+    id: '03',
+    slug: 'ai-powered-visitor-experiences',
+    title: 'AI-Powered Visitor Experiences',
+    category: 'AI & Engagement',
+    description:
+      'Intelligent layers woven into the visitor journey — personalization, smart interactions, and memorable AI-first moments.',
+    href: '/technology/ai-photo-booths',
+    featured: false,
+  },
+  {
+    id: '04',
+    slug: 'interactive-gaming-solutions',
+    title: 'Interactive Gaming Solutions',
+    category: 'Interactive Experiences',
+    description:
+      'Quizzes, puzzles, educational challenges, and touchscreen games that turn passive audiences into active participants.',
+    href: '/technology/interactive-games',
+    featured: false,
+  },
+  {
+    id: '05',
+    slug: 'touchscreen-kiosks',
+    title: 'Touchscreen Kiosks',
+    category: 'Event Technology',
+    description:
+      'Custom kiosk software for registration, information, engagement, and wayfinding — reliable under live event pressure.',
+    href: '/technology/touchscreen-kiosks',
+    featured: false,
+  },
+  {
+    id: '06',
+    slug: 'website-design-development',
+    title: 'Website Design & Development',
+    category: 'Platforms & Web',
+    description:
+      'Premium responsive websites with performance, accessibility, and brand storytelling at the core of every build.',
+    href: '/solutions/event-websites-applications',
+    featured: false,
+  },
+  {
+    id: '07',
+    slug: 'government-digital-platforms',
+    title: 'Government Digital Platforms',
+    category: 'Platforms & Web',
+    description:
+      'Accessible, scalable public-facing platforms that modernize institutional presence and simplify information delivery.',
+    href: '/digital-experiences/cish-digital-platform',
+    featured: false,
+  },
+  {
+    id: '08',
+    slug: 'event-technology',
+    title: 'Event Technology',
+    category: 'Event Technology',
+    description:
+      'End-to-end digital systems for exhibitions, pavilions, and brand activations — from kiosks to live engagement layers.',
+    href: '/experiences',
+    featured: false,
+  },
+  {
+    id: '09',
+    slug: 'digital-storytelling',
+    title: 'Digital Storytelling',
+    category: 'Interactive Experiences',
+    description:
+      'Immersive narratives through multimedia, interactive modules, and touch-driven experiences that bring stories to life.',
+    href: '/digital-experiences/paras-dham-girnar',
+    featured: false,
+  },
+  {
+    id: '10',
+    slug: 'visitor-engagement-systems',
+    title: 'Visitor Engagement Systems',
+    category: 'Interactive Experiences',
+    description:
+      'Smart information hubs, guided journeys, and engagement touchpoints designed to deepen every visitor interaction.',
+    href: '/technology/touchscreen-kiosks',
+    featured: false,
+  },
+  {
+    id: '11',
+    slug: 'qr-code-experiences',
+    title: 'QR Code Experiences',
+    category: 'Event Technology',
+    description:
+      'Seamless QR-driven flows for check-in, content access, downloads, and on-ground digital handoffs.',
+    href: '/technology/qr-check-in-systems',
+    featured: false,
+  },
+  {
+    id: '12',
+    slug: 'analytics-dashboards',
+    title: 'Analytics Dashboards',
+    category: 'Data & Systems',
+    description:
+      'Live dashboards and engagement analytics that translate visitor behavior into actionable performance insight.',
+    href: '/technology/live-dashboards',
+    featured: false,
+  },
+  {
+    id: '13',
+    slug: 'cms-development',
+    title: 'CMS Development',
+    category: 'Data & Systems',
+    description:
+      'Flexible content management systems that empower teams to publish, update, and scale digital experiences with ease.',
+    href: '/contact',
+    featured: false,
+  },
+  {
+    id: '14',
+    slug: 'api-integrations',
+    title: 'API Integrations',
+    category: 'Data & Systems',
+    description:
+      'Robust API layers connecting platforms, third-party services, and on-ground systems into one cohesive experience.',
+    href: '/contact',
+    featured: false,
+  },
+  {
+    id: '15',
+    slug: 'performance-optimization',
+    title: 'Performance Optimization',
+    category: 'Data & Systems',
+    description:
+      'Speed, reliability, and scalability tuning so every digital touchpoint performs flawlessly at scale.',
+    href: '/contact',
+    featured: false,
+  },
+] as const
+
+/** @deprecated Use digitalCapabilities */
+export const digitalSolutions = digitalCapabilities.map((item) => item.title)
 
 export const digitalSpecializations = [
   'AI Experiences',

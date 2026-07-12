@@ -15,6 +15,7 @@ const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/solutions'), changeFrequency: 'weekly', priority: 0.9 },
   { url: absoluteUrl('/experiences'), changeFrequency: 'weekly', priority: 0.9 },
   { url: absoluteUrl('/digital-experiences'), changeFrequency: 'weekly', priority: 0.9 },
+  { url: absoluteUrl('/capabilities'), changeFrequency: 'weekly', priority: 0.9 },
   { url: absoluteUrl('/insights'), changeFrequency: 'weekly', priority: 0.85 },
   { url: absoluteUrl('/industries'), changeFrequency: 'monthly', priority: 0.85 },
   { url: absoluteUrl('/technology'), changeFrequency: 'monthly', priority: 0.85 },
