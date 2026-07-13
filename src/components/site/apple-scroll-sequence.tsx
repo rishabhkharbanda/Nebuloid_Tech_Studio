@@ -7,19 +7,45 @@ import { useEffect, useRef, useState } from 'react'
 const FRAME_COUNT = 240
 const SCROLL_VH = 280
 const FRAME_BASE = '/assets/scroll-sequence/ezgif-frame-'
+const MAX_DPR = 3
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
 }
 
+type CanvasMetrics = {
+  pixelWidth: number
+  pixelHeight: number
+}
+
+function getCanvasMetrics(canvas: HTMLCanvasElement): CanvasMetrics | null {
+  const parent = canvas.parentElement
+  if (!parent) return null
+
+  const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
+  const cssWidth = parent.clientWidth
+  const cssHeight = parent.clientHeight
+  const pixelWidth = Math.max(1, Math.round(cssWidth * dpr))
+  const pixelHeight = Math.max(1, Math.round(cssHeight * dpr))
+
+  if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
+    canvas.width = pixelWidth
+    canvas.height = pixelHeight
+    canvas.style.width = `${cssWidth}px`
+    canvas.style.height = `${cssHeight}px`
+  }
+
+  return { pixelWidth, pixelHeight }
+}
+
 function drawCover(
   ctx: CanvasRenderingContext2D,
   image: HTMLImageElement,
-  width: number,
-  height: number,
+  pixelWidth: number,
+  pixelHeight: number,
 ) {
   const imgRatio = image.naturalWidth / image.naturalHeight
-  const canvasRatio = width / height
+  const canvasRatio = pixelWidth / pixelHeight
 
   let drawWidth: number
   let drawHeight: number
@@ -27,38 +53,22 @@ function drawCover(
   let offsetY: number
 
   if (imgRatio > canvasRatio) {
-    drawHeight = height
-    drawWidth = image.naturalWidth * (height / image.naturalHeight)
-    offsetX = (width - drawWidth) / 2
+    drawHeight = pixelHeight
+    drawWidth = Math.round(image.naturalWidth * (pixelHeight / image.naturalHeight))
+    offsetX = Math.round((pixelWidth - drawWidth) / 2)
     offsetY = 0
   } else {
-    drawWidth = width
-    drawHeight = image.naturalHeight * (width / image.naturalWidth)
+    drawWidth = pixelWidth
+    drawHeight = Math.round(image.naturalHeight * (pixelWidth / image.naturalWidth))
     offsetX = 0
-    offsetY = (height - drawHeight) / 2
+    offsetY = Math.round((pixelHeight - drawHeight) / 2)
   }
 
-  ctx.clearRect(0, 0, width, height)
+  ctx.setTransform(1, 0, 0, 1, 0, 0)
+  ctx.imageSmoothingEnabled = true
+  ctx.imageSmoothingQuality = 'high'
+  ctx.clearRect(0, 0, pixelWidth, pixelHeight)
   ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
-}
-
-function resizeCanvas(canvas: HTMLCanvasElement) {
-  const parent = canvas.parentElement
-  if (!parent) return { width: 0, height: 0, dpr: 1 }
-
-  const dpr = Math.min(window.devicePixelRatio || 1, 2)
-  const width = parent.clientWidth
-  const height = parent.clientHeight
-
-  canvas.width = Math.round(width * dpr)
-  canvas.height = Math.round(height * dpr)
-  canvas.style.width = `${width}px`
-  canvas.style.height = `${height}px`
-
-  const ctx = canvas.getContext('2d')
-  if (ctx) ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
-
-  return { width, height, dpr }
 }
 
 export function AppleScrollSequence() {
@@ -66,7 +76,7 @@ export function AppleScrollSequence() {
   const pinRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const imagesRef = useRef<HTMLImageElement[]>([])
-  const frameRef = useRef(0)
+  const frameRef = useRef(-1)
   const triggerRef = useRef<ScrollTrigger | null>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [progress, setProgress] = useState(0)
@@ -82,20 +92,22 @@ export function AppleScrollSequence() {
     let cancelled = false
     let resizeObserver: ResizeObserver | null = null
 
-    const renderFrame = (index: number) => {
+    const renderFrame = (index: number, force = false) => {
       const images = imagesRef.current
-      const ctx = canvas.getContext('2d')
+      const ctx = canvas.getContext('2d', { alpha: false })
       if (!ctx || images.length === 0) return
 
       const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
-      if (clamped === frameRef.current) return
+      if (!force && clamped === frameRef.current) return
 
       const image = images[clamped]
       if (!image?.complete) return
 
+      const metrics = getCanvasMetrics(canvas)
+      if (!metrics) return
+
       frameRef.current = clamped
-      const { width, height } = resizeCanvas(canvas)
-      if (width > 0 && height > 0) drawCover(ctx, image, width, height)
+      drawCover(ctx, image, metrics.pixelWidth, metrics.pixelHeight)
     }
 
     const setupScroll = () => {
@@ -107,7 +119,7 @@ export function AppleScrollSequence() {
         start: 'top top',
         end: `+=${SCROLL_VH}%`,
         pin: pin,
-        scrub: 0.6,
+        scrub: 0.35,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -116,7 +128,8 @@ export function AppleScrollSequence() {
         },
       })
 
-      renderFrame(0)
+      frameRef.current = -1
+      renderFrame(0, true)
       setStatus('ready')
       ScrollTrigger.refresh()
     }
@@ -128,7 +141,7 @@ export function AppleScrollSequence() {
       const loadImage = (index: number) =>
         new Promise<void>((resolve, reject) => {
           const img = new Image()
-          img.decoding = 'async'
+          img.decoding = 'sync'
           img.onload = () => {
             images[index] = img
             loaded += 1
@@ -158,7 +171,11 @@ export function AppleScrollSequence() {
     }
 
     const onResize = () => {
-      renderFrame(frameRef.current)
+      const index = triggerRef.current
+        ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
+        : Math.max(0, frameRef.current)
+      frameRef.current = -1
+      renderFrame(index, true)
       ScrollTrigger.refresh()
     }
 
@@ -186,15 +203,15 @@ export function AppleScrollSequence() {
       <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-[#090909]">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full"
+          className="absolute inset-0 h-full w-full transform-gpu"
           aria-hidden={status !== 'ready'}
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/70 via-[#090909]/20 to-[#090909]/90" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_35%,#090909_100%)]" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/45 via-transparent to-[#090909]/55" />
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#090909_100%)] opacity-80" />
 
         {status === 'loading' && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/85 backdrop-blur-sm">
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/85">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#d4af37]/25 border-t-[#d4af37]" />
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#F1E9DB]/60">
               Loading sequence
