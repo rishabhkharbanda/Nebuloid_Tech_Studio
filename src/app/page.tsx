@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { AboutSection } from '@/components/site/about-section'
+import { AppleScrollSequence } from '@/components/site/apple-scroll-sequence'
 import { BlogSection } from '@/components/site/blog-section'
 import { DigitalCtaSection } from '@/components/site/digital-cta-section'
 import { DigitalExperiencesSection } from '@/components/site/digital-experiences-section'
@@ -42,6 +43,7 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
+        <AppleScrollSequence />
         <TrustedBySection />
         <ServicesSection limit={3} compact />
         <WorkSection limit={4} />

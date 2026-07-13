@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Apple Scroll Animation — Nebuloid</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+      }
+
+      html,
+      body {
+        min-height: 100%;
+        background: #090909;
+        color: #f1e9db;
+        font-family: system-ui, -apple-system, sans-serif;
+      }
+
+      .hero {
+        display: grid;
+        place-items: center;
+        min-height: 100vh;
+        padding: 2rem;
+        text-align: center;
+        background: radial-gradient(circle at top, #1a1a2e, #090909 65%);
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 6vw, 4rem);
+        letter-spacing: -0.03em;
+      }
+
+      .hero p {
+        margin-top: 1rem;
+        max-width: 36rem;
+        opacity: 0.65;
+        line-height: 1.6;
+      }
+
+      .sequence {
+        height: 280vh;
+        position: relative;
+      }
+
+      .sequence__pin {
+        position: relative;
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        background: #090909;
+      }
+
+      canvas {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+
+      .sequence__overlay {
+        pointer-events: none;
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(
+            to bottom,
+            rgba(9, 9, 9, 0.7),
+            rgba(9, 9, 9, 0.2) 45%,
+            rgba(9, 9, 9, 0.9)
+          ),
+          radial-gradient(circle at center, transparent 35%, #090909 100%);
+      }
+
+      .sequence__hint,
+      .sequence__loader,
+      .sequence__error {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        text-align: center;
+        padding: 1.5rem;
+      }
+
+      .sequence__loader {
+        background: rgba(9, 9, 9, 0.85);
+        backdrop-filter: blur(8px);
+        z-index: 2;
+      }
+
+      .sequence__error {
+        background: rgba(9, 9, 9, 0.92);
+        z-index: 2;
+      }
+
+      .sequence__hint {
+        inset: auto 0 2.5rem;
+        height: auto;
+        font-size: 0.65rem;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        opacity: 0.4;
+      }
+
+      .spinner {
+        width: 2.5rem;
+        height: 2.5rem;
+        border: 2px solid rgba(212, 175, 55, 0.25);
+        border-top-color: #d4af37;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .after {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 2rem;
+        text-align: center;
+        background: #090909;
+      }
+
+      .mono {
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        font-size: 0.7rem;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #d4af37;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="hero">
+      <div>
+        <p class="mono">Scroll-linked canvas sequence</p>
+        <h1>Apple-style frame scrubbing</h1>
+        <p>
+          Preload all frames, pin the canvas, and scrub through 240 images with
+          GSAP ScrollTrigger — the same technique used on Apple product pages.
+        </p>
+      </div>
+    </section>
+
+    <section class="sequence" id="sequence">
+      <div class="sequence__pin" id="pin">
+        <canvas id="canvas"></canvas>
+        <div class="sequence__overlay"></div>
+
+        <div class="sequence__loader" id="loader">
+          <div class="spinner"></div>
+          <p class="mono">Loading sequence</p>
+          <p class="mono" id="progress">0%</p>
+        </div>
+
+        <div class="sequence__error" id="error" hidden>
+          <p class="mono">Sequence unavailable</p>
+          <p style="max-width: 22rem; opacity: 0.55; font-size: 0.9rem">
+            Scroll continues normally. Refresh to retry loading the animation frames.
+          </p>
+        </div>
+
+        <div class="sequence__hint" id="hint" hidden>Scroll to explore</div>
+      </div>
+    </section>
+
+    <section class="after">
+      <div>
+        <p class="mono">End of sequence</p>
+        <h2 style="margin-top: 0.75rem; font-size: clamp(1.5rem, 4vw, 2.5rem)">
+          Drop this file into any site
+        </h2>
+        <p style="margin-top: 1rem; max-width: 32rem; opacity: 0.65; line-height: 1.6">
+          Place frames in <code>/assets/scroll-sequence/</code> and serve this HTML
+          from your static host or Next.js <code>public</code> folder.
+        </p>
+      </div>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.0/dist/ScrollTrigger.min.js"></script>
+    <script>
+      ;(function () {
+        const FRAME_COUNT = 240
+        const SCROLL_VH = 280
+        const FRAME_BASE = '/assets/scroll-sequence/ezgif-frame-'
+
+        const section = document.getElementById('sequence')
+        const pin = document.getElementById('pin')
+        const canvas = document.getElementById('canvas')
+        const loader = document.getElementById('loader')
+        const error = document.getElementById('error')
+        const hint = document.getElementById('hint')
+        const progressEl = document.getElementById('progress')
+        const ctx = canvas.getContext('2d')
+
+        let images = []
+        let currentFrame = 0
+        let trigger = null
+
+        function frameSrc(index) {
+          return FRAME_BASE + String(index + 1).padStart(3, '0') + '.jpg'
+        }
+
+        function resizeCanvas() {
+          const dpr = Math.min(window.devicePixelRatio || 1, 2)
+          const width = pin.clientWidth
+          const height = pin.clientHeight
+          canvas.width = Math.round(width * dpr)
+          canvas.height = Math.round(height * dpr)
+          canvas.style.width = width + 'px'
+          canvas.style.height = height + 'px'
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+          return { width, height }
+        }
+
+        function drawCover(image, width, height) {
+          const imgRatio = image.naturalWidth / image.naturalHeight
+          const canvasRatio = width / height
+          let drawWidth, drawHeight, offsetX, offsetY
+
+          if (imgRatio > canvasRatio) {
+            drawHeight = height
+            drawWidth = image.naturalWidth * (height / image.naturalHeight)
+            offsetX = (width - drawWidth) / 2
+            offsetY = 0
+          } else {
+            drawWidth = width
+            drawHeight = image.naturalHeight * (width / image.naturalWidth)
+            offsetX = 0
+            offsetY = (height - drawHeight) / 2
+          }
+
+          ctx.clearRect(0, 0, width, height)
+          ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
+        }
+
+        function renderFrame(index) {
+          const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
+          if (clamped === currentFrame) return
+          const image = images[clamped]
+          if (!image || !image.complete) return
+          currentFrame = clamped
+          const { width, height } = resizeCanvas()
+          drawCover(image, width, height)
+        }
+
+        function setupScroll() {
+          gsap.registerPlugin(ScrollTrigger)
+          trigger = ScrollTrigger.create({
+            trigger: section,
+            start: 'top top',
+            end: '+=' + SCROLL_VH + '%',
+            pin: pin,
+            scrub: 0.6,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+            onUpdate: function (self) {
+              renderFrame(Math.round(self.progress * (FRAME_COUNT - 1)))
+            },
+          })
+          renderFrame(0)
+          loader.hidden = true
+          hint.hidden = false
+          ScrollTrigger.refresh()
+        }
+
+        async function preloadFrames() {
+          images = new Array(FRAME_COUNT)
+          let loaded = 0
+          const batchSize = 24
+
+          try {
+            for (let start = 0; start < FRAME_COUNT; start += batchSize) {
+              const tasks = []
+              for (let i = start; i < Math.min(start + batchSize, FRAME_COUNT); i++) {
+                tasks.push(
+                  new Promise(function (resolve, reject) {
+                    const img = new Image()
+                    img.decoding = 'async'
+                    img.onload = function () {
+                      images[i] = img
+                      loaded++
+                      progressEl.textContent = Math.round((loaded / FRAME_COUNT) * 100) + '%'
+                      resolve()
+                    }
+                    img.onerror = function () {
+                      reject(new Error('Frame ' + (i + 1)))
+                    }
+                    img.src = frameSrc(i)
+                  }),
+                )
+              }
+              await Promise.all(tasks)
+            }
+            setupScroll()
+          } catch (err) {
+            console.error(err)
+            loader.hidden = true
+            error.hidden = false
+          }
+        }
+
+        window.addEventListener('resize', function () {
+          renderFrame(currentFrame)
+          ScrollTrigger.refresh()
+        })
+
+        preloadFrames()
+      })()
+    </script>
+  </body>
+</html>
