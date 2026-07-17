@@ -119,12 +119,19 @@ export function AppleScrollSequence() {
         start: 'top top',
         end: `+=${SCROLL_VH}%`,
         pin: pin,
+        pinSpacing: true,
         scrub: 0.35,
-        anticipatePin: 1,
+        anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const index = Math.round(self.progress * (FRAME_COUNT - 1))
           renderFrame(index)
+        },
+        onLeave: () => {
+          pin.style.visibility = 'hidden'
+        },
+        onEnterBack: () => {
+          pin.style.visibility = 'visible'
         },
       })
 
@@ -200,7 +207,7 @@ export function AppleScrollSequence() {
       className="relative z-0"
       style={{ height: `${SCROLL_VH}vh` }}
     >
-      <div ref={pinRef} className="relative h-screen w-full overflow-hidden bg-[#090909]">
+      <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
         <canvas
           ref={canvasRef}
           className="absolute inset-0 h-full w-full transform-gpu"

@@ -44,19 +44,21 @@ export default function Home() {
       <main>
         <HeroSection />
         <AppleScrollSequence />
-        <TrustedBySection />
-        <ServicesSection limit={3} compact />
-        <WorkSection limit={4} />
-        <DigitalExperiencesSection variant="preview" />
-        <DigitalSolutionsSection limit={6} />
-        <AboutSection />
-        <IndustriesSection limit={3} />
-        <TechnologySection limit={8} />
-        <DigitalImpactStatsSection />
-        <TestimonialsSection />
-        <BlogSection limit={2} />
-        <FaqSection limit={3} />
-        <DigitalCtaSection />
+        <div className="relative z-10 bg-[#090909]">
+          <TrustedBySection />
+          <ServicesSection limit={3} compact />
+          <WorkSection limit={4} />
+          <DigitalExperiencesSection variant="preview" />
+          <DigitalSolutionsSection limit={6} />
+          <AboutSection />
+          <IndustriesSection limit={3} />
+          <TechnologySection limit={8} />
+          <DigitalImpactStatsSection />
+          <TestimonialsSection />
+          <BlogSection limit={2} />
+          <FaqSection limit={3} />
+          <DigitalCtaSection />
+        </div>
       </main>
       <Footer />
     </div>

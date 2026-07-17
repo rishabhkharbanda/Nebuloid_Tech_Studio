@@ -20,7 +20,33 @@ export function SmoothScrollProvider({
       wheelMultiplier: 0.9,
     })
 
+    const root = document.documentElement
+
     lenis.on('scroll', ScrollTrigger.update)
+
+    ScrollTrigger.scrollerProxy(root, {
+      scrollTop(value) {
+        if (typeof value === 'number') {
+          lenis.scrollTo(value, { immediate: true })
+        }
+        return lenis.scroll
+      },
+      getBoundingClientRect() {
+        return {
+          top: 0,
+          left: 0,
+          width: window.innerWidth,
+          height: window.innerHeight,
+        }
+      },
+      pinType: root.style.transform ? 'transform' : 'fixed',
+    })
+
+    const onRefresh = () => {
+      lenis.resize()
+    }
+
+    ScrollTrigger.addEventListener('refresh', onRefresh)
 
     let frameId = 0
     const raf = (time: number) => {
@@ -29,9 +55,11 @@ export function SmoothScrollProvider({
     }
 
     frameId = requestAnimationFrame(raf)
+    ScrollTrigger.refresh()
 
     return () => {
       cancelAnimationFrame(frameId)
+      ScrollTrigger.removeEventListener('refresh', onRefresh)
       lenis.destroy()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }

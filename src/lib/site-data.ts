@@ -1,32 +1,31 @@
 export const heroStates = [
   {
     title: 'AI Experiences.',
-    image: '/assets/hero/ai-experiences.png',
+    image: '/assets/hero/ai-experiences.jpg',
     classes:
       'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(112,192,255,.14),transparent_50%)]',
   },
   {
     title: 'Interactive Kiosks.',
-    image: '/assets/hero/interactive-kiosks.png',
+    image: '/assets/hero/interactive-kiosks.jpg',
     classes:
       'from-[#0e0f13]/60 via-[#1f2538]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_70%_35%,rgba(129,175,255,.12),transparent_45%)]',
   },
   {
     title: 'LED Experiences.',
-    image:
-      'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/led-experiences.jpg',
     classes:
       'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.16),transparent_52%)]',
   },
   {
     title: 'Venue Navigation.',
-    image: '/assets/hero/venue-navigation.png',
+    image: '/assets/hero/venue-navigation.jpg',
     classes:
       'from-[#0b1024]/60 via-[#0f1438]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_25%_40%,rgba(108,124,255,.14),transparent_45%)]',
   },
   {
     title: 'Event Graphics.',
-    image: '/assets/hero/event-graphics.png',
+    image: '/assets/hero/event-graphics.jpg',
     classes:
       'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.14),transparent_45%)]',
   },
@@ -39,7 +38,7 @@ export const heroStates = [
   },
   {
     title: 'Creative Production.',
-    image: '/assets/hero/creative-production.png',
+    image: '/assets/hero/creative-production.jpg',
     classes:
       'from-[#131111]/60 via-[#37220f]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_55%_20%,rgba(255,164,72,.14),transparent_52%)]',
   },
@@ -131,8 +130,7 @@ export const services = [
     detail:
       'From conference identity to stage backdrops, LED content, motion graphics, and invitation systems — every touchpoint speaks the same story.',
     tags: ['Branding', 'Motion', 'LED Content', 'Stage Design'],
-    image:
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/event-branding-creative-production.jpg',
   },
   {
     id: '02',
@@ -143,8 +141,7 @@ export const services = [
     detail:
       'QR check-in, badge printing, touchscreen registration, and seamless guest flow — designed to feel effortless at scale.',
     tags: ['QR Check-in', 'Badges', 'Kiosks', 'Guest Flow'],
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/registration-guest-journey.jpg',
   },
   {
     id: '03',
@@ -155,8 +152,7 @@ export const services = [
     detail:
       'Touchscreen experiences, digital signage, gamification, and on-ground installations that turn passive audiences into participants.',
     tags: ['Kiosks', 'Gamification', 'Signage', 'Installations'],
-    image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/interactive-installations.jpg',
   },
   {
     id: '04',
@@ -167,8 +163,7 @@ export const services = [
     detail:
       'AI photo booths, personalized interactions, and smart engagement layers that feel magical, not mechanical.',
     tags: ['AI Booth', 'Vision AI', 'Personalization', 'Engagement'],
-    image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/ai-photo-booth.jpg',
   },
   {
     id: '05',
@@ -202,7 +197,7 @@ export const projects = [
     title: 'AI Photo Booth Experience',
     category: 'AI Experience',
     tech: 'Vision AI · Instant Sharing · Custom Branding',
-    image: '/assets/hero/ai-experiences.png',
+    image: '/assets/site-content/ai-photo-booth-event.jpg',
     aspect: 'aspect-[4/5]',
     span: '',
   },
@@ -211,7 +206,7 @@ export const projects = [
     title: 'Immersive Virtual Experiences',
     category: 'AR / VR Experiences',
     tech: 'AR Filters · VR Simulations · Interactive Demos',
-    image: '/assets/hero/touchscreen-experiences.png',
+    image: '/assets/site-content/vr-technology.jpg',
     aspect: 'aspect-[4/5]',
     span: '',
   },
@@ -220,7 +215,7 @@ export const projects = [
     title: 'Event Engagement Games',
     category: 'Interactive Games',
     tech: 'Quiz · Spin Wheel · Leaderboard · Touch Games',
-    image: '/assets/hero/interactive-kiosks.png',
+    image: '/assets/site-content/interactive-installations.jpg',
     aspect: 'aspect-[4/5]',
     span: '',
   },
@@ -229,7 +224,7 @@ export const projects = [
     title: 'Creative Event Design',
     category: 'Event Graphics',
     tech: 'Stage Graphics · LED Content · Signage · Branding',
-    image: '/assets/hero/event-graphics.png',
+    image: '/assets/site-content/event-branding-creative-production.jpg',
     aspect: 'aspect-[4/5]',
     span: '',
   },
@@ -248,7 +243,7 @@ export const projects = [
     title: 'Registration Command Center',
     category: 'Guest Journey',
     tech: 'QR Check-in · Badges · Kiosks',
-    image: '/assets/hero/registration-systems.png',
+    image: '/assets/site-content/registration-guest-journey.jpg',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },
@@ -323,40 +318,35 @@ export const technologies = [
     title: 'Touchscreen Kiosks',
     category: 'Interactive',
     tagline: 'Self-service interfaces that scale under live event pressure.',
-    image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/touchscreen-kiosk.webp',
   },
   {
     slug: 'qr-check-in-systems',
     title: 'QR Check-in Systems',
     category: 'Interactive',
     tagline: 'Frictionless arrivals with scan-to-enter guest flows.',
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/qr-check-in.jpg',
   },
   {
     slug: 'ai-photo-booths',
     title: 'AI Photo Booths',
     category: 'AI',
     tagline: 'AI-generated moments built for shareability and brand recall.',
-    image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/ai-photo-booth.jpg',
   },
   {
     slug: 'led-wall-content',
     title: 'LED Wall Content',
     category: 'Digital',
     tagline: 'Motion-led visuals that command attention at scale.',
-    image:
-      'https://images.unsplash.com/photo-1501281668745-f7f57925c3b4?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/led-wall-content.webp',
   },
   {
     slug: 'venue-navigation',
     title: 'Venue Navigation',
     category: 'Digital',
     tagline: 'Wayfinding systems that keep audiences moving effortlessly.',
-    image:
-      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/touchscreen-kiosk.webp',
   },
   {
     slug: 'event-websites',
@@ -379,8 +369,7 @@ export const technologies = [
     title: 'Digital Signage',
     category: 'Digital',
     tagline: 'Dynamic on-venue displays synced to your event narrative.',
-    image:
-      'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/digital-signage.jpg',
   },
   {
     slug: 'interactive-games',

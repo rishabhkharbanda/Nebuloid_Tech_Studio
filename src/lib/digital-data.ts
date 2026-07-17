@@ -143,8 +143,7 @@ export const digitalProjects = [
     title: 'Building a Modern Digital Platform for Research & Public Engagement',
     overview:
       'Nebuloid designed and developed a modern digital platform for CISH that improves accessibility, simplifies information delivery, and strengthens the institute\'s online presence through a scalable and user-friendly web experience.',
-    image:
-      'https://images.unsplash.com/photo-1454165804606-c3d57bc86b40?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/cish-platform.jpg',
     contribution: [
       'Website Design',
       'Website Development',
