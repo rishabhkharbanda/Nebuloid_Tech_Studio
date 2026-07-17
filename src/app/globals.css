@@ -163,20 +163,20 @@ html.day-theme body {
   color: #181712;
 }
 
-html.day-theme [class*="bg-[#090909]"] {
+html.day-theme [class*="bg-[#090909]"]:not(.theme-preserve-dark, .theme-preserve-dark *) {
   background-color: #f4f0e7 !important;
 }
 
-html.day-theme [class*="text-[#F1E9DB]"] {
+html.day-theme [class*="text-[#F1E9DB]"]:not(.theme-preserve-dark, .theme-preserve-dark *) {
   color: #181712 !important;
 }
 
-html.day-theme [class*="border-white/"],
-html.day-theme [class*="border-[#F1E9DB]"] {
+html.day-theme [class*="border-white/"]:not(.theme-preserve-dark, .theme-preserve-dark *),
+html.day-theme [class*="border-[#F1E9DB]"]:not(.theme-preserve-dark, .theme-preserve-dark *) {
   border-color: rgba(24, 23, 18, 0.14) !important;
 }
 
-html.day-theme [class*="bg-white/"] {
+html.day-theme [class*="bg-white/"]:not(.theme-preserve-dark, .theme-preserve-dark *) {
   background-color: rgba(24, 23, 18, 0.035) !important;
 }
 
@@ -222,19 +222,6 @@ html.day-theme header [id="mobile-nav"] {
 
 html.day-theme .theme-preserve-dark {
   color: #f1e9db;
-}
-
-html.day-theme .theme-preserve-dark [class*="bg-[#090909]"] {
-  background-color: #090909 !important;
-}
-
-html.day-theme .theme-preserve-dark [class*="text-[#F1E9DB]"] {
-  color: #f1e9db !important;
-}
-
-html.day-theme .theme-preserve-dark [class*="border-white/"],
-html.day-theme .theme-preserve-dark [class*="border-[#F1E9DB]"] {
-  border-color: rgba(255, 255, 255, 0.18) !important;
 }
 
 html.day-theme ::selection {
