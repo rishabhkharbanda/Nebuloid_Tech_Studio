@@ -204,7 +204,7 @@ export function AppleScrollSequence() {
     <section
       ref={sectionRef}
       aria-label="Scroll-driven experience preview"
-      className="relative z-0"
+      className="theme-preserve-dark relative z-0"
       style={{ height: `${SCROLL_VH}vh` }}
     >
       <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">

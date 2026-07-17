@@ -3,6 +3,7 @@ import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { CustomCursor } from '@/components/site/custom-cursor'
+import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
 import {
   getOrganizationSchema,
   getWebsiteSchema,
@@ -95,6 +96,7 @@ export default function RootLayout({
       </head>
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <SecretDaylightToggle />
         <CustomCursor />
       </body>
     </html>

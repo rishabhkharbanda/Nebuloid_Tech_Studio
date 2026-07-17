@@ -46,7 +46,10 @@ export function HeroSection() {
   const active = useMemo(() => heroStates[activeIndex], [activeIndex])
 
   return (
-    <section id="home" className="relative isolate min-h-screen overflow-hidden pt-32">
+    <section
+      id="home"
+      className="theme-preserve-dark relative isolate min-h-screen overflow-hidden pt-32"
+    >
       <div className="absolute inset-0 z-0">
         <motion.div style={{ y }} className="absolute inset-0">
           <AnimatePresence initial={false}>

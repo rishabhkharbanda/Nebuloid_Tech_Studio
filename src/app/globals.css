@@ -21,6 +21,9 @@ body {
 body {
   font-family: var(--font-space-grotesk), sans-serif;
   color: #f1e9db;
+  transition:
+    background-color 500ms ease,
+    color 500ms ease;
 }
 
 a,
@@ -74,6 +77,180 @@ button {
   -webkit-text-fill-color: transparent !important;
   -webkit-text-stroke: 1.5px #f1e9db;
   paint-order: stroke fill;
+}
+
+.secret-theme-hotspot {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 100;
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 42px 0 0;
+  background: transparent;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.secret-theme-hotspot::after {
+  --theme-hold: 0turn;
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+  width: 20px;
+  height: 20px;
+  content: "";
+  border-radius: 999px;
+  opacity: 0;
+  background: conic-gradient(#d4af37 var(--theme-hold), transparent 0);
+}
+
+.secret-theme-hotspot[data-holding="true"]::after {
+  opacity: 1;
+  animation: secret-theme-hold 1.2s linear forwards;
+}
+
+.theme-notice {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 99;
+  padding: 10px 14px;
+  border: 1px solid rgba(212, 175, 55, 0.35);
+  border-radius: 999px;
+  background: rgba(9, 9, 9, 0.86);
+  color: #f1e9db;
+  font-family: var(--font-jetbrains-mono), monospace;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  backdrop-filter: blur(14px);
+  animation: theme-notice-in 300ms ease both;
+}
+
+@keyframes secret-theme-hold {
+  from {
+    --theme-hold: 0turn;
+  }
+  to {
+    --theme-hold: 1turn;
+  }
+}
+
+@property --theme-hold {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0turn;
+}
+
+@keyframes theme-notice-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Hidden daylight theme — activated from the bottom-right corner. */
+html.day-theme,
+html.day-theme body {
+  background: #f4f0e7;
+  color: #181712;
+}
+
+html.day-theme [class*="bg-[#090909]"] {
+  background-color: #f4f0e7 !important;
+}
+
+html.day-theme [class*="text-[#F1E9DB]"] {
+  color: #181712 !important;
+}
+
+html.day-theme [class*="border-white/"],
+html.day-theme [class*="border-[#F1E9DB]"] {
+  border-color: rgba(24, 23, 18, 0.14) !important;
+}
+
+html.day-theme [class*="bg-white/"] {
+  background-color: rgba(24, 23, 18, 0.035) !important;
+}
+
+html.day-theme .grain-overlay {
+  opacity: 0.045;
+  background-image: radial-gradient(#181712 0.45px, transparent 0.45px);
+}
+
+html.day-theme .text-gradient-gold {
+  background: linear-gradient(120deg, #181712 0%, #a47e08 50%, #181712 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}
+
+html.day-theme .text-display-filled {
+  color: #181712;
+}
+
+html.day-theme .text-outline-display {
+  -webkit-text-stroke-color: #181712;
+}
+
+html.day-theme header {
+  border-color: rgba(24, 23, 18, 0.12) !important;
+  background: rgba(244, 240, 231, 0.78) !important;
+  box-shadow: 0 8px 30px rgba(24, 23, 18, 0.05);
+}
+
+html.day-theme header[data-scrolled="false"] {
+  color: #f1e9db;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+  background: linear-gradient(to right, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.34), rgba(138, 106, 10, 0.3)) !important;
+  box-shadow: none;
+}
+
+html.day-theme header[data-scrolled="false"] [class*="text-[#F1E9DB]"] {
+  color: #f1e9db !important;
+}
+
+html.day-theme header [id="mobile-nav"] {
+  background: rgba(244, 240, 231, 0.96) !important;
+}
+
+html.day-theme .theme-preserve-dark {
+  color: #f1e9db;
+}
+
+html.day-theme .theme-preserve-dark [class*="bg-[#090909]"] {
+  background-color: #090909 !important;
+}
+
+html.day-theme .theme-preserve-dark [class*="text-[#F1E9DB]"] {
+  color: #f1e9db !important;
+}
+
+html.day-theme .theme-preserve-dark [class*="border-white/"],
+html.day-theme .theme-preserve-dark [class*="border-[#F1E9DB]"] {
+  border-color: rgba(255, 255, 255, 0.18) !important;
+}
+
+html.day-theme ::selection {
+  background: rgba(164, 126, 8, 0.22);
+  color: #181712;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body {
+    transition: none;
+  }
+
+  .secret-theme-hotspot[data-holding="true"]::after,
+  .theme-notice {
+    animation: none;
+  }
 }
 
 @media (min-width: 768px) {
