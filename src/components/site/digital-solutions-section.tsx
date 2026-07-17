@@ -41,6 +41,7 @@ const iconMap: Record<string, LucideIcon> = {
 
 type DigitalSolutionsSectionProps = {
   limit?: number
+  showViewAll?: boolean
 }
 
 function CapabilityCard({
@@ -106,7 +107,10 @@ function CapabilityCard({
   )
 }
 
-export function DigitalSolutionsSection({ limit }: DigitalSolutionsSectionProps) {
+export function DigitalSolutionsSection({
+  limit,
+  showViewAll = true,
+}: DigitalSolutionsSectionProps) {
   const items = limit ? digitalCapabilities.slice(0, limit) : digitalCapabilities
   const featuredItems = items.filter((item) => item.featured)
   const regularItems = items.filter((item) => !item.featured)
@@ -126,13 +130,15 @@ export function DigitalSolutionsSection({ limit }: DigitalSolutionsSectionProps)
             and enterprise websites — we engineer the technology behind memorable
             digital experiences.
           </p>
-          <Link
-            href="/capabilities"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
-          >
-            Explore all capabilities
-            <ArrowUpRight size={16} />
-          </Link>
+          {showViewAll && (
+            <Link
+              href="/capabilities"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+            >
+              Explore all capabilities
+              <ArrowUpRight size={16} />
+            </Link>
+          )}
         </SectionReveal>
 
         {featuredItems.length > 0 && (

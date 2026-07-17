@@ -70,7 +70,7 @@ function ImpactRing({ progress }: { progress: number }) {
   )
 }
 
-export function DigitalImpactStatsSection() {
+export function DigitalImpactStatsSection({ showViewAll = true }: { showViewAll?: boolean }) {
   const featured = digitalImpactStats.filter((stat) => 'featured' in stat && stat.featured)
   const regular = digitalImpactStats.filter((stat) => !('featured' in stat && stat.featured))
 
@@ -93,13 +93,15 @@ export function DigitalImpactStatsSection() {
             </div>
 
             <div className="lg:col-span-4 lg:text-right">
-              <Link
-                href="/digital-experiences"
-                className="inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
-              >
-                See our work
-                <ArrowUpRight size={16} />
-              </Link>
+              {showViewAll && (
+                <Link
+                  href="/digital-experiences"
+                  className="inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+                >
+                  See our work
+                  <ArrowUpRight size={16} />
+                </Link>
+              )}
             </div>
           </div>
         </SectionReveal>

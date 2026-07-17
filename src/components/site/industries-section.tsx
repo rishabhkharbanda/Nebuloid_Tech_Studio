@@ -11,9 +11,10 @@ import { cn } from '@/lib/utils'
 
 type IndustriesSectionProps = {
   limit?: number
+  showViewAll?: boolean
 }
 
-export function IndustriesSection({ limit }: IndustriesSectionProps) {
+export function IndustriesSection({ limit, showViewAll = true }: IndustriesSectionProps) {
   const items = limit ? industries.slice(0, limit) : industries
   const useBento = limit === 3
 
@@ -32,13 +33,15 @@ export function IndustriesSection({ limit }: IndustriesSectionProps) {
             Entertainment, textile, tourism, tech, agriculture, religious, and more —
             we tailor digital experiences to the audience, protocol, and pace of your sector.
           </p>
-          <Link
-            href="/industries"
-            className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
-          >
-            View all industries
-            <ArrowUpRight size={16} />
-          </Link>
+          {showViewAll && (
+            <Link
+              href="/industries"
+              className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+            >
+              View all industries
+              <ArrowUpRight size={16} />
+            </Link>
+          )}
         </SectionReveal>
 
         <div

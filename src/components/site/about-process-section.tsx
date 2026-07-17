@@ -38,63 +38,109 @@ export function AboutProcessSection() {
         </div>
       </SectionReveal>
 
-      <SectionReveal delay={0.08} className="mt-12 overflow-x-auto pb-2">
-        <div className="min-w-[920px]">
-          <div className="relative grid grid-cols-6 gap-4">
-            <motion.div
-              initial={{ scaleX: 0 }}
-              whileInView={{ scaleX: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 1.1 }}
-              className="absolute top-4 col-span-6 h-px origin-left bg-gradient-to-r from-[#d4af37]/15 via-[#d4af37]/70 to-[#d4af37]/15"
-            />
+      {/* Mobile / tablet: vertical step list */}
+      <SectionReveal delay={0.08} className="mt-12 lg:hidden">
+        <div className="space-y-3">
+          {processSteps.map((step, index) => {
+            const isActive = activeIndex === index
 
-            {processSteps.map((step, index) => {
-              const isActive = activeIndex === index
-
-              return (
-                <button
-                  key={step.step}
-                  type="button"
-                  onClick={() => setActiveIndex(index)}
-                  onMouseEnter={() => setActiveIndex(index)}
-                  className="group relative text-left"
+            return (
+              <button
+                key={step.step}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                className={cn(
+                  'flex w-full items-center gap-4 rounded-2xl border p-4 text-left transition-colors',
+                  isActive
+                    ? 'border-[#d4af37]/35 bg-[#d4af37]/[0.06]'
+                    : 'border-white/10 bg-white/[0.02] hover:border-white/20',
+                )}
+              >
+                <div
+                  className={cn(
+                    'flex h-10 w-10 shrink-0 items-center justify-center rounded-full border font-mono text-xs',
+                    isActive
+                      ? 'border-[#d4af37] bg-[#d4af37]/15 text-[#d4af37]'
+                      : 'border-white/20 text-[#F1E9DB]/50',
+                  )}
                 >
-                  <motion.div
-                    animate={{
-                      scale: isActive ? 1.15 : 1,
-                      boxShadow: isActive
-                        ? '0 0 24px rgba(212,175,55,0.35)'
-                        : '0 0 0px rgba(212,175,55,0)',
-                    }}
-                    transition={{ type: 'spring', stiffness: 260, damping: 20 }}
-                    className={cn(
-                      'h-8 w-8 rounded-full border bg-[#090909] transition-colors',
-                      isActive
-                        ? 'border-[#d4af37] bg-[#d4af37]/15'
-                        : 'border-white/20 group-hover:border-[#d4af37]/50',
-                    )}
-                  />
-                  <p
-                    className={cn(
-                      'mt-6 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors',
-                      isActive ? 'text-[#d4af37]' : 'text-[#F1E9DB]/40 group-hover:text-[#F1E9DB]/65',
-                    )}
-                  >
-                    {String(index + 1).padStart(2, '0')}
-                  </p>
+                  {String(index + 1).padStart(2, '0')}
+                </div>
+                <div className="min-w-0 flex-1">
                   <h3
                     className={cn(
-                      'mt-2 text-lg font-semibold transition-colors md:text-xl',
-                      isActive ? 'text-[#F1E9DB]' : 'text-[#F1E9DB]/65 group-hover:text-[#F1E9DB]',
+                      'text-base font-semibold transition-colors',
+                      isActive ? 'text-[#F1E9DB]' : 'text-[#F1E9DB]/70',
                     )}
                   >
                     {step.step}
                   </h3>
-                </button>
-              )
-            })}
-          </div>
+                  <p className="mt-1 line-clamp-2 text-sm text-[#F1E9DB]/50">
+                    {step.description}
+                  </p>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      </SectionReveal>
+
+      {/* Desktop: horizontal timeline */}
+      <SectionReveal delay={0.08} className="mt-12 hidden lg:block">
+        <div className="relative grid grid-cols-6 gap-4">
+          <motion.div
+            initial={{ scaleX: 0 }}
+            whileInView={{ scaleX: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1.1 }}
+            className="absolute top-4 col-span-6 h-px origin-left bg-gradient-to-r from-[#d4af37]/15 via-[#d4af37]/70 to-[#d4af37]/15"
+          />
+
+          {processSteps.map((step, index) => {
+            const isActive = activeIndex === index
+
+            return (
+              <button
+                key={step.step}
+                type="button"
+                onClick={() => setActiveIndex(index)}
+                onMouseEnter={() => setActiveIndex(index)}
+                className="group relative text-left"
+              >
+                <motion.div
+                  animate={{
+                    scale: isActive ? 1.15 : 1,
+                    boxShadow: isActive
+                      ? '0 0 24px rgba(212,175,55,0.35)'
+                      : '0 0 0px rgba(212,175,55,0)',
+                  }}
+                  transition={{ type: 'spring', stiffness: 260, damping: 20 }}
+                  className={cn(
+                    'h-8 w-8 rounded-full border bg-[#090909] transition-colors',
+                    isActive
+                      ? 'border-[#d4af37] bg-[#d4af37]/15'
+                      : 'border-white/20 group-hover:border-[#d4af37]/50',
+                  )}
+                />
+                <p
+                  className={cn(
+                    'mt-6 font-mono text-[10px] uppercase tracking-[0.2em] transition-colors',
+                    isActive ? 'text-[#d4af37]' : 'text-[#F1E9DB]/40 group-hover:text-[#F1E9DB]/65',
+                  )}
+                >
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3
+                  className={cn(
+                    'mt-2 text-lg font-semibold transition-colors md:text-xl',
+                    isActive ? 'text-[#F1E9DB]' : 'text-[#F1E9DB]/65 group-hover:text-[#F1E9DB]',
+                  )}
+                >
+                  {step.step}
+                </h3>
+              </button>
+            )
+          })}
         </div>
       </SectionReveal>
 
@@ -150,7 +196,7 @@ export function AboutProcessSection() {
         </AnimatePresence>
       </SectionReveal>
 
-      <div className="mt-6 flex flex-wrap gap-2">
+      <div className="mt-6 hidden flex-wrap gap-2 lg:flex">
         {processSteps.map((step, index) => (
           <button
             key={`pill-${step.step}`}

@@ -11,6 +11,7 @@ import { cn } from '@/lib/utils'
 
 type TechnologySectionProps = {
   limit?: number
+  showViewAll?: boolean
 }
 
 const pillars = [
@@ -26,7 +27,7 @@ const categoryAccent: Record<string, string> = {
   Analytics: 'border-[#5fd4a4]/30 text-[#5fd4a4]',
 }
 
-export function TechnologySection({ limit }: TechnologySectionProps) {
+export function TechnologySection({ limit, showViewAll = true }: TechnologySectionProps) {
   const baseItems = useMemo(
     () => (limit ? technologies.slice(0, limit) : [...technologies]),
     [limit],
@@ -147,13 +148,15 @@ export function TechnologySection({ limit }: TechnologySectionProps) {
         </div>
 
         <SectionReveal delay={0.1} className="mt-10">
-          <Link
-            href="/technology"
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/45 transition-colors hover:text-[#d4af37]"
-          >
-            View full technology stack
-            <ArrowUpRight size={14} />
-          </Link>
+          {showViewAll && (
+            <Link
+              href="/technology"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/45 transition-colors hover:text-[#d4af37]"
+            >
+              View full technology stack
+              <ArrowUpRight size={14} />
+            </Link>
+          )}
         </SectionReveal>
       </div>
     </section>

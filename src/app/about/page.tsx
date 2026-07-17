@@ -2,8 +2,8 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { AboutProcessSection } from '@/components/site/about-process-section'
+import { DigitalImpactStatsSection } from '@/components/site/digital-impact-stats-section'
 import { PageShell } from '@/components/site/page-shell'
-import { stats } from '@/lib/site-data'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
@@ -59,27 +59,16 @@ export default function AboutPage() {
           </div>
 
           <AboutProcessSection />
+        </div>
+      </div>
 
-          <div className="mt-20 grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-            {stats.map((stat) => (
-              <div
-                key={stat.label}
-                className="rounded-3xl border border-white/10 bg-white/[0.02] p-8"
-              >
-                <p className="text-5xl font-bold tracking-[-0.03em]">
-                  {stat.value}
-                  {stat.suffix}
-                </p>
-                <p className="mt-3 font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/60">
-                  {stat.label}
-                </p>
-              </div>
-            ))}
-          </div>
+      <DigitalImpactStatsSection showViewAll={false} />
 
+      <div className="section-padding pb-32">
+        <div className="content-grid">
           <Link
             href="/contact"
-            className="group mt-16 inline-flex items-center gap-3 rounded-full border border-[#F1E9DB]/25 px-6 py-4 text-base font-medium transition-all hover:border-[#d4af37]/50 hover:bg-[#F1E9DB]/5"
+            className="group inline-flex items-center gap-3 rounded-full border border-[#F1E9DB]/25 px-6 py-4 text-base font-medium transition-all hover:border-[#d4af37]/50 hover:bg-[#F1E9DB]/5"
           >
             Start a Collaboration
             <ArrowUpRight size={18} className="transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
