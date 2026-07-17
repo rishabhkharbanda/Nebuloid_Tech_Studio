@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -55,13 +56,16 @@ export function Navbar() {
       <div className="content-grid pl-4 pr-6 md:pl-6 md:pr-10 lg:pl-8 lg:pr-16">
         <div className="flex h-20 items-center justify-between">
           <Link href="/" className="inline-flex shrink-0 items-center gap-3">
-            <span className="leading-tight">
-              <span className="block text-[11px] font-bold tracking-[0.12em] text-[#F1E9DB] sm:text-xs md:text-sm">
-                NEBULOID TECH STUDIO LLP
-              </span>
-              <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#F1E9DB]/55 md:text-[10px]">
-                Digital Experience & Event Technology
-              </span>
+            <Image
+              src="/assets/nebuloid-logo-mark.png"
+              alt="Nebuloid Tech Studio"
+              width={56}
+              height={56}
+              className="h-11 w-11 shrink-0 object-contain md:h-12 md:w-12"
+              priority
+            />
+            <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-[#F1E9DB]/55 md:text-[10px]">
+              Digital Experience & Event Technology
             </span>
           </Link>
 
