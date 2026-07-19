@@ -5,28 +5,27 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef, useState } from 'react'
 
 const FRAME_COUNT = 240
-const SCROLL_VH = 280
-const FRAME_BASE = '/assets/scroll-sequence/ezgif-frame-'
-const MAX_DPR = 2
+const SCROLL_VH = 240
+const FRAME_BASE = '/assets/scroll-sequence-web/ezgif-frame-'
+const MAX_CANVAS_WIDTH = 1600
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
 }
 
-type CanvasMetrics = {
-  pixelWidth: number
-  pixelHeight: number
-}
+type FrameSource = HTMLImageElement | ImageBitmap
 
-function getCanvasMetrics(canvas: HTMLCanvasElement): CanvasMetrics | null {
+function getCanvasMetrics(canvas: HTMLCanvasElement) {
   const parent = canvas.parentElement
   if (!parent) return null
 
-  const dpr = Math.min(window.devicePixelRatio || 1, MAX_DPR)
   const cssWidth = parent.clientWidth
   const cssHeight = parent.clientHeight
-  const pixelWidth = Math.max(1, Math.round(cssWidth * dpr))
-  const pixelHeight = Math.max(1, Math.round(cssHeight * dpr))
+  if (cssWidth <= 0 || cssHeight <= 0) return null
+
+  const dpr = Math.min(window.devicePixelRatio || 1, cssWidth > 900 ? 1.5 : 1.25)
+  const pixelWidth = Math.max(1, Math.min(MAX_CANVAS_WIDTH, Math.round(cssWidth * dpr)))
+  const pixelHeight = Math.max(1, Math.round(pixelWidth * (cssHeight / cssWidth)))
 
   if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
     canvas.width = pixelWidth
@@ -40,11 +39,13 @@ function getCanvasMetrics(canvas: HTMLCanvasElement): CanvasMetrics | null {
 
 function drawCover(
   ctx: CanvasRenderingContext2D,
-  image: HTMLImageElement,
+  image: FrameSource,
   pixelWidth: number,
   pixelHeight: number,
 ) {
-  const imgRatio = image.naturalWidth / image.naturalHeight
+  const sourceWidth = 'naturalWidth' in image ? image.naturalWidth : image.width
+  const sourceHeight = 'naturalHeight' in image ? image.naturalHeight : image.height
+  const imgRatio = sourceWidth / sourceHeight
   const canvasRatio = pixelWidth / pixelHeight
 
   let drawWidth: number
@@ -54,32 +55,52 @@ function drawCover(
 
   if (imgRatio > canvasRatio) {
     drawHeight = pixelHeight
-    drawWidth = Math.round(image.naturalWidth * (pixelHeight / image.naturalHeight))
+    drawWidth = Math.round(sourceWidth * (pixelHeight / sourceHeight))
     offsetX = Math.round((pixelWidth - drawWidth) / 2)
     offsetY = 0
   } else {
     drawWidth = pixelWidth
-    drawHeight = Math.round(image.naturalHeight * (pixelWidth / image.naturalWidth))
+    drawHeight = Math.round(sourceHeight * (pixelWidth / sourceWidth))
     offsetX = 0
     offsetY = Math.round((pixelHeight - drawHeight) / 2)
   }
 
   ctx.setTransform(1, 0, 0, 1, 0, 0)
   ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
+  ctx.imageSmoothingQuality = 'medium'
   ctx.clearRect(0, 0, pixelWidth, pixelHeight)
   ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
+}
+
+async function loadFrame(index: number): Promise<FrameSource> {
+  const src = frameSrc(index)
+
+  if (typeof createImageBitmap === 'function') {
+    const response = await fetch(src)
+    if (!response.ok) throw new Error(`Failed to load frame ${index + 1}`)
+    const blob = await response.blob()
+    return createImageBitmap(blob)
+  }
+
+  return new Promise<HTMLImageElement>((resolve, reject) => {
+    const img = new Image()
+    img.decoding = 'async'
+    img.onload = () => resolve(img)
+    img.onerror = () => reject(new Error(`Failed to load frame ${index + 1}`))
+    img.src = src
+  })
 }
 
 export function AppleScrollSequence() {
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const imagesRef = useRef<HTMLImageElement[]>([])
+  const framesRef = useRef<FrameSource[]>([])
   const frameRef = useRef(-1)
   const triggerRef = useRef<ScrollTrigger | null>(null)
   const pendingFrameRef = useRef(0)
   const rafRef = useRef(0)
+  const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [progress, setProgress] = useState(0)
 
@@ -93,23 +114,27 @@ export function AppleScrollSequence() {
 
     let cancelled = false
     let resizeObserver: ResizeObserver | null = null
+    ctxRef.current = canvas.getContext('2d', {
+      alpha: false,
+      desynchronized: true,
+    })
 
     const renderFrame = (index: number, force = false) => {
-      const images = imagesRef.current
-      const ctx = canvas.getContext('2d', { alpha: false })
-      if (!ctx || images.length === 0) return
+      const frames = framesRef.current
+      const ctx = ctxRef.current
+      if (!ctx || frames.length === 0) return
 
       const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
       if (!force && clamped === frameRef.current) return
 
-      const image = images[clamped]
-      if (!image?.complete) return
+      const frame = frames[clamped]
+      if (!frame) return
 
       const metrics = getCanvasMetrics(canvas)
       if (!metrics) return
 
       frameRef.current = clamped
-      drawCover(ctx, image, metrics.pixelWidth, metrics.pixelHeight)
+      drawCover(ctx, frame, metrics.pixelWidth, metrics.pixelHeight)
     }
 
     const scheduleFrame = (index: number) => {
@@ -128,15 +153,14 @@ export function AppleScrollSequence() {
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: `+=${SCROLL_VH}%`,
-        pin: pin,
+        end: 'bottom bottom',
+        pin,
         pinSpacing: true,
         scrub: true,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          const index = Math.round(self.progress * (FRAME_COUNT - 1))
-          scheduleFrame(index)
+          scheduleFrame(Math.round(self.progress * (FRAME_COUNT - 1)))
         },
         onLeave: () => {
           pin.style.visibility = 'hidden'
@@ -153,35 +177,31 @@ export function AppleScrollSequence() {
     }
 
     const preloadFrames = async () => {
-      const images: HTMLImageElement[] = new Array(FRAME_COUNT)
+      const frames: FrameSource[] = new Array(FRAME_COUNT)
       let loaded = 0
-
-      const loadImage = (index: number) =>
-        new Promise<void>((resolve, reject) => {
-          const img = new Image()
-          img.decoding = 'async'
-          img.onload = () => {
-            images[index] = img
-            loaded += 1
-            if (!cancelled) setProgress(Math.round((loaded / FRAME_COUNT) * 100))
-            resolve()
-          }
-          img.onerror = () => reject(new Error(`Failed to load frame ${index + 1}`))
-          img.src = frameSrc(index)
-        })
+      let lastProgress = -1
 
       try {
-        const batchSize = 24
+        const batchSize = 16
         for (let start = 0; start < FRAME_COUNT; start += batchSize) {
           const batch = Array.from(
             { length: Math.min(batchSize, FRAME_COUNT - start) },
-            (_, offset) => loadImage(start + offset),
+            async (_, offset) => {
+              const index = start + offset
+              frames[index] = await loadFrame(index)
+              loaded += 1
+              const nextProgress = Math.round((loaded / FRAME_COUNT) * 100)
+              if (!cancelled && nextProgress !== lastProgress && nextProgress % 5 === 0) {
+                lastProgress = nextProgress
+                setProgress(nextProgress)
+              }
+            },
           )
           await Promise.all(batch)
           if (cancelled) return
         }
 
-        imagesRef.current = images
+        framesRef.current = frames
         setupScroll()
       } catch {
         if (!cancelled) setStatus('error')
@@ -209,6 +229,12 @@ export function AppleScrollSequence() {
       triggerRef.current?.kill()
       resizeObserver?.disconnect()
       window.removeEventListener('resize', onResize)
+      framesRef.current.forEach((frame) => {
+        if (typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
+          frame.close()
+        }
+      })
+      framesRef.current = []
     }
   }, [])
 
@@ -222,12 +248,11 @@ export function AppleScrollSequence() {
       <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full transform-gpu"
+          className="absolute inset-0 h-full w-full transform-gpu will-change-transform"
           aria-hidden={status !== 'ready'}
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/45 via-transparent to-[#090909]/55" />
-        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,transparent_55%,#090909_100%)] opacity-80" />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/40 via-transparent to-[#090909]/50" />
 
         {status === 'loading' && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/85">
