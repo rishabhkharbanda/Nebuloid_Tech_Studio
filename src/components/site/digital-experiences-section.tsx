@@ -172,13 +172,27 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
                     {'gallery' in project && project.gallery.length > 0 && (
                       <div className="mt-10">
                         <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]">
-                          AI Selfie Booth Samples
+                          {'galleryTitle' in project
+                            ? project.galleryTitle
+                            : 'Gallery'}
                         </p>
-                        <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5">
+                        <div
+                          className={
+                            'galleryAspect' in project &&
+                            project.galleryAspect === 'video'
+                              ? 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3'
+                              : 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5'
+                          }
+                        >
                           {project.gallery.map((item) => (
                             <div
                               key={item.src}
-                              className="relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10"
+                              className={
+                                'galleryAspect' in project &&
+                                project.galleryAspect === 'video'
+                                  ? 'relative aspect-video overflow-hidden rounded-xl border border-white/10'
+                                  : 'relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10'
+                              }
                             >
                               <Image
                                 src={item.src}

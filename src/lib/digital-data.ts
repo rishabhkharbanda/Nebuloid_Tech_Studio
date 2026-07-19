@@ -56,6 +56,8 @@ export const digitalProjects = [
     overview:
       'Nebuloid partnered with the National Book Trust (NBT) to transform India\'s pavilion at FILBO into an engaging digital experience through AI-powered activations and interactive gaming. Visitors explored India\'s culture through immersive technology, making the pavilion more interactive, educational, and memorable.',
     image: '/assets/digital-experiences/filbo/filbo-hero.jpg',
+    galleryTitle: 'AI Selfie Booth',
+    galleryHeading: 'Branded AI-generated photos from the pavilion experience',
     gallery: [
       {
         src: '/assets/digital-experiences/filbo/heritage-taj-mahal.png',
@@ -135,6 +137,41 @@ export const digitalProjects = [
     overview:
       'Nebuloid designed and developed a complete digital experience ecosystem for Paras Dham Girnar that enhances visitor engagement through interactive technologies, immersive storytelling, digital platforms, and gamified experiences. The objective was to make the spiritual journey more engaging, informative, and memorable while preserving the sanctity of the destination.',
     image: '/assets/digital-experiences/paras-dham/paras-dham-hero.jpg',
+    galleryTitle: 'On-Ground Experiences',
+    galleryHeading: 'Interactive installations across the Paras Dham Girnar visitor journey',
+    galleryAspect: 'video' as const,
+    gallery: [
+      {
+        src: '/assets/digital-experiences/paras-dham/artificial-intelligence.jpg',
+        alt: 'Interactive AI touchscreen pillar with floral canopy at Paras Dham Girnar',
+        label: 'Artificial Intelligence',
+      },
+      {
+        src: '/assets/digital-experiences/paras-dham/immersive-projections.jpg',
+        alt: 'Mirrored infinity room with hanging sculptural spheres and neon light frames',
+        label: '360° Immersive Projections',
+      },
+      {
+        src: '/assets/digital-experiences/paras-dham/motion-sensor-games.jpg',
+        alt: 'Motion sensor game corridor with glowing panels and a central interactive screen',
+        label: 'Motion Sensor Games',
+      },
+      {
+        src: '/assets/digital-experiences/paras-dham/gesture-recognition.jpg',
+        alt: 'Word Wonderland gesture recognition exhibit with illuminated flowers and green turf',
+        label: 'Gesture Recognition',
+      },
+      {
+        src: '/assets/digital-experiences/paras-dham/augmented-reality.jpg',
+        alt: 'VR headset stations on white pedestals in front of a mural at Paras Dham Girnar',
+        label: 'Augmented Reality',
+      },
+      {
+        src: '/assets/digital-experiences/paras-dham/soundscapes-interactive-audio.jpg',
+        alt: 'Soundscape and interactive audio gallery with illuminated spiritual displays',
+        label: 'Soundscapes & Interactive Audio',
+      },
+    ],
     contribution: [
       'Interactive Visitor Experience Platform',
       'Interactive Gaming Experiences',
@@ -156,13 +193,14 @@ export const digitalProjects = [
         'Family & Kids Engagement',
       ],
       technologies: [
+        'Artificial Intelligence',
+        '360° Immersive Projections',
+        'Motion Sensor Games',
+        'Gesture Recognition Technology',
+        'Augmented Reality',
+        'Soundscapes & Interactive Audios',
         'Interactive Touch Interfaces',
-        'Smart Visitor Information System',
         'Digital Storytelling',
-        'Multimedia Experiences',
-        'Interactive Learning Modules',
-        'QR Code Experiences',
-        'Digital Knowledge Hub',
       ],
     },
     techStack: [

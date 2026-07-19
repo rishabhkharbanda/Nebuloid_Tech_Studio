@@ -25,6 +25,8 @@ type DetailLayoutProps = {
   meta?: string[]
   gallery?: DetailGalleryItem[]
   galleryTitle?: string
+  galleryHeading?: string
+  galleryAspect?: 'portrait' | 'video'
 }
 
 export function DetailLayout({
@@ -39,7 +41,15 @@ export function DetailLayout({
   meta = [],
   gallery = [],
   galleryTitle = 'Sample Outputs',
+  galleryHeading = 'Branded AI-generated photos from the pavilion experience',
+  galleryAspect = 'portrait',
 }: DetailLayoutProps) {
+  const galleryAspectClass =
+    galleryAspect === 'video' ? 'aspect-video' : 'aspect-[4/5]'
+  const galleryGridClass =
+    galleryAspect === 'video'
+      ? 'mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
+      : 'mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
   return (
     <article className="section-padding pb-32">
       <div className="content-grid">
@@ -146,21 +156,21 @@ export function DetailLayout({
               {galleryTitle}
             </p>
             <h2 className="mt-4 max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-semibold tracking-[-0.03em]">
-              Branded AI-generated photos from the pavilion experience
+              {galleryHeading}
             </h2>
-            <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
+            <div className={galleryGridClass}>
               {gallery.map((item) => (
                 <figure
                   key={item.src}
                   className="overflow-hidden rounded-2xl border border-white/10 bg-[#0c0c0c]"
                 >
-                  <div className="relative aspect-[4/5]">
+                  <div className={`relative ${galleryAspectClass}`}>
                     <Image
                       src={item.src}
                       alt={item.alt}
                       fill
                       className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 20vw"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                   </div>
                   {item.label && (
