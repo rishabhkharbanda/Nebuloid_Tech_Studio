@@ -11,37 +11,53 @@ type PageProps = {
 }
 
 function buildSections(project: NonNullable<ReturnType<typeof getDigitalProjectBySlug>>) {
-  const sections: { title: string; content: string }[] = []
+  const sections: { title: string; items: string[] }[] = []
   const interactive =
     'interactiveExperiences' in project ? project.interactiveExperiences : undefined
+  const hasGallery = 'gallery' in project && project.gallery.length > 0
 
   if (interactive) {
     if ('aiBooth' in interactive) {
       sections.push({
         title: 'AI Selfie Booth',
-        content: interactive.aiBooth.join(' · '),
+        items: [...interactive.aiBooth],
       })
     }
     if ('games' in interactive) {
       sections.push({
         title: 'Interactive Games',
-        content: interactive.games.join(' · '),
+        items: [...interactive.games],
       })
     }
-    if ('technologies' in interactive) {
+    // Skip technologies when the gallery already labels each installation —
+    // avoids repeating the same capability names twice on the page.
+    if ('technologies' in interactive && !hasGallery) {
       sections.push({
         title: 'Interactive Technologies',
-        content: interactive.technologies.join(' · '),
+        items: [...interactive.technologies],
       })
     }
   }
 
   sections.push({
     title: 'Business Impact',
-    content: project.impact.join(' · '),
+    items: [...project.impact],
   })
 
   return sections
+}
+
+function buildHighlights(project: NonNullable<ReturnType<typeof getDigitalProjectBySlug>>) {
+  const hasGallery = 'gallery' in project && project.gallery.length > 0
+  if (!hasGallery) return [...project.contribution]
+
+  // Drop deliverables that merely restate gallery-covered tech / games.
+  const skip = new Set([
+    'interactive gaming experiences',
+    'gamification',
+    'touchscreen experience design',
+  ])
+  return project.contribution.filter((item) => !skip.has(item.toLowerCase()))
 }
 
 export async function generateStaticParams() {
@@ -88,7 +104,7 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
         image={project.image}
         intro={project.overview}
         sections={buildSections(project)}
-        highlights={[...project.contribution]}
+        highlights={buildHighlights(project)}
         meta={[...project.techStack]}
         gallery={'gallery' in project ? [...project.gallery] : undefined}
         galleryTitle={
