@@ -1,6 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowLeft, ArrowUpRight } from 'lucide-react'
+import { DetailGalleryCarousel } from '@/components/site/detail-gallery-carousel'
 
 type DetailSection = {
   title: string
@@ -48,8 +49,9 @@ export function DetailLayout({
     galleryAspect === 'video' ? 'aspect-video' : 'aspect-[4/5]'
   const galleryGridClass =
     galleryAspect === 'video'
-      ? 'mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
-      : 'mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
+      ? 'mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3'
+      : 'mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5'
+
   return (
     <article className="section-padding pb-32">
       <div className="content-grid">
@@ -158,6 +160,9 @@ export function DetailLayout({
             <h2 className="mt-4 max-w-3xl text-[clamp(1.75rem,4vw,3rem)] font-semibold tracking-[-0.03em]">
               {galleryHeading}
             </h2>
+
+            <DetailGalleryCarousel items={gallery} aspect={galleryAspect} />
+
             <div className={galleryGridClass}>
               {gallery.map((item) => (
                 <figure
