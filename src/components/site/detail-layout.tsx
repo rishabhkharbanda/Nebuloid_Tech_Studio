@@ -98,19 +98,7 @@ export function DetailLayout({
           {meta.length > 0 && <ChipList items={meta} />}
         </header>
 
-        <div className="relative mt-14 aspect-[16/10] overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c0c] md:mt-16">
-          <Image
-            src={image}
-            alt={title}
-            fill
-            className="object-cover"
-            sizes="100vw"
-            priority
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-        </div>
-
-        {hasGallery && (
+        {hasGallery ? (
           <section className="mt-14 md:mt-16">
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
               {galleryTitle}
@@ -120,6 +108,18 @@ export function DetailLayout({
             </h2>
             <DetailGalleryCarousel items={gallery} aspect={galleryAspect} />
           </section>
+        ) : (
+          <div className="relative mt-14 aspect-[16/10] overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c0c] md:mt-16">
+            <Image
+              src={image}
+              alt={title}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+          </div>
         )}
 
         <div className="mt-16 grid gap-10 border-t border-white/10 pt-14 md:mt-20 md:grid-cols-12 md:gap-12 md:pt-16">

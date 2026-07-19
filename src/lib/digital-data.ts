@@ -60,11 +60,6 @@ export const digitalProjects = [
     galleryHeading: 'Branded AI-generated photos from the pavilion experience',
     gallery: [
       {
-        src: '/assets/digital-experiences/filbo/heritage-taj-mahal.png',
-        alt: 'AI selfie booth output — visitor at the Taj Mahal with FILBO branding',
-        label: 'Heritage · Taj Mahal',
-      },
-      {
         src: '/assets/digital-experiences/filbo/wedding-theme.png',
         alt: 'AI selfie booth output — visitor in traditional Indian wedding attire',
         label: 'Cultural · Wedding',
@@ -136,7 +131,7 @@ export const digitalProjects = [
     title: 'Transforming a Sacred Destination Through Interactive Digital Experiences',
     overview:
       'Nebuloid designed and developed a complete digital experience ecosystem for Paras Dham Girnar that enhances visitor engagement through interactive technologies, immersive storytelling, digital platforms, and gamified experiences. The objective was to make the spiritual journey more engaging, informative, and memorable while preserving the sanctity of the destination.',
-    image: '/assets/digital-experiences/paras-dham/paras-dham-hero.jpg',
+    image: '/assets/digital-experiences/paras-dham/artificial-intelligence.jpg',
     galleryTitle: 'On-Ground Experiences',
     galleryHeading: 'Interactive installations across the Paras Dham Girnar visitor journey',
     galleryAspect: 'video' as const,
