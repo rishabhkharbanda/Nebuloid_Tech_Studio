@@ -56,10 +56,10 @@ export default function TermsPage() {
               <p className="mt-4">
                 For questions about these terms, contact{' '}
                 <a
-                  href="mailto:nebuloidtechstudio1@gmail.com"
+                  href="mailto:NebuloidTechStudio@gmail.com"
                   className="text-[#d4af37] hover:underline"
                 >
-                  nebuloidtechstudio1@gmail.com
+                  NebuloidTechStudio@gmail.com
                 </a>
                 .
               </p>

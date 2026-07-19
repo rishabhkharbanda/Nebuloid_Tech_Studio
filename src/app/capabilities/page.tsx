@@ -7,7 +7,7 @@ import { createPageMetadata } from '@/lib/seo'
 export const metadata: Metadata = createPageMetadata({
   title: 'Digital Experience Capabilities',
   description:
-    'Explore Nebuloid capabilities — interactive experience platforms, AI selfie booths, touchscreen kiosks, government digital platforms, visitor engagement systems, and more.',
+    'Explore Nebuloid capabilities — interactive platforms, AI visitor experiences, touchscreen kiosks, analytics dashboards, and enterprise digital systems.',
   path: '/capabilities',
   keywords: [
     'digital experience capabilities',

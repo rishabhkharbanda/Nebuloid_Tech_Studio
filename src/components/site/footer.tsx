@@ -1,8 +1,50 @@
 'use client'
 
 import Link from 'next/link'
-import { ArrowUpRight, AtSign, Globe, Send } from 'lucide-react'
+import { ArrowUpRight } from 'lucide-react'
 import { footerLinks } from '@/lib/site-data'
+import { siteConfig } from '@/lib/seo'
+
+const socialLinks = [
+  {
+    label: 'Instagram',
+    href: siteConfig.social.instagram,
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="1.8">
+        <rect x="3" y="3" width="18" height="18" rx="5" />
+        <circle cx="12" cy="12" r="4" />
+        <circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none" />
+      </svg>
+    ),
+  },
+  {
+    label: 'Facebook',
+    href: siteConfig.social.facebook,
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+        <path d="M14 9h3V6h-3c-2.2 0-4 1.8-4 4v2H8v3h2v7h3v-7h2.6l.4-3H13v-2c0-.6.4-1 1-1Z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'LinkedIn',
+    href: siteConfig.social.linkedin,
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+        <path d="M6.5 9.5H3.7V20h2.8V9.5ZM5.1 4a1.65 1.65 0 1 0 0 3.3A1.65 1.65 0 0 0 5.1 4ZM20.3 20h-2.8v-5.4c0-1.5-.5-2.5-1.8-2.5-.9 0-1.5.6-1.7 1.2-.1.2-.1.5-.1.8V20H11V9.5h2.7v1.4c.4-.7 1.3-1.7 3.1-1.7 2.3 0 3.5 1.5 3.5 4.4V20Z" />
+      </svg>
+    ),
+  },
+  {
+    label: 'X',
+    href: siteConfig.social.x,
+    icon: (
+      <svg viewBox="0 0 24 24" className="h-4 w-4" fill="currentColor">
+        <path d="M17.6 4H20l-6.3 7.2L21 20h-5.3l-4.2-5.3L6.3 20H4l6.7-7.7L3.4 4H8.8l3.8 4.9L17.6 4Zm-1 14.3h1.5L7.5 5.6H6L16.6 18.3Z" />
+      </svg>
+    ),
+  },
+] as const
 
 export function Footer() {
   const scrollToTop = () => {
@@ -60,28 +102,19 @@ export function Footer() {
               <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#d4af37]">
                 Connect
               </p>
-              <div className="mt-6 flex items-center gap-3">
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
-                >
-                  <AtSign size={16} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="LinkedIn"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
-                >
-                  <Send size={16} />
-                </a>
-                <a
-                  href="#"
-                  aria-label="Website"
-                  className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-colors hover:border-[#F1E9DB]/50 hover:text-[#F1E9DB]"
-                >
-                  <Globe size={16} />
-                </a>
+              <div className="mt-6 flex flex-wrap items-center gap-3">
+                {socialLinks.map((link) => (
+                  <a
+                    key={link.label}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label={link.label}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-[#F1E9DB]/20 text-[#F1E9DB]/70 transition-all duration-300 hover:-translate-y-0.5 hover:border-[#d4af37]/50 hover:text-[#F1E9DB]"
+                  >
+                    {link.icon}
+                  </a>
+                ))}
               </div>
               <p className="mt-6 text-sm leading-relaxed text-[#F1E9DB]/45">
                 For project inquiries, visit our{' '}

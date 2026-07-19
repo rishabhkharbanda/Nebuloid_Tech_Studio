@@ -174,8 +174,7 @@ export const services = [
     detail:
       'Event websites, mobile apps, venue navigation, and digital companion experiences — unified under one ecosystem.',
     tags: ['Event Web', 'Mobile App', 'Navigation', 'Live Updates'],
-    image:
-      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/digital-signage.jpg',
   },
   {
     id: '06',
@@ -186,8 +185,7 @@ export const services = [
     detail:
       'Lead capture systems, live dashboards, and post-event analytics that translate engagement into actionable insight.',
     tags: ['Dashboards', 'Lead Capture', 'Analytics', 'Reporting'],
-    image:
-      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/analytics-event-intelligence.jpg',
   },
 ] as const
 
@@ -195,16 +193,16 @@ export const projects = [
   {
     slug: 'ai-photo-booth-experience',
     title: 'AI Photo Booth Experience',
-    category: 'AI Experience',
+    category: 'Live Activation',
     tech: 'Vision AI · Instant Sharing · Custom Branding',
-    image: '/assets/site-content/ai-photo-booth-event.jpg',
+    image: '/assets/site-content/ai-photo-booth-event.png',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
     slug: 'ar-vr-experiences',
     title: 'Immersive Virtual Experiences',
-    category: 'AR / VR Experiences',
+    category: 'Immersive Deployment',
     tech: 'AR Filters · VR Simulations · Interactive Demos',
     image: '/assets/site-content/vr-technology.jpg',
     aspect: 'aspect-[4/5]',
@@ -213,7 +211,7 @@ export const projects = [
   {
     slug: 'exhibition-booth-ecosystem',
     title: 'Event Engagement Games',
-    category: 'Interactive Games',
+    category: 'On-ground Engagement',
     tech: 'Quiz · Spin Wheel · Leaderboard · Touch Games',
     image: '/assets/site-content/interactive-installations.jpg',
     aspect: 'aspect-[4/5]',
@@ -222,7 +220,7 @@ export const projects = [
   {
     slug: 'annual-awards-night',
     title: 'Creative Event Design',
-    category: 'Event Graphics',
+    category: 'Live Creative Production',
     tech: 'Stage Graphics · LED Content · Signage · Branding',
     image: '/assets/site-content/event-branding-creative-production.jpg',
     aspect: 'aspect-[4/5]',
@@ -231,18 +229,17 @@ export const projects = [
   {
     slug: 'venue-navigation-system',
     title: 'Venue Navigation System',
-    category: 'Spatial Experience',
-    tech: 'Wayfinding · Maps · Digital Layer',
-    image:
-      'https://images.unsplash.com/photo-1524661139772-096332aef623?auto=format&fit=crop&w=900&q=80',
+    category: 'Deployed Wayfinding',
+    tech: 'Live Venue Maps · Digital Wayfinding · On-site Guidance',
+    image: '/assets/site-content/venue-navigation.jpg',
     aspect: 'aspect-[4/5]',
     span: '',
   },
   {
     slug: 'registration-command-center',
     title: 'Registration Command Center',
-    category: 'Guest Journey',
-    tech: 'QR Check-in · Badges · Kiosks',
+    category: 'Live Guest Operations',
+    tech: 'Badge Printing · Guest Flow · Arrival Ops',
     image: '/assets/site-content/registration-guest-journey.jpg',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
@@ -250,10 +247,9 @@ export const projects = [
   {
     slug: 'event-intelligence-dashboard',
     title: 'Event Intelligence Dashboard',
-    category: 'Analytics & Insights',
-    tech: 'Live Data · Lead Capture · Reports',
-    image:
-      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
+    category: 'Live Operations Insight',
+    tech: 'Real-time Metrics · Lead Capture · Post-event Reports',
+    image: '/assets/site-content/event-intelligence-dashboard.jpg',
     aspect: 'aspect-[16/10]',
     span: 'sm:col-span-2 xl:col-span-2',
   },
@@ -346,23 +342,21 @@ export const technologies = [
     title: 'Venue Navigation',
     category: 'Digital',
     tagline: 'Wayfinding systems that keep audiences moving effortlessly.',
-    image: '/assets/site-content/touchscreen-kiosk.webp',
+    image: '/assets/site-content/venue-navigation.jpg',
   },
   {
     slug: 'event-websites',
     title: 'Event Websites',
     category: 'Digital',
     tagline: 'Digital hubs for your event before, during, and after.',
-    image:
-      'https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/digital-signage.jpg',
   },
   {
     slug: 'mobile-applications',
     title: 'Mobile Applications',
     category: 'Digital',
     tagline: 'Companion apps that extend the experience into every pocket.',
-    image:
-      'https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/touchscreen-kiosk.webp',
   },
   {
     slug: 'digital-signage',
@@ -376,24 +370,21 @@ export const technologies = [
     title: 'Interactive Games',
     category: 'Interactive',
     tagline: 'Touch-driven games that turn visitors into participants.',
-    image:
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/interactive-installations.jpg',
   },
   {
     slug: 'live-dashboards',
-    title: 'Live Dashboards',
+    title: 'Live Dashboards & Lead Capture',
     category: 'Analytics',
     tagline: 'Real-time intelligence for operations and engagement teams.',
-    image:
-      'https://images.unsplash.com/photo-1551281044-8b9a7bda51d4?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/live-dashboard-lead-capture.jpg',
   },
   {
     slug: 'lead-capture',
     title: 'Lead Capture',
     category: 'Analytics',
     tagline: 'Structured data collection woven into the experience flow.',
-    image:
-      'https://images.unsplash.com/photo-1556745750-6826e973b173?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/analytics-event-intelligence.jpg',
   },
   {
     slug: 'motion-graphics',
@@ -520,12 +511,12 @@ export const faqs = [
 
 export const contactDetails = {
   address: {
-    lines: ['H no. 944, Block - C, Sushant Lok 1', 'Gurugram, Haryana, India 122001'],
+    lines: ['House No. 944, Block - C, Sushant Lok 1', 'Gurugram, Haryana, India 122001'],
   },
   phone: '+91 7303922260',
   phoneHref: 'tel:+917303922260',
-  email: 'nebuloidtechstudio1@gmail.com',
-  emailHref: 'mailto:nebuloidtechstudio1@gmail.com',
+  email: 'NebuloidTechStudio@gmail.com',
+  emailHref: 'mailto:NebuloidTechStudio@gmail.com',
 } as const
 
 export const footerLinks = [

@@ -7,13 +7,13 @@ import { createPageMetadata } from '@/lib/seo'
 export const metadata: Metadata = createPageMetadata({
   title: 'Digital Experiences We\'ve Delivered',
   description:
-    'Explore digital experience projects by Nebuloid — interactive visitor platforms, AI-powered event activations, touchscreen kiosks, government digital platforms, and immersive engagement systems.',
+    'Explore Nebuloid digital projects — BharatTex, FILBo, and Paras Dham — interactive platforms, AI activations, and immersive visitor experiences.',
   path: '/digital-experiences',
   keywords: [
     'digital experience studio India',
+    'BharatTex digital experience',
+    'FILBo AI experience',
     'interactive visitor experience',
-    'AI event technology',
-    'government digital platform',
     'touchscreen kiosk development',
   ],
 })
@@ -33,7 +33,7 @@ export default function DigitalExperiencesIndexPage() {
       <ListingPage
         label="Digital Experiences"
         title="Digital experiences we've delivered."
-        description="From AI-powered event activations and interactive visitor engagement to enterprise websites and digital transformation — technology that creates memorable experiences."
+        description="BharatTex, FILBo, and Paras Dham — real deployments where Nebuloid technology shaped visitor journeys on the ground."
         items={items}
       />
     </PageShell>

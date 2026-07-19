@@ -5,14 +5,12 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import {
   BarChart3,
-  Bot,
   Cpu,
   Gamepad2,
   Globe,
   Layers,
   Layout,
   Monitor,
-  QrCode,
   Sparkles,
   Zap,
 } from 'lucide-react'
@@ -23,7 +21,6 @@ import { cn } from '@/lib/utils'
 
 const iconMap: Record<string, LucideIcon> = {
   'interactive-experience-platforms': Layers,
-  'ai-selfie-booths': Bot,
   'ai-powered-visitor-experiences': Sparkles,
   'interactive-gaming-solutions': Gamepad2,
   'touchscreen-kiosks': Monitor,
@@ -32,11 +29,9 @@ const iconMap: Record<string, LucideIcon> = {
   'event-technology': Zap,
   'digital-storytelling': Sparkles,
   'visitor-engagement-systems': Monitor,
-  'qr-code-experiences': QrCode,
   'analytics-dashboards': BarChart3,
   'cms-development': Layout,
   'api-integrations': Cpu,
-  'performance-optimization': Zap,
 }
 
 type DigitalSolutionsSectionProps = {

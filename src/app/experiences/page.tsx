@@ -8,12 +8,12 @@ import { createPageMetadata } from '@/lib/seo'
 export const metadata: Metadata = createPageMetadata({
   title: 'Featured Event Experiences',
   description:
-    'Explore corporate event experiences by Nebuloid — conferences, brand activations, AI installations, registration systems, and complete event ecosystems.',
+    'Explore deployed Nebuloid experiences — live AI activations, venue navigation, registration operations, and event intelligence from real-world executions.',
   path: '/experiences',
   keywords: [
     'corporate event portfolio',
-    'conference experience examples',
-    'brand activation case studies',
+    'event technology case studies',
+    'deployed event experiences',
   ],
 })
 
@@ -24,7 +24,9 @@ export default function ExperiencesIndexPage() {
       href: `/experiences/${project.slug}`,
       title: project.title,
       category: project.category,
-      description: details?.intro ?? project.tech,
+      description:
+        details?.intro ??
+        `${project.tech} — a live deployment crafted for real audiences and real venues.`,
       image: project.image,
       meta: project.tech,
     }
@@ -33,9 +35,9 @@ export default function ExperiencesIndexPage() {
   return (
     <PageShell>
       <ListingPage
-        label="Featured Experiences"
-        title="Moments we designed, built, and brought to life."
-        description="Corporate conferences, brand activations, AI experiences, and complete event ecosystems — each one crafted as a single seamless story."
+        label="Deployed Experiences"
+        title="Real implementations. Live audiences. Measurable outcomes."
+        description="Case studies and on-ground deployments — not service menus. Each experience shows how Nebuloid technology performed in the room."
         items={items}
       />
     </PageShell>

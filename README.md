@@ -62,9 +62,9 @@ src/
 
 **Nebuloid Tech Studio LLP**
 
-- **Address:** H no. 944, Block - C, Sushant Lok 1, Gurugram, Haryana, India 122001
+- **Address:** House No. 944, Block - C, Sushant Lok 1, Gurugram, Haryana, India 122001
 - **Phone:** +91 7303922260
-- **Email:** nebuloidtechstudio1@gmail.com
+- **Email:** NebuloidTechStudio@gmail.com
 
 ## License
 

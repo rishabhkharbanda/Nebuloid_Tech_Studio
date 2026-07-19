@@ -24,18 +24,20 @@ export const siteConfig = {
   ],
   defaultOgImage:
     'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1200&h=630&q=80',
-  email: 'nebuloidtechstudio1@gmail.com',
+  email: 'NebuloidTechStudio@gmail.com',
   phone: '+917303922260',
   address: {
-    streetAddress: 'H no. 944, Block - C, Sushant Lok 1',
+    streetAddress: 'House No. 944, Block - C, Sushant Lok 1',
     addressLocality: 'Gurugram',
     addressRegion: 'Haryana',
     postalCode: '122001',
     addressCountry: 'IN',
   },
   social: {
-    instagram: '',
-    linkedin: '',
+    instagram: 'https://www.instagram.com/nebuloidtechstudio',
+    facebook: 'https://www.facebook.com/nebuloidtechstudio',
+    linkedin: 'https://www.linkedin.com/company/nebuloid-tech-studio',
+    x: 'https://x.com/nebuloidtech',
   },
 } as const
 
