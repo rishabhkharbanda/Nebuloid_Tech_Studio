@@ -34,9 +34,9 @@ export const siteConfig = {
     addressCountry: 'IN',
   },
   social: {
-    instagram: 'https://www.instagram.com/nebuloidtechstudio',
+    instagram: 'https://www.instagram.com/nebuloidstudio/',
     facebook: 'https://www.facebook.com/nebuloidtechstudio',
-    linkedin: 'https://www.linkedin.com/company/nebuloid-tech-studio',
+    linkedin: 'https://in.linkedin.com/company/nebuloid-tech-studio-llp',
     x: 'https://x.com/nebuloidtech',
   },
 } as const

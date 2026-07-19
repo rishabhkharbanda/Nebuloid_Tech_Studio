@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { CustomCursor } from '@/components/site/custom-cursor'
@@ -98,6 +100,8 @@ export default function RootLayout({
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <SecretDaylightToggle />
         <CustomCursor />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   )
