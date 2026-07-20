@@ -227,6 +227,17 @@ html.day-theme .theme-preserve-dark {
   color: #f1e9db;
 }
 
+/* Keep hero display type light on carousel imagery in day mode */
+html.day-theme .theme-preserve-dark .text-display-filled {
+  color: #ffffff;
+}
+
+html.day-theme .theme-preserve-dark .text-outline-display {
+  color: transparent !important;
+  -webkit-text-fill-color: transparent !important;
+  -webkit-text-stroke-color: #ffffff;
+}
+
 html.day-theme ::selection {
   background: rgba(164, 126, 8, 0.22);
   color: #181712;
