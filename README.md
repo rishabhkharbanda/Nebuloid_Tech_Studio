@@ -38,6 +38,37 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+## Contact form → Google Sheet + email
+
+Submissions post to `/api/contact`, which:
+
+1. Emails **NebuloidTechStudio@gmail.com** (via the Apps Script webhook, and optionally Resend)
+2. Appends a row when `GOOGLE_SHEETS_WEBHOOK_URL` is set
+
+### Google Sheet + Gmail (required)
+
+1. Create a Google Sheet and paste `scripts/google-sheets-contact-webhook.gs` into Apps Script
+2. Run `setupSheet()`, authorize mail access when prompted, then deploy as a Web app (Execute as: Me, Who has access: Anyone)
+3. Set the web app URL:
+
+```bash
+# .env.local (not committed)
+GOOGLE_SHEETS_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
+```
+
+```bash
+vercel env add GOOGLE_SHEETS_WEBHOOK_URL
+```
+
+### Optional Resend (extra reliability)
+
+```bash
+RESEND_API_KEY=re_...
+CONTACT_FROM_EMAIL="Nebuloid Contact <onboarding@resend.dev>"
+```
+
+If Resend sends successfully, the Apps Script skips its email to avoid duplicates.
+
 ## Scripts
 
 | Command         | Description              |
