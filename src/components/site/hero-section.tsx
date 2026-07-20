@@ -48,7 +48,7 @@ export function HeroSection() {
   return (
     <section
       id="home"
-      className="theme-preserve-dark relative isolate min-h-screen overflow-hidden pt-32"
+      className="theme-preserve-dark relative isolate min-h-[100svh] overflow-hidden pt-24 md:pt-32"
     >
       <div className="absolute inset-0 z-0">
         <motion.div style={{ y }} className="absolute inset-0">
@@ -79,13 +79,13 @@ export function HeroSection() {
         </motion.div>
       </div>
 
-      <div className="content-grid section-padding relative z-10 flex min-h-[calc(100vh-8rem)] flex-col justify-center">
-        <h1 ref={titleRef} className="mt-4 flex flex-wrap items-baseline gap-x-[0.15em]">
-          <span className="text-display-filled text-[clamp(3.5rem,11vw,9rem)]">We</span>
-          <span className="text-outline-display text-[clamp(3.5rem,11vw,9rem)]">Create</span>
+      <div className="content-grid relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-center px-6 pb-16 pt-8 md:min-h-[calc(100svh-8rem)] md:px-10 md:pb-24 lg:px-16">
+        <h1 ref={titleRef} className="mt-2 flex flex-wrap items-baseline gap-x-[0.15em] md:mt-4">
+          <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
+          <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
         </h1>
 
-        <div className="h-[clamp(6rem,10vw,7rem)] overflow-hidden">
+        <div className="relative min-h-[4.8em] overflow-hidden sm:min-h-[3.4em]">
           <AnimatePresence mode="wait">
             <motion.p
               key={active.title}
@@ -93,7 +93,7 @@ export function HeroSection() {
               animate={{ y: 0, opacity: 1 }}
               exit={{ y: -60, opacity: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[clamp(2rem,6vw,5.4rem)] font-semibold leading-tight tracking-[-0.03em] text-[#F1E9DB]"
+              className="text-[clamp(1.75rem,7vw,5.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB]"
             >
               {active.title}
             </motion.p>
@@ -102,14 +102,14 @@ export function HeroSection() {
 
         <p
           ref={descriptionRef}
-          className="mt-8 max-w-2xl text-lg text-[#F1E9DB]/75 md:text-xl"
+          className="mt-6 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/75 sm:mt-8 sm:text-lg md:text-xl"
         >
           Nebuloid designs, builds, and delivers complete event ecosystems — from
           branding and motion to kiosks, AI experiences, and digital engagement.
           One partner. One seamless experience.
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center gap-4">
+        <div className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
           <MagneticButton size="lg" onClick={() => router.push('/contact')}>
             Start Your Experience <ArrowUpRight size={18} />
           </MagneticButton>
@@ -124,7 +124,7 @@ export function HeroSection() {
           </Button>
         </div>
 
-        <div className="mt-14 flex items-center gap-3">
+        <div className="mt-10 flex max-w-full flex-wrap items-center gap-2 sm:mt-14 sm:gap-3">
           {heroStates.map((slide, index) => (
             <button
               key={slide.title}
@@ -134,8 +134,8 @@ export function HeroSection() {
               className={cn(
                 'h-1.5 rounded-full transition-all duration-500',
                 index === activeIndex
-                  ? 'w-12 bg-[#d4af37]'
-                  : 'w-3 bg-[#F1E9DB]/25 hover:bg-[#F1E9DB]/45',
+                  ? 'w-8 bg-[#d4af37] sm:w-12'
+                  : 'w-2.5 bg-[#F1E9DB]/25 hover:bg-[#F1E9DB]/45 sm:w-3',
               )}
             />
           ))}

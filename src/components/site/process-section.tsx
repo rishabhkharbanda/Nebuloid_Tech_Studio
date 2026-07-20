@@ -25,31 +25,49 @@ export function ProcessSection() {
             <ArrowUpRight size={16} />
           </Link>
         </SectionReveal>
-        <div className="mt-14 overflow-x-auto pb-3">
-          <div className="min-w-[920px]">
-            <div className="relative grid grid-cols-6 gap-5">
-              <motion.div
-                initial={{ scaleX: 0 }}
-                whileInView={{ scaleX: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.1 }}
-                className="absolute top-[1.05rem] col-span-6 h-px origin-left bg-gradient-to-r from-[#d4af37]/20 via-[#d4af37] to-[#d4af37]/20"
-              />
-              {processSteps.map((step, index) => (
-                <SectionReveal key={step.step} delay={index * 0.08}>
-                  <div className="relative">
-                    <div className="h-8 w-8 rounded-full border border-[#d4af37] bg-[#090909]" />
-                    <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/60">
-                      {String(index + 1).padStart(2, '0')}
-                    </p>
-                    <h3 className="mt-2 text-xl font-semibold md:text-2xl">{step.step}</h3>
-                    <p className="mt-3 text-sm leading-relaxed text-[#F1E9DB]/55">
-                      {step.description}
-                    </p>
-                  </div>
-                </SectionReveal>
-              ))}
-            </div>
+
+        {/* Mobile / tablet: vertical stack */}
+        <div className="mt-14 space-y-8 lg:hidden">
+          {processSteps.map((step, index) => (
+            <SectionReveal key={step.step} delay={index * 0.05}>
+              <div className="relative border-l border-[#d4af37]/35 pl-5">
+                <span className="absolute -left-[5px] top-1.5 h-2.5 w-2.5 rounded-full bg-[#d4af37]" />
+                <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/60">
+                  {String(index + 1).padStart(2, '0')}
+                </p>
+                <h3 className="mt-2 text-xl font-semibold">{step.step}</h3>
+                <p className="mt-3 text-sm leading-relaxed text-[#F1E9DB]/55">
+                  {step.description}
+                </p>
+              </div>
+            </SectionReveal>
+          ))}
+        </div>
+
+        {/* Desktop: horizontal timeline */}
+        <div className="mt-14 hidden lg:block">
+          <div className="relative grid grid-cols-6 gap-5">
+            <motion.div
+              initial={{ scaleX: 0 }}
+              whileInView={{ scaleX: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 1.1 }}
+              className="absolute top-[1.05rem] col-span-6 h-px origin-left bg-gradient-to-r from-[#d4af37]/20 via-[#d4af37] to-[#d4af37]/20"
+            />
+            {processSteps.map((step, index) => (
+              <SectionReveal key={step.step} delay={index * 0.08}>
+                <div className="relative">
+                  <div className="h-8 w-8 rounded-full border border-[#d4af37] bg-[#090909]" />
+                  <p className="mt-6 font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/60">
+                    {String(index + 1).padStart(2, '0')}
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold md:text-2xl">{step.step}</h3>
+                  <p className="mt-3 text-sm leading-relaxed text-[#F1E9DB]/55">
+                    {step.description}
+                  </p>
+                </div>
+              </SectionReveal>
+            ))}
           </div>
         </div>
       </div>

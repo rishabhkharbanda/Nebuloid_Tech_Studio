@@ -95,7 +95,7 @@ export function TestimonialsSection() {
 
             {/* Quote */}
             <div className="md:col-span-9">
-              <span className="text-display-filled text-6xl leading-none text-[#d4af37]/40 md:text-8xl">
+              <span className="text-display-filled text-5xl leading-none text-[#d4af37]/40 sm:text-6xl md:text-8xl">
                 &ldquo;
               </span>
 
@@ -107,25 +107,42 @@ export function TestimonialsSection() {
                   exit={{ opacity: 0, y: -28, filter: 'blur(10px)' }}
                   transition={{ duration: 0.55, ease: [0.2, 0.65, 0.3, 0.9] }}
                 >
-                  <p className="max-w-4xl text-[clamp(1.6rem,3.8vw,3.4rem)] font-medium leading-[1.15] tracking-[-0.02em] text-[#F1E9DB]">
+                  <p className="max-w-4xl text-[clamp(1.35rem,4.2vw,3.4rem)] font-medium leading-[1.2] tracking-[-0.02em] text-[#F1E9DB]">
                     {active.quote}
                   </p>
 
-                  <footer className="mt-10 flex items-center gap-4 border-t border-white/10 pt-8">
-                    <div className="flex h-12 w-12 items-center justify-center rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 font-mono text-xs text-[#d4af37]">
+                  <footer className="mt-8 flex items-center gap-4 border-t border-white/10 pt-6 sm:mt-10 sm:pt-8">
+                    <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#d4af37]/30 bg-[#d4af37]/10 font-mono text-xs text-[#d4af37]">
                       {getInitials(active.name)}
                     </div>
-                    <div>
+                    <div className="min-w-0">
                       <p className="text-base font-semibold text-[#F1E9DB]">
                         {active.name}
                       </p>
-                      <p className="mt-1 font-mono text-xs uppercase tracking-[0.14em] text-[#F1E9DB]/50">
+                      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/50 sm:text-xs">
                         {active.role}
                       </p>
                     </div>
                   </footer>
                 </motion.blockquote>
               </AnimatePresence>
+
+              <div className="mt-8 flex gap-2 md:hidden">
+                {testimonials.map((item, i) => (
+                  <button
+                    key={item.name}
+                    type="button"
+                    onClick={() => goTo(i)}
+                    aria-label={`Go to testimonial ${i + 1}`}
+                    className={cn(
+                      'h-1.5 rounded-full transition-all duration-500',
+                      i === index
+                        ? 'w-8 bg-[#d4af37]'
+                        : 'w-2.5 bg-white/15',
+                    )}
+                  />
+                ))}
+              </div>
             </div>
           </div>
         </SectionReveal>

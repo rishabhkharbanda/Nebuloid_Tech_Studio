@@ -312,7 +312,7 @@ export function ContactSection() {
                   variant="default"
                   size="lg"
                   disabled={status === 'submitting'}
-                  className="group h-16 w-full gap-3 px-10 text-base font-semibold tracking-wide shadow-[0_0_36px_rgba(241,233,219,0.18)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#d4af37] hover:text-[#090909] hover:shadow-[0_0_48px_rgba(212,175,55,0.45)] disabled:pointer-events-none disabled:opacity-60 md:w-auto md:min-w-[300px]"
+                  className="group h-auto min-h-14 w-full flex-wrap gap-3 whitespace-normal px-6 py-3.5 text-sm font-semibold tracking-wide shadow-[0_0_36px_rgba(241,233,219,0.18)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#d4af37] hover:text-[#090909] hover:shadow-[0_0_48px_rgba(212,175,55,0.45)] disabled:pointer-events-none disabled:opacity-60 sm:h-16 sm:whitespace-nowrap sm:px-10 sm:text-base md:w-auto md:min-w-[280px]"
                 >
                   {status === 'submitting' ? 'Sending...' : 'Begin the Conversation'}
                   <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#090909]/10 transition-colors group-hover:bg-[#090909]/15">

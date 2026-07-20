@@ -8,7 +8,7 @@ import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
 const FRAME_COUNT = 300
-const SCROLL_VH = 320
+const SCROLL_VH = 280
 const FRAME_BASE = '/assets/scroll-sequence-web/ezgif-frame-'
 const MAX_CANVAS_WIDTH = 1600
 const SECTIONS = scrollExploreSections
@@ -343,8 +343,8 @@ export function ScrollExploreSequence() {
         <ScrollHint visible={showHint} />
 
         {showCopy && (
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-            <div className="content-grid w-full">
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-end pb-24 pt-24 sm:items-center sm:pb-0 sm:pt-0">
+            <div className="content-grid w-full px-6 md:px-10 lg:px-16">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active.title}
@@ -369,15 +369,17 @@ export function ScrollExploreSequence() {
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
                     'relative max-w-xl',
-                    alignLeft ? 'mr-auto text-left' : 'ml-auto text-right',
+                    // Keep copy left-aligned on small screens for readability.
+                    'text-left md:max-w-xl',
+                    alignLeft ? 'mr-auto md:text-left' : 'mr-auto md:ml-auto md:text-right',
                   )}
                 >
                   <div
                     className={cn(
-                      'absolute -inset-x-6 -inset-y-8 -z-10 rounded-[2rem] blur-2xl',
+                      'absolute -inset-x-4 -inset-y-6 -z-10 rounded-[2rem] blur-2xl sm:-inset-x-6 sm:-inset-y-8',
                       alignLeft
-                        ? 'bg-gradient-to-r from-black/70 via-black/35 to-transparent'
-                        : 'bg-gradient-to-l from-black/70 via-black/35 to-transparent',
+                        ? 'bg-gradient-to-r from-black/75 via-black/40 to-transparent'
+                        : 'bg-gradient-to-r from-black/75 via-black/40 to-transparent md:bg-gradient-to-l',
                     )}
                   />
 
@@ -385,13 +387,13 @@ export function ScrollExploreSequence() {
                     {String(sectionIndex + 1).padStart(2, '0')} /{' '}
                     {String(SECTION_COUNT).padStart(2, '0')}
                   </p>
-                  <h2 className="mt-4 text-[clamp(2.25rem,5.5vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
+                  <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
                     {active.title}
                   </h2>
                   <p
                     className={cn(
-                      'mt-6 text-base leading-relaxed text-[#F1E9DB]/72 md:text-lg',
-                      alignLeft ? 'max-w-md' : 'ml-auto max-w-md',
+                      'mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
+                      !alignLeft && 'md:ml-auto',
                     )}
                   >
                     {active.description}
@@ -403,15 +405,15 @@ export function ScrollExploreSequence() {
         )}
 
         {status === 'ready' && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center gap-1.5 px-6">
+          <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center gap-1.5 px-6 sm:bottom-6">
             {SECTIONS.map((item, index) => (
               <span
                 key={item.title}
                 className={cn(
                   'h-1 rounded-full transition-all duration-500',
                   index === sectionIndex
-                    ? 'w-8 bg-[#d4af37]'
-                    : 'w-2 bg-[#F1E9DB]/25',
+                    ? 'w-6 bg-[#d4af37] sm:w-8'
+                    : 'w-1.5 bg-[#F1E9DB]/25 sm:w-2',
                 )}
               />
             ))}

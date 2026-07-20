@@ -10,9 +10,9 @@ import { projects } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
 export function WorkSection({ limit }: { limit?: number }) {
-  const [activeIndex, setActiveIndex] = useState<number | null>(null)
+  const [activeIndex, setActiveIndex] = useState(0)
   const visibleProjects = limit ? projects.slice(0, limit) : projects
-  const activeProject = activeIndex !== null ? visibleProjects[activeIndex] : null
+  const activeProject = visibleProjects[activeIndex] ?? null
 
   return (
     <section id="work" className="section-padding">
@@ -40,7 +40,8 @@ export function WorkSection({ limit }: { limit?: number }) {
                 <Link href={`/experiences/${project.slug}`} className="block">
                 <article
                   onMouseEnter={() => setActiveIndex(index)}
-                  onMouseLeave={() => setActiveIndex(null)}
+                  onFocus={() => setActiveIndex(index)}
+                  onClick={() => setActiveIndex(index)}
                   className={cn(
                     'group cursor-pointer py-8 transition-colors duration-300 md:py-10 lg:py-12',
                     activeIndex === index && 'bg-white/[0.02]',
@@ -81,28 +82,16 @@ export function WorkSection({ limit }: { limit?: number }) {
                     </span>
                   </div>
 
-                  <AnimatePresence>
-                    {activeIndex === index && (
-                      <motion.div
-                        initial={{ height: 0, opacity: 0 }}
-                        animate={{ height: 'auto', opacity: 1 }}
-                        exit={{ height: 0, opacity: 0 }}
-                        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                        className="overflow-hidden lg:hidden"
-                      >
-                        <div className="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border border-white/10">
-                          <Image
-                            src={project.image}
-                            alt={project.title}
-                            fill
-                            className="object-cover"
-                            sizes="100vw"
-                          />
-                          <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
-                        </div>
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  <div className="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 lg:hidden">
+                    <Image
+                      src={project.image}
+                      alt={project.title}
+                      fill
+                      className="object-cover"
+                      sizes="100vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
+                  </div>
                 </article>
                 </Link>
               </SectionReveal>
@@ -113,7 +102,7 @@ export function WorkSection({ limit }: { limit?: number }) {
             <div className="sticky top-32">
               <div className="relative aspect-[4/5] overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c0c]">
                 <AnimatePresence mode="wait">
-                  {activeProject ? (
+                  {activeProject && (
                     <motion.div
                       key={activeProject.title}
                       initial={{ opacity: 0, scale: 1.06 }}
@@ -139,21 +128,6 @@ export function WorkSection({ limit }: { limit?: number }) {
                           {activeProject.title}
                         </p>
                       </div>
-                    </motion.div>
-                  ) : (
-                    <motion.div
-                      key="placeholder"
-                      initial={{ opacity: 0 }}
-                      animate={{ opacity: 1 }}
-                      exit={{ opacity: 0 }}
-                      className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-8 text-center"
-                    >
-                      <span className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#F1E9DB]/30">
-                        Preview
-                      </span>
-                      <p className="max-w-[200px] text-sm leading-relaxed text-[#F1E9DB]/35">
-                        Hover an experience to preview
-                      </p>
                     </motion.div>
                   )}
                 </AnimatePresence>

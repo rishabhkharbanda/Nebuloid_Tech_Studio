@@ -43,6 +43,17 @@ export function Navbar() {
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
 
+  useEffect(() => {
+    if (!mobileOpen) return
+
+    const previousOverflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+
+    return () => {
+      document.body.style.overflow = previousOverflow
+    }
+  }, [mobileOpen])
+
   return (
     <header
       data-scrolled={scrolled}
@@ -53,15 +64,15 @@ export function Navbar() {
           : 'bg-gradient-to-r from-black/70 via-black/30 to-[#8A6A0A]/30',
       )}
     >
-      <div className="content-grid pl-4 pr-6 md:pl-6 md:pr-10 lg:pl-8 lg:pr-16">
-        <div className="flex h-20 items-center justify-between">
+      <div className="content-grid px-6 md:px-10 lg:px-16">
+        <div className="flex h-16 items-center justify-between md:h-20">
           <Link href="/" className="inline-flex shrink-0 items-center">
             <Image
               src="/assets/nebuloid-logo-mark.png"
               alt="Nebuloid Tech Studio"
               width={56}
               height={56}
-              className="h-11 w-11 shrink-0 object-contain md:h-12 md:w-12"
+              className="h-10 w-10 shrink-0 object-contain md:h-12 md:w-12"
               priority
             />
           </Link>
@@ -88,6 +99,7 @@ export function Navbar() {
           </MagneticButton>
 
           <button
+            type="button"
             className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/20 lg:hidden"
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-expanded={mobileOpen}
@@ -101,20 +113,28 @@ export function Navbar() {
       {mobileOpen && (
         <div
           id="mobile-nav"
-          className="border-t border-white/10 bg-black/90 pl-4 pr-6 py-6 backdrop-blur-xl lg:hidden"
+          className="max-h-[calc(100dvh-4rem)] overflow-y-auto border-t border-white/10 bg-black/95 px-6 py-6 backdrop-blur-xl md:max-h-[calc(100dvh-5rem)] md:px-10 lg:hidden"
         >
-          <nav className="flex flex-col gap-4">
+          <nav className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-lg font-semibold"
+                className="rounded-xl px-2 py-3 text-lg font-semibold text-[#F1E9DB] transition-colors hover:bg-white/[0.04] hover:text-[#d4af37]"
                 onClick={() => setMobileOpen(false)}
               >
                 {link.label}
               </Link>
             ))}
           </nav>
+          <Link
+            href="/contact"
+            onClick={() => setMobileOpen(false)}
+            className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-full bg-[#F1E9DB] px-6 py-3.5 text-sm font-semibold text-[#090909]"
+          >
+            Get In Touch
+            <ArrowUpRight size={16} />
+          </Link>
         </div>
       )}
     </header>

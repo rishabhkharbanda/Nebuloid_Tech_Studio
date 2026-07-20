@@ -13,19 +13,15 @@ export function SectionReveal({
   className?: string
 }) {
   const ref = useRef<HTMLDivElement>(null)
-  const inView = useInView(ref, { once: true, margin: '-10% 0px -10% 0px' })
+  const inView = useInView(ref, { once: true, amount: 0.15, margin: '0px 0px -8% 0px' })
 
   return (
     <motion.div
       ref={ref}
       className={className}
-      initial={{ opacity: 0, y: 40, filter: 'blur(12px)' }}
-      animate={
-        inView
-          ? { opacity: 1, y: 0, filter: 'blur(0px)' }
-          : { opacity: 0, y: 40, filter: 'blur(12px)' }
-      }
-      transition={{ duration: 0.85, ease: [0.2, 0.65, 0.3, 0.9], delay }}
+      initial={{ opacity: 0, y: 28 }}
+      animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 28 }}
+      transition={{ duration: 0.7, ease: [0.2, 0.65, 0.3, 0.9], delay }}
     >
       {children}
     </motion.div>

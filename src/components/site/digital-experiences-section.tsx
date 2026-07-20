@@ -181,7 +181,7 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
                             'galleryAspect' in project &&
                             project.galleryAspect === 'video'
                               ? 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3'
-                              : 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-5'
+                              : 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'
                           }
                         >
                           {project.gallery.map((item) => (

@@ -8,7 +8,7 @@ export function TrustedBySection() {
   const items = [...trustedBy, ...trustedBy]
 
   return (
-    <section className="border-y border-white/10 py-14 md:py-16">
+    <section className="border-y border-white/10 px-6 py-14 md:px-10 md:py-16 lg:px-16">
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#F1E9DB]/45">
