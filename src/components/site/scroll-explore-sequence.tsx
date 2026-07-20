@@ -7,10 +7,13 @@ import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-const FRAME_COUNT = 300
-const SCROLL_VH = 280
-const FRAME_BASE = '/assets/scroll-sequence-web/ezgif-frame-'
-const MAX_CANVAS_WIDTH = 1600
+/** Compressed lite sequence — every 3rd original frame, ~960px wide. */
+const FRAME_COUNT = 100
+const SCROLL_VH = 220
+const FRAME_BASE = '/assets/scroll-sequence-lite/frame-'
+const MAX_CANVAS_WIDTH_DESKTOP = 1100
+const MAX_CANVAS_WIDTH_MOBILE = 720
+const READY_AFTER = 16
 const SECTIONS = scrollExploreSections
 const SECTION_COUNT = SECTIONS.length
 
@@ -20,6 +23,14 @@ function frameSrc(index: number) {
 
 type FrameSource = HTMLImageElement | ImageBitmap
 
+function prefersLiteMode() {
+  if (typeof window === 'undefined') return false
+  const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
+    ?.saveData
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return Boolean(saveData || reducedMotion)
+}
+
 function getCanvasMetrics(canvas: HTMLCanvasElement) {
   const parent = canvas.parentElement
   if (!parent) return null
@@ -28,8 +39,9 @@ function getCanvasMetrics(canvas: HTMLCanvasElement) {
   const cssHeight = parent.clientHeight
   if (cssWidth <= 0 || cssHeight <= 0) return null
 
-  const dpr = Math.min(window.devicePixelRatio || 1, cssWidth > 900 ? 1.5 : 1.25)
-  const pixelWidth = Math.max(1, Math.min(MAX_CANVAS_WIDTH, Math.round(cssWidth * dpr)))
+  const maxWidth = cssWidth < 768 ? MAX_CANVAS_WIDTH_MOBILE : MAX_CANVAS_WIDTH_DESKTOP
+  const dpr = Math.min(window.devicePixelRatio || 1, cssWidth > 900 ? 1.25 : 1)
+  const pixelWidth = Math.max(1, Math.min(maxWidth, Math.round(cssWidth * dpr)))
   const pixelHeight = Math.max(1, Math.round(pixelWidth * (cssHeight / cssWidth)))
 
   if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
@@ -72,7 +84,7 @@ function drawCover(
 
   ctx.setTransform(1, 0, 0, 1, 0, 0)
   ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'medium'
+  ctx.imageSmoothingQuality = 'low'
   ctx.clearRect(0, 0, pixelWidth, pixelHeight)
   ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
 }
@@ -81,7 +93,7 @@ async function loadFrame(index: number): Promise<FrameSource> {
   const src = frameSrc(index)
 
   if (typeof createImageBitmap === 'function') {
-    const response = await fetch(src)
+    const response = await fetch(src, { priority: 'low' } as RequestInit)
     if (!response.ok) throw new Error(`Failed to load frame ${index + 1}`)
     const blob = await response.blob()
     return createImageBitmap(blob)
@@ -94,6 +106,38 @@ async function loadFrame(index: number): Promise<FrameSource> {
     img.onerror = () => reject(new Error(`Failed to load frame ${index + 1}`))
     img.src = src
   })
+}
+
+function nearestLoadedFrame(frames: Array<FrameSource | undefined>, index: number) {
+  if (frames[index]) return frames[index]
+  for (let distance = 1; distance < FRAME_COUNT; distance += 1) {
+    const before = frames[index - distance]
+    if (before) return before
+    const after = frames[index + distance]
+    if (after) return after
+  }
+  return undefined
+}
+
+/** Evenly spaced indices first so scrubbing works early. */
+function buildLoadOrder(total: number) {
+  const order: number[] = []
+  const seen = new Set<number>()
+  const push = (index: number) => {
+    const clamped = Math.max(0, Math.min(total - 1, index))
+    if (seen.has(clamped)) return
+    seen.add(clamped)
+    order.push(clamped)
+  }
+
+  push(0)
+  push(total - 1)
+  for (let step = Math.floor(total / 4); step >= 1; step = Math.floor(step / 2)) {
+    for (let i = step; i < total; i += step) push(i)
+    if (step === 1) break
+  }
+  for (let i = 0; i < total; i += 1) push(i)
+  return order
 }
 
 function ScrollHint({ visible }: { visible: boolean }) {
@@ -123,15 +167,16 @@ export function ScrollExploreSequence() {
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const framesRef = useRef<FrameSource[]>([])
+  const framesRef = useRef<Array<FrameSource | undefined>>([])
   const frameRef = useRef(-1)
   const triggerRef = useRef<ScrollTrigger | null>(null)
   const pendingFrameRef = useRef(0)
   const rafRef = useRef(0)
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
   const sectionIndexRef = useRef(0)
+  const startedRef = useRef(false)
 
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
   const [loadProgress, setLoadProgress] = useState(0)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [sectionIndex, setSectionIndex] = useState(0)
@@ -155,6 +200,7 @@ export function ScrollExploreSequence() {
 
     let cancelled = false
     let resizeObserver: ResizeObserver | null = null
+    let intersectionObserver: IntersectionObserver | null = null
     ctxRef.current = canvas.getContext('2d', {
       alpha: false,
       desynchronized: true,
@@ -168,7 +214,7 @@ export function ScrollExploreSequence() {
       const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
       if (!force && clamped === frameRef.current) return
 
-      const frame = frames[clamped]
+      const frame = nearestLoadedFrame(frames, clamped)
       if (!frame) return
 
       const metrics = getCanvasMetrics(canvas)
@@ -188,16 +234,15 @@ export function ScrollExploreSequence() {
     }
 
     const setupScroll = () => {
-      if (cancelled) return
+      if (cancelled || triggerRef.current) return
 
-      triggerRef.current?.kill()
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
         pin,
         pinSpacing: true,
-        scrub: true,
+        scrub: 0.35,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -205,7 +250,6 @@ export function ScrollExploreSequence() {
           scheduleFrame(Math.round(progress * (FRAME_COUNT - 1)))
           setScrollProgress(progress)
 
-          // Hold the intro hint briefly, then map remaining progress across sections.
           const storyProgress = Math.max(0, (progress - 0.06) / 0.94)
           const nextSection = Math.min(
             SECTION_COUNT - 1,
@@ -233,32 +277,64 @@ export function ScrollExploreSequence() {
     }
 
     const preloadFrames = async () => {
-      const frames: FrameSource[] = new Array(FRAME_COUNT)
+      if (cancelled || startedRef.current) return
+      startedRef.current = true
+
+      if (prefersLiteMode()) {
+        try {
+          const first = await loadFrame(0)
+          framesRef.current = [first]
+          const metrics = getCanvasMetrics(canvas)
+          const ctx = ctxRef.current
+          if (ctx && metrics) drawCover(ctx, first, metrics.pixelWidth, metrics.pixelHeight)
+          setStatus('static')
+          setLoadProgress(100)
+        } catch {
+          if (!cancelled) setStatus('error')
+        }
+        return
+      }
+
+      setStatus('loading')
+      const frames: Array<FrameSource | undefined> = new Array(FRAME_COUNT)
+      framesRef.current = frames
+      const order = buildLoadOrder(FRAME_COUNT)
       let loaded = 0
       let lastProgress = -1
+      let becameReady = false
 
       try {
-        const batchSize = 16
-        for (let start = 0; start < FRAME_COUNT; start += batchSize) {
-          const batch = Array.from(
-            { length: Math.min(batchSize, FRAME_COUNT - start) },
-            async (_, offset) => {
-              const index = start + offset
+        const batchSize = 8
+        for (let start = 0; start < order.length; start += batchSize) {
+          if (cancelled) return
+
+          const batch = order.slice(start, start + batchSize)
+          await Promise.all(
+            batch.map(async (index) => {
+              if (frames[index]) return
               frames[index] = await loadFrame(index)
               loaded += 1
               const nextProgress = Math.round((loaded / FRAME_COUNT) * 100)
-              if (!cancelled && nextProgress !== lastProgress && nextProgress % 5 === 0) {
+              if (!cancelled && nextProgress !== lastProgress) {
                 lastProgress = nextProgress
                 setLoadProgress(nextProgress)
               }
-            },
+            }),
           )
-          await Promise.all(batch)
-          if (cancelled) return
+
+          if (!becameReady && loaded >= READY_AFTER) {
+            becameReady = true
+            setupScroll()
+          } else if (becameReady) {
+            const current = triggerRef.current
+              ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
+              : 0
+            frameRef.current = -1
+            renderFrame(current, true)
+          }
         }
 
-        framesRef.current = frames
-        setupScroll()
+        if (!becameReady) setupScroll()
       } catch {
         if (!cancelled) setStatus('error')
       }
@@ -277,16 +353,26 @@ export function ScrollExploreSequence() {
     resizeObserver.observe(pin)
     window.addEventListener('resize', onResize)
 
-    void preloadFrames()
+    intersectionObserver = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          intersectionObserver?.disconnect()
+          void preloadFrames()
+        }
+      },
+      { rootMargin: '200% 0px', threshold: 0.01 },
+    )
+    intersectionObserver.observe(section)
 
     return () => {
       cancelled = true
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
       triggerRef.current?.kill()
       resizeObserver?.disconnect()
+      intersectionObserver?.disconnect()
       window.removeEventListener('resize', onResize)
       framesRef.current.forEach((frame) => {
-        if (typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
+        if (frame && typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
           frame.close()
         }
       })
@@ -297,7 +383,7 @@ export function ScrollExploreSequence() {
   const active = SECTIONS[sectionIndex]
   const alignLeft = sectionIndex % 2 === 0
   const showHint = status === 'ready' && scrollProgress < 0.08
-  const showCopy = status === 'ready' && scrollProgress >= 0.05
+  const showCopy = (status === 'ready' || status === 'static') && scrollProgress >= 0.05
 
   const storyProgress = Math.max(0, (scrollProgress - 0.06) / 0.94)
   const localProgress = storyProgress * SECTION_COUNT - sectionIndex
@@ -310,16 +396,15 @@ export function ScrollExploreSequence() {
       ref={sectionRef}
       aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
-      style={{ height: `${SCROLL_VH}vh` }}
+      style={{ height: status === 'static' ? '100vh' : `${SCROLL_VH}vh` }}
     >
       <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full scale-[1.04] transform-gpu will-change-transform"
-          aria-hidden={status !== 'ready'}
+          className="absolute inset-0 h-full w-full scale-[1.02] transform-gpu will-change-transform"
+          aria-hidden={status !== 'ready' && status !== 'static'}
         />
 
-        {/* Soft vignette — balanced lift on mobile, side wash on desktop */}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/55 via-[#090909]/20 to-[#090909]/55 md:hidden" />
         <div
           className={cn(
@@ -331,15 +416,17 @@ export function ScrollExploreSequence() {
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/45 via-transparent to-[#090909]/55" />
 
-        {status === 'loading' && (
-          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/85">
+        {(status === 'idle' || status === 'loading') && (
+          <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/70">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#d4af37]/25 border-t-[#d4af37]" />
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#F1E9DB]/60">
               Preparing experience
             </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]/80">
-              {loadProgress}%
-            </p>
+            {status === 'loading' && (
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]/80">
+                {loadProgress}%
+              </p>
+            )}
           </div>
         )}
 
@@ -356,7 +443,7 @@ export function ScrollExploreSequence() {
 
         <ScrollHint visible={showHint} />
 
-        {showCopy && (
+        {showCopy && status === 'ready' && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
             <div className="content-grid w-full px-6 md:px-10 lg:px-16">
               <AnimatePresence mode="wait">
@@ -415,6 +502,22 @@ export function ScrollExploreSequence() {
                   </p>
                 </motion.div>
               </AnimatePresence>
+            </div>
+          </div>
+        )}
+
+        {status === 'static' && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+            <div className="content-grid w-full px-6 text-center md:px-10 md:text-left lg:px-16">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                Explore
+              </p>
+              <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
+                {SECTIONS[0]?.title}
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 md:mx-0 md:text-base">
+                {SECTIONS[0]?.description}
+              </p>
             </div>
           </div>
         )}

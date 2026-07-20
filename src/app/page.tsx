@@ -6,9 +6,9 @@ import { DigitalExperiencesSection } from '@/components/site/digital-experiences
 import { FaqSection } from '@/components/site/faq-section'
 import { Footer } from '@/components/site/footer'
 import { HeroSection } from '@/components/site/hero-section'
+import { HomeScrollExplore } from '@/components/site/home-scroll-explore'
 import { JsonLd } from '@/components/site/json-ld'
 import { Navbar } from '@/components/site/navbar'
-import { ScrollExploreSequence } from '@/components/site/scroll-explore-sequence'
 import { ServicesSection } from '@/components/site/services-section'
 import { TestimonialsSection } from '@/components/site/testimonials-section'
 import { TrustedBySection } from '@/components/site/trusted-by-section'
@@ -39,7 +39,7 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
-        <ScrollExploreSequence />
+        <HomeScrollExplore />
         <div className="relative z-10 bg-[#090909]">
           <TrustedBySection />
           <ServicesSection limit={3} compact />

@@ -66,7 +66,6 @@ export function HeroSection() {
                 alt={`${active.title.replace('.', '')} — event experience by Nebuloid Tech Studio`}
                 fill
                 priority={activeIndex === 0}
-                unoptimized
                 className="object-cover"
                 sizes="100vw"
               />
