@@ -9,15 +9,34 @@ import { cn } from '@/lib/utils'
 
 /** HD sequence — every 3rd original frame @ 1920×1080, loaded by story-section belts. */
 const FRAME_COUNT = 100
-const SCROLL_VH = 220
+const SCROLL_VH = 240
 const FRAME_BASE = '/assets/scroll-sequence-hd/frame-'
 const POSTER_SRC = `${FRAME_BASE}001.jpg`
 const MAX_CANVAS_WIDTH_DESKTOP = 1920
 const MAX_CANVAS_WIDTH_MOBILE = 1080
-const SECTIONS = scrollExploreSections
-const SECTION_COUNT = SECTIONS.length
-const BELT_COUNT = SECTION_COUNT
+/** Show 5 beats per visit, drawn from the full 9-capability pool. */
+const ACTIVE_SECTION_COUNT = 5
+const BELT_COUNT = ACTIVE_SECTION_COUNT
 const BELT_SIZE = Math.ceil(FRAME_COUNT / BELT_COUNT)
+
+type ExploreSection = (typeof scrollExploreSections)[number]
+
+function pickExploreSections(
+  pool: readonly ExploreSection[],
+  count: number,
+): ExploreSection[] {
+  const indices = pool.map((_, index) => index)
+  for (let i = indices.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1))
+    const swap = indices[i]
+    indices[i] = indices[j]
+    indices[j] = swap
+  }
+  return indices
+    .slice(0, Math.min(count, pool.length))
+    .sort((a, b) => a - b)
+    .map((index) => pool[index])
+}
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
@@ -159,6 +178,11 @@ function ScrollHint({ visible }: { visible: boolean }) {
 }
 
 export function ScrollExploreSequence() {
+  const [sections] = useState(() =>
+    pickExploreSections(scrollExploreSections, ACTIVE_SECTION_COUNT),
+  )
+  const sectionCount = sections.length
+
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -261,7 +285,7 @@ export function ScrollExploreSequence() {
         end: 'bottom bottom',
         pin,
         pinSpacing: true,
-        scrub: 0.35,
+        scrub: 0.45,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -272,8 +296,8 @@ export function ScrollExploreSequence() {
 
           const storyProgress = Math.max(0, progress)
           const nextSection = Math.min(
-            SECTION_COUNT - 1,
-            Math.floor(storyProgress * SECTION_COUNT),
+            sectionCount - 1,
+            Math.floor(storyProgress * sectionCount),
           )
           if (sectionIndexRef.current !== nextSection) {
             sectionIndexRef.current = nextSection
@@ -435,16 +459,16 @@ export function ScrollExploreSequence() {
       })
       framesRef.current = []
     }
-  }, [])
+  }, [sectionCount])
 
-  const active = SECTIONS[sectionIndex]
+  const active = sections[sectionIndex] ?? sections[0]
   const alignLeft = sectionIndex % 2 === 0
   const showHint = status === 'ready' && scrollProgress < 0.06
   const showCopy = status !== 'error'
   const isBooting = status === 'idle' || status === 'loading'
 
   const storyProgress = Math.max(0, scrollProgress)
-  const localProgress = storyProgress * SECTION_COUNT - sectionIndex
+  const localProgress = storyProgress * sectionCount - sectionIndex
   const copyY = (0.5 - localProgress) * 16
   const copyX = isDesktop ? (alignLeft ? -10 : 10) : 0
   const exitX = isDesktop ? (alignLeft ? -8 : 8) : 0
@@ -546,7 +570,7 @@ export function ScrollExploreSequence() {
 
                     <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
                       {String(sectionIndex + 1).padStart(2, '0')} /{' '}
-                      {String(SECTION_COUNT).padStart(2, '0')}
+                      {String(sectionCount).padStart(2, '0')}
                     </p>
                     <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
                       {active.title}
@@ -569,13 +593,13 @@ export function ScrollExploreSequence() {
                   )}
                 >
                   <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
-                    01 / {String(SECTION_COUNT).padStart(2, '0')}
+                    01 / {String(sectionCount).padStart(2, '0')}
                   </p>
                   <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
-                    {SECTIONS[0]?.title}
+                    {sections[0]?.title}
                   </h2>
                   <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:mx-0 md:text-lg">
-                    {SECTIONS[0]?.description}
+                    {sections[0]?.description}
                   </p>
                 </div>
               )}
@@ -585,7 +609,7 @@ export function ScrollExploreSequence() {
 
         {status === 'ready' && (
           <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center gap-1.5 px-6 sm:bottom-6">
-            {SECTIONS.map((item, index) => (
+            {sections.map((item, index) => (
               <span
                 key={item.title}
                 className={cn(
