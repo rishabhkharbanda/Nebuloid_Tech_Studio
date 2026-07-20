@@ -11,6 +11,13 @@ declare global {
   }
 }
 
+function shouldEnableSmoothScroll() {
+  if (typeof window === 'undefined') return false
+  const finePointer = window.matchMedia('(pointer: fine)').matches
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  return finePointer && !reducedMotion
+}
+
 export function SmoothScrollProvider({
   children,
 }: {
@@ -19,11 +26,16 @@ export function SmoothScrollProvider({
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
 
+    if (!shouldEnableSmoothScroll()) {
+      ScrollTrigger.refresh()
+      return
+    }
+
     const lenis = new Lenis({
-      duration: 1.15,
+      duration: 0.95,
       smoothWheel: true,
-      touchMultiplier: 1.5,
-      wheelMultiplier: 0.9,
+      touchMultiplier: 1.2,
+      wheelMultiplier: 0.95,
     })
 
     const root = document.documentElement

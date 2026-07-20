@@ -5,9 +5,9 @@ import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
-import { CustomCursor } from '@/components/site/custom-cursor'
-import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
+import { DeferredCustomCursor } from '@/components/site/deferred-custom-cursor'
 import { BackToTopButton } from '@/components/site/back-to-top-button'
+import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
 import {
   getOrganizationSchema,
   getWebsiteSchema,
@@ -20,17 +20,20 @@ const GA_MEASUREMENT_ID = 'G-BYJ6D14KLM'
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 const bebasNeue = Bebas_Neue({
   variable: '--font-bebas-neue',
   weight: '400',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 const jetBrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   subsets: ['latin'],
+  display: 'swap',
 })
 
 export const metadata: Metadata = {
@@ -104,14 +107,14 @@ export default function RootLayout({
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <BackToTopButton />
         <SecretDaylightToggle />
-        <CustomCursor />
+        <DeferredCustomCursor />
         <Analytics />
         <SpeedInsights />
         <Script
           src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="afterInteractive"
+          strategy="lazyOnload"
         />
-        <Script id="google-analytics" strategy="afterInteractive">
+        <Script id="google-analytics" strategy="lazyOnload">
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}

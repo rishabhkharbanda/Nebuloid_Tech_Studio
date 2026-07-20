@@ -16,12 +16,19 @@ const SLIDE_INTERVAL = 3900
 export function HeroSection() {
   const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
-  const { scrollYProgress } = useScroll()
-  const y = useTransform(scrollYProgress, [0, 1], [0, -120])
+  const sectionRef = useRef<HTMLElement>(null)
+  const { scrollYProgress } = useScroll({
+    target: sectionRef,
+    offset: ['start start', 'end start'],
+  })
+  const y = useTransform(scrollYProgress, [0, 1], [0, -80])
   const titleRef = useRef<HTMLHeadingElement>(null)
   const descriptionRef = useRef<HTMLParagraphElement>(null)
 
   useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % heroStates.length)
     }, SLIDE_INTERVAL)
@@ -29,14 +36,17 @@ export function HeroSection() {
   }, [])
 
   useEffect(() => {
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduced) return
+
     const timeline = gsap.timeline({ defaults: { ease: 'power3.out' } })
     timeline
-      .fromTo(titleRef.current, { y: 54, opacity: 0 }, { y: 0, opacity: 1, duration: 0.9 })
+      .fromTo(titleRef.current, { y: 40, opacity: 0 }, { y: 0, opacity: 1, duration: 0.7 })
       .fromTo(
         descriptionRef.current,
-        { y: 28, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.65 },
-        '-=0.45',
+        { y: 20, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.5 },
+        '-=0.35',
       )
     return () => {
       timeline.kill()
@@ -44,21 +54,29 @@ export function HeroSection() {
   }, [])
 
   const active = useMemo(() => heroStates[activeIndex], [activeIndex])
+  const nextIndex = (activeIndex + 1) % heroStates.length
+
+  useEffect(() => {
+    const img = new window.Image()
+    img.decoding = 'async'
+    img.src = heroStates[nextIndex].image
+  }, [nextIndex])
 
   return (
     <section
+      ref={sectionRef}
       id="home"
       className="theme-preserve-dark relative isolate min-h-[100svh] overflow-hidden pt-24 md:pt-32"
     >
       <div className="absolute inset-0 z-0">
-        <motion.div style={{ y }} className="absolute inset-0">
+        <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
           <AnimatePresence initial={false}>
             <motion.div
               key={active.title}
-              initial={{ opacity: 0, scale: 1.05 }}
-              animate={{ opacity: 1, scale: 1 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.85, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
               className="absolute inset-0"
             >
               <Image
@@ -68,6 +86,7 @@ export function HeroSection() {
                 priority={activeIndex === 0}
                 className="object-cover"
                 sizes="100vw"
+                quality={70}
               />
               <div
                 className={`before:absolute before:inset-0 before:content-[''] absolute inset-0 bg-gradient-to-br ${active.classes}`}
