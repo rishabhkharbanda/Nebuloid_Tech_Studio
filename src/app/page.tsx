@@ -1,6 +1,5 @@
 import type { Metadata } from 'next'
 import { AboutSection } from '@/components/site/about-section'
-import { AppleScrollSequence } from '@/components/site/apple-scroll-sequence'
 import { BlogSection } from '@/components/site/blog-section'
 import { DigitalCtaSection } from '@/components/site/digital-cta-section'
 import { DigitalExperiencesSection } from '@/components/site/digital-experiences-section'
@@ -9,6 +8,7 @@ import { Footer } from '@/components/site/footer'
 import { HeroSection } from '@/components/site/hero-section'
 import { JsonLd } from '@/components/site/json-ld'
 import { Navbar } from '@/components/site/navbar'
+import { ScrollExploreSequence } from '@/components/site/scroll-explore-sequence'
 import { ServicesSection } from '@/components/site/services-section'
 import { TestimonialsSection } from '@/components/site/testimonials-section'
 import { TrustedBySection } from '@/components/site/trusted-by-section'
@@ -39,7 +39,7 @@ export default function Home() {
       <Navbar />
       <main>
         <HeroSection />
-        <AppleScrollSequence />
+        <ScrollExploreSequence />
         <div className="relative z-10 bg-[#090909]">
           <TrustedBySection />
           <ServicesSection limit={3} compact />

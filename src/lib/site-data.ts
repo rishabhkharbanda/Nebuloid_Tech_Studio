@@ -56,6 +56,54 @@ export const heroStates = [
   },
 ] as const
 
+export const scrollExploreSections = [
+  {
+    title: 'AI Experiences.',
+    description:
+      'Intelligent activations that feel personal — photo moments, generative storytelling, and AI layers woven into the live event journey.',
+  },
+  {
+    title: 'Interactive Kiosks.',
+    description:
+      'Self-serve stations engineered for high footfall — registration, discovery, and engagement that stay fast under real venue pressure.',
+  },
+  {
+    title: 'LED Experiences.',
+    description:
+      'Cinematic stage canvases and immersive LED environments that turn physical space into a living brand narrative.',
+  },
+  {
+    title: 'Venue Navigation.',
+    description:
+      'Clear wayfinding across complex floors and halls — so guests move with confidence and sessions start on time.',
+  },
+  {
+    title: 'Event Graphics.',
+    description:
+      'Visual identity that holds every touchpoint together — from invitation to stage to the frames guests share after.',
+  },
+  {
+    title: 'Motion Design.',
+    description:
+      'Opening sequences, transitions, and ambient loops that keep energy high between program moments.',
+  },
+  {
+    title: 'Creative Production.',
+    description:
+      'End-to-end creative direction where concept, craft, and on-ground execution land as one seamless experience.',
+  },
+  {
+    title: 'Registration Systems.',
+    description:
+      'Frictionless check-in from QR to badge — live attendance visibility for ops, and a polished first impression for guests.',
+  },
+  {
+    title: 'Touchscreen Experiences.',
+    description:
+      'Tactile interfaces for learning, play, and exploration — built to feel intuitive, branded, and unforgettable.',
+  },
+] as const
+
 export const trustedBy = [
   'Corporate',
   'Healthcare',

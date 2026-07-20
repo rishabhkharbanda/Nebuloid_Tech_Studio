@@ -1,22 +1,18 @@
 'use client'
 
+import { AnimatePresence, motion } from 'framer-motion'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef, useState } from 'react'
+import { scrollExploreSections } from '@/lib/site-data'
+import { cn } from '@/lib/utils'
 
 const FRAME_COUNT = 300
-const SCROLL_VH = 240
+const SCROLL_VH = 320
 const FRAME_BASE = '/assets/scroll-sequence-web/ezgif-frame-'
 const MAX_CANVAS_WIDTH = 1600
-
-const SCROLL_CAPTIONS = [
-  'Scroll to explore',
-  'Discover emotion in motion',
-  'Touch the interactive story',
-  'Step into immersive worlds',
-  'Experience, then share',
-  'Ready to begin your journey',
-] as const
+const SECTIONS = scrollExploreSections
+const SECTION_COUNT = SECTIONS.length
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
@@ -100,7 +96,30 @@ async function loadFrame(index: number): Promise<FrameSource> {
   })
 }
 
-export function AppleScrollSequence() {
+function ScrollHint({ visible }: { visible: boolean }) {
+  return (
+    <motion.div
+      className="pointer-events-none absolute inset-x-0 bottom-10 z-20 flex flex-col items-center gap-4"
+      initial={{ opacity: 0, y: 12 }}
+      animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 10 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+      aria-hidden={!visible}
+    >
+      <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#F1E9DB]/55">
+        Scroll to Explore
+      </p>
+      <div className="relative flex h-11 w-7 items-start justify-center rounded-full border border-[#F1E9DB]/35 pt-2">
+        <motion.span
+          className="h-1.5 w-1 rounded-full bg-[#d4af37]"
+          animate={{ y: [0, 12, 0], opacity: [1, 0.35, 1] }}
+          transition={{ duration: 1.6, repeat: Infinity, ease: 'easeInOut' }}
+        />
+      </div>
+    </motion.div>
+  )
+}
+
+export function ScrollExploreSequence() {
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
@@ -110,10 +129,12 @@ export function AppleScrollSequence() {
   const pendingFrameRef = useRef(0)
   const rafRef = useRef(0)
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
+  const sectionIndexRef = useRef(0)
+
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
-  const [progress, setProgress] = useState(0)
-  const [captionIndex, setCaptionIndex] = useState(0)
-  const captionIndexRef = useRef(0)
+  const [loadProgress, setLoadProgress] = useState(0)
+  const [scrollProgress, setScrollProgress] = useState(0)
+  const [sectionIndex, setSectionIndex] = useState(0)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -171,16 +192,19 @@ export function AppleScrollSequence() {
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          const nextFrame = Math.round(self.progress * (FRAME_COUNT - 1))
-          scheduleFrame(nextFrame)
+          const progress = self.progress
+          scheduleFrame(Math.round(progress * (FRAME_COUNT - 1)))
+          setScrollProgress(progress)
 
-          const nextCaption = Math.min(
-            SCROLL_CAPTIONS.length - 1,
-            Math.floor(self.progress * SCROLL_CAPTIONS.length),
+          // Hold the intro hint briefly, then map remaining progress across sections.
+          const storyProgress = Math.max(0, (progress - 0.06) / 0.94)
+          const nextSection = Math.min(
+            SECTION_COUNT - 1,
+            Math.floor(storyProgress * SECTION_COUNT),
           )
-          if (captionIndexRef.current !== nextCaption) {
-            captionIndexRef.current = nextCaption
-            setCaptionIndex(nextCaption)
+          if (sectionIndexRef.current !== nextSection) {
+            sectionIndexRef.current = nextSection
+            setSectionIndex(nextSection)
           }
         },
         onLeave: () => {
@@ -214,7 +238,7 @@ export function AppleScrollSequence() {
               const nextProgress = Math.round((loaded / FRAME_COUNT) * 100)
               if (!cancelled && nextProgress !== lastProgress && nextProgress % 5 === 0) {
                 lastProgress = nextProgress
-                setProgress(nextProgress)
+                setLoadProgress(nextProgress)
               }
             },
           )
@@ -259,30 +283,48 @@ export function AppleScrollSequence() {
     }
   }, [])
 
+  const active = SECTIONS[sectionIndex]
+  const alignLeft = sectionIndex % 2 === 0
+  const showHint = status === 'ready' && scrollProgress < 0.08
+  const showCopy = status === 'ready' && scrollProgress >= 0.05
+
+  const storyProgress = Math.max(0, (scrollProgress - 0.06) / 0.94)
+  const localProgress = storyProgress * SECTION_COUNT - sectionIndex
+  const copyY = (0.5 - localProgress) * 28
+
   return (
     <section
       ref={sectionRef}
-      aria-label="Scroll-driven experience preview"
+      aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
       style={{ height: `${SCROLL_VH}vh` }}
     >
       <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
         <canvas
           ref={canvasRef}
-          className="absolute inset-0 h-full w-full transform-gpu will-change-transform"
+          className="absolute inset-0 h-full w-full scale-[1.04] transform-gpu will-change-transform"
           aria-hidden={status !== 'ready'}
         />
 
-        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/40 via-transparent to-[#090909]/50" />
+        {/* Soft vignette — keeps the visual dominant while lifting text */}
+        <div
+          className={cn(
+            'pointer-events-none absolute inset-0 transition-opacity duration-700',
+            alignLeft
+              ? 'bg-gradient-to-r from-[#090909]/85 via-[#090909]/35 to-transparent'
+              : 'bg-gradient-to-l from-[#090909]/85 via-[#090909]/35 to-transparent',
+          )}
+        />
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/45 via-transparent to-[#090909]/55" />
 
         {status === 'loading' && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 bg-[#090909]/85">
             <div className="h-10 w-10 animate-spin rounded-full border-2 border-[#d4af37]/25 border-t-[#d4af37]" />
             <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#F1E9DB]/60">
-              Loading sequence
+              Preparing experience
             </p>
             <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]/80">
-              {progress}%
+              {loadProgress}%
             </p>
           </div>
         )}
@@ -298,11 +340,81 @@ export function AppleScrollSequence() {
           </div>
         )}
 
+        <ScrollHint visible={showHint} />
+
+        {showCopy && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+            <div className="content-grid w-full">
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active.title}
+                  initial={{
+                    opacity: 0,
+                    y: 36,
+                    x: alignLeft ? -24 : 24,
+                    filter: 'blur(10px)',
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: copyY,
+                    x: 0,
+                    filter: 'blur(0px)',
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -28,
+                    x: alignLeft ? -16 : 16,
+                    filter: 'blur(8px)',
+                  }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className={cn(
+                    'relative max-w-xl',
+                    alignLeft ? 'mr-auto text-left' : 'ml-auto text-right',
+                  )}
+                >
+                  <div
+                    className={cn(
+                      'absolute -inset-x-6 -inset-y-8 -z-10 rounded-[2rem] blur-2xl',
+                      alignLeft
+                        ? 'bg-gradient-to-r from-black/70 via-black/35 to-transparent'
+                        : 'bg-gradient-to-l from-black/70 via-black/35 to-transparent',
+                    )}
+                  />
+
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                    {String(sectionIndex + 1).padStart(2, '0')} /{' '}
+                    {String(SECTION_COUNT).padStart(2, '0')}
+                  </p>
+                  <h2 className="mt-4 text-[clamp(2.25rem,5.5vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
+                    {active.title}
+                  </h2>
+                  <p
+                    className={cn(
+                      'mt-6 text-base leading-relaxed text-[#F1E9DB]/72 md:text-lg',
+                      alignLeft ? 'max-w-md' : 'ml-auto max-w-md',
+                    )}
+                  >
+                    {active.description}
+                  </p>
+                </motion.div>
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
+
         {status === 'ready' && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 flex justify-center px-6">
-            <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#F1E9DB]/40">
-              {SCROLL_CAPTIONS[captionIndex]}
-            </p>
+          <div className="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center gap-1.5 px-6">
+            {SECTIONS.map((item, index) => (
+              <span
+                key={item.title}
+                className={cn(
+                  'h-1 rounded-full transition-all duration-500',
+                  index === sectionIndex
+                    ? 'w-8 bg-[#d4af37]'
+                    : 'w-2 bg-[#F1E9DB]/25',
+                )}
+              />
+            ))}
           </div>
         )}
       </div>
