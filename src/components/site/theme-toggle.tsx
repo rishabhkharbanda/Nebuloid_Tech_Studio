@@ -1,37 +1,17 @@
 'use client'
 
 import { Moon, Sun } from 'lucide-react'
-import { useEffect, useState } from 'react'
-import {
-  THEME_CHANGE_EVENT,
-  applyTheme,
-  getStoredTheme,
-  toggleTheme,
-  type Theme,
-} from '@/lib/theme'
+import { useTheme } from '@/hooks/use-theme'
+import { toggleTheme } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 
 export function ThemeToggle({ className }: { className?: string }) {
-  const [theme, setThemeState] = useState<Theme>('dark')
-
-  useEffect(() => {
-    const initial = getStoredTheme()
-    applyTheme(initial)
-    setThemeState(initial)
-
-    const onThemeChange = (event: Event) => {
-      const next = (event as CustomEvent<Theme>).detail
-      if (next === 'day' || next === 'dark') setThemeState(next)
-    }
-
-    window.addEventListener(THEME_CHANGE_EVENT, onThemeChange)
-    return () => window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange)
-  }, [])
+  const theme = useTheme()
 
   return (
     <button
       type="button"
-      onClick={() => setThemeState(toggleTheme())}
+      onClick={() => toggleTheme()}
       aria-label={theme === 'dark' ? 'Switch to daylight mode' : 'Switch to night mode'}
       title={theme === 'dark' ? 'Daylight mode' : 'Night mode'}
       className={cn(

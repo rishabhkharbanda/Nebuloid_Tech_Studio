@@ -203,19 +203,20 @@ html.day-theme .text-outline-display {
 
 html.day-theme header {
   border-color: rgba(24, 23, 18, 0.12) !important;
-  background: rgba(244, 240, 231, 0.78) !important;
+  background: rgba(244, 240, 231, 0.86) !important;
   box-shadow: 0 8px 30px rgba(24, 23, 18, 0.05);
+  color: #181712;
 }
 
 html.day-theme header[data-scrolled="false"] {
-  color: #f1e9db;
-  border-color: rgba(255, 255, 255, 0.1) !important;
-  background: linear-gradient(to right, rgba(0, 0, 0, 0.72), rgba(0, 0, 0, 0.34), rgba(138, 106, 10, 0.3)) !important;
+  border-color: rgba(24, 23, 18, 0.1) !important;
+  background: rgba(244, 240, 231, 0.78) !important;
   box-shadow: none;
+  color: #181712;
 }
 
 html.day-theme header[data-scrolled="false"] [class*="text-[#F1E9DB]"] {
-  color: #f1e9db !important;
+  color: #181712 !important;
 }
 
 html.day-theme header [id="mobile-nav"] {

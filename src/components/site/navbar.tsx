@@ -1,11 +1,11 @@
 'use client'
 
-import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
+import { BrandLogo } from '@/components/site/brand-logo'
 import { MagneticButton } from '@/components/site/magnetic-button'
 import { ThemeToggle } from '@/components/site/theme-toggle'
 import { contactDetails } from '@/lib/site-data'
@@ -107,29 +107,27 @@ export function Navbar() {
       className={cn(
         'fixed inset-x-0 top-0 z-50 border-b border-white/10 transition-all duration-500',
         scrolled || mobileOpen
-          ? 'bg-black/55 backdrop-blur-xl'
+          ? 'bg-black/40 backdrop-blur-xl'
           : 'bg-gradient-to-r from-black/70 via-black/30 to-[#8A6A0A]/30',
       )}
     >
       <div className="content-grid px-6 md:px-10 lg:px-16">
         <div className="relative z-20 flex h-16 items-center justify-between md:h-20">
-          <Link href="/" className="inline-flex shrink-0 items-center" onClick={() => setMobileOpen(false)}>
-            <Image
-              src="/assets/nebuloid-logo-mark.png"
-              alt="Nebuloid Tech Studio"
-              width={56}
-              height={56}
-              className="h-10 w-10 shrink-0 object-contain md:h-12 md:w-12"
-              priority
-            />
+          <Link
+            href="/"
+            className="relative z-10 inline-flex shrink-0 items-center"
+            onClick={() => setMobileOpen(false)}
+          >
+            <BrandLogo priority />
           </Link>
 
-          <nav className="hidden items-center gap-8 lg:flex">
+          {/* Desktop nav stays optically centered, independent of left/right control widths */}
+          <nav className="absolute left-1/2 top-1/2 hidden -translate-x-1/2 -translate-y-1/2 items-center gap-7 xl:gap-8 lg:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="group relative text-sm font-medium text-[#F1E9DB]"
+                className="group relative whitespace-nowrap text-sm font-medium text-[#F1E9DB]"
               >
                 <AnimatedLabel text={link.label} />
                 <span className="absolute -bottom-1 left-0 h-px w-0 bg-[#d4af37] transition-all duration-300 group-hover:w-full" />
@@ -137,22 +135,19 @@ export function Navbar() {
             ))}
           </nav>
 
-          <div className="hidden items-center gap-3 lg:flex">
+          <div className="relative z-10 flex shrink-0 items-center gap-2 sm:gap-3">
             <ThemeToggle />
             <MagneticButton
               size="default"
+              className="hidden lg:inline-flex"
               onClick={() => router.push('/contact')}
             >
               Get In Touch <ArrowUpRight size={16} />
             </MagneticButton>
-          </div>
-
-          <div className="flex items-center gap-2 lg:hidden">
-            <ThemeToggle />
             <button
               type="button"
               className={cn(
-                'inline-flex h-11 w-11 items-center justify-center rounded-full border text-[#F1E9DB] transition-colors duration-300',
+                'inline-flex h-11 w-11 items-center justify-center rounded-full border text-[#F1E9DB] transition-colors duration-300 lg:hidden',
                 mobileOpen
                   ? 'border-[#d4af37]/50 text-[#d4af37]'
                   : 'border-white/20 hover:border-[#d4af37]/50 hover:text-[#d4af37]',
