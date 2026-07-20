@@ -179,7 +179,8 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
                         <div
                           className={
                             'galleryAspect' in project &&
-                            project.galleryAspect === 'video'
+                            (project.galleryAspect === 'video' ||
+                              project.galleryAspect === 'wide')
                               ? 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3'
                               : 'mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'
                           }
@@ -189,9 +190,12 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
                               key={item.src}
                               className={
                                 'galleryAspect' in project &&
-                                project.galleryAspect === 'video'
-                                  ? 'relative aspect-video overflow-hidden rounded-xl border border-white/10'
-                                  : 'relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10'
+                                project.galleryAspect === 'wide'
+                                  ? 'relative aspect-[3/2] overflow-hidden rounded-xl border border-white/10'
+                                  : 'galleryAspect' in project &&
+                                      project.galleryAspect === 'video'
+                                    ? 'relative aspect-video overflow-hidden rounded-xl border border-white/10'
+                                    : 'relative aspect-[4/5] overflow-hidden rounded-xl border border-white/10'
                               }
                             >
                               <Image

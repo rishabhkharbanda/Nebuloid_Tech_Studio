@@ -26,7 +26,7 @@ type DetailLayoutProps = {
   gallery?: DetailGalleryItem[]
   galleryTitle?: string
   galleryHeading?: string
-  galleryAspect?: 'portrait' | 'video'
+  galleryAspect?: 'portrait' | 'video' | 'wide'
 }
 
 function ChipList({ items }: { items: string[] }) {
@@ -99,13 +99,20 @@ export function DetailLayout({
         </header>
 
         {hasGallery ? (
-          <section className="mt-14 md:mt-16">
-            <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-              {galleryTitle}
-            </p>
-            <h2 className="mt-3 max-w-3xl text-[clamp(1.5rem,3.5vw,2.5rem)] font-semibold tracking-[-0.03em]">
-              {galleryHeading}
-            </h2>
+          <section className="mt-12 md:mt-14">
+            <div className="mb-6 flex flex-wrap items-end justify-between gap-4 md:mb-8">
+              <div>
+                <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
+                  {galleryTitle}
+                </p>
+                <h2 className="mt-3 max-w-3xl text-[clamp(1.5rem,3.5vw,2.5rem)] font-semibold tracking-[-0.03em]">
+                  {galleryHeading}
+                </h2>
+              </div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F1E9DB]/35">
+                {String(gallery.length).padStart(2, '0')} frames
+              </p>
+            </div>
             <DetailGalleryCarousel items={gallery} aspect={galleryAspect} />
           </section>
         ) : (

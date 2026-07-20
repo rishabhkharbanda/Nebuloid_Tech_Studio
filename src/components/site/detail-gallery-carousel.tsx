@@ -14,7 +14,7 @@ type GalleryItem = {
 
 type DetailGalleryCarouselProps = {
   items: GalleryItem[]
-  aspect?: 'portrait' | 'video'
+  aspect?: 'portrait' | 'video' | 'wide'
   autoplayMs?: number
 }
 
@@ -44,7 +44,8 @@ export function DetailGalleryCarousel({
   if (total === 0) return null
 
   const active = items[index]
-  const aspectClass = aspect === 'video' ? 'aspect-video' : 'aspect-[4/5]'
+  const aspectClass =
+    aspect === 'wide' ? 'aspect-[3/2]' : aspect === 'video' ? 'aspect-video' : 'aspect-[4/5]'
 
   return (
     <div className="mt-10">

@@ -1,16 +1,16 @@
 'use client'
 
 import { useEffect, useRef, useState } from 'react'
+import {
+  THEME_CHANGE_EVENT,
+  applyTheme,
+  getDocumentTheme,
+  getStoredTheme,
+  setTheme,
+  type Theme,
+} from '@/lib/theme'
 
-const STORAGE_KEY = 'nebuloid-theme'
 const HOLD_DURATION = 1200
-
-type Theme = 'dark' | 'day'
-
-function applyTheme(theme: Theme) {
-  document.documentElement.classList.toggle('day-theme', theme === 'day')
-  document.documentElement.style.colorScheme = theme === 'day' ? 'light' : 'dark'
-}
 
 export function SecretDaylightToggle() {
   const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
@@ -18,10 +18,18 @@ export function SecretDaylightToggle() {
   const [notice, setNotice] = useState<string | null>(null)
 
   useEffect(() => {
-    const storedTheme = window.localStorage.getItem(STORAGE_KEY)
-    const initialTheme: Theme = storedTheme === 'day' ? 'day' : 'dark'
+    applyTheme(getStoredTheme())
+  }, [])
 
-    applyTheme(initialTheme)
+  useEffect(() => {
+    const onThemeChange = (event: Event) => {
+      const next = (event as CustomEvent<Theme>).detail
+      if (next !== 'day' && next !== 'dark') return
+      setNotice(next === 'day' ? 'Daylight mode enabled' : 'Night mode enabled')
+    }
+
+    window.addEventListener(THEME_CHANGE_EVENT, onThemeChange)
+    return () => window.removeEventListener(THEME_CHANGE_EVENT, onThemeChange)
   }, [])
 
   useEffect(() => {
@@ -44,14 +52,8 @@ export function SecretDaylightToggle() {
     setHolding(true)
 
     timerRef.current = setTimeout(() => {
-      const currentTheme: Theme = document.documentElement.classList.contains('day-theme')
-        ? 'day'
-        : 'dark'
-      const nextTheme: Theme = currentTheme === 'dark' ? 'day' : 'dark'
-
-      applyTheme(nextTheme)
-      window.localStorage.setItem(STORAGE_KEY, nextTheme)
-      setNotice(nextTheme === 'day' ? 'Daylight mode enabled' : 'Night mode enabled')
+      const nextTheme: Theme = getDocumentTheme() === 'dark' ? 'day' : 'dark'
+      setTheme(nextTheme)
       setHolding(false)
       timerRef.current = null
     }, HOLD_DURATION)
