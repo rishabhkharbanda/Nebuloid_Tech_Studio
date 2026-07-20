@@ -135,6 +135,15 @@ export function ScrollExploreSequence() {
   const [loadProgress, setLoadProgress] = useState(0)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [sectionIndex, setSectionIndex] = useState(0)
+  const [isDesktop, setIsDesktop] = useState(false)
+
+  useEffect(() => {
+    const media = window.matchMedia('(min-width: 768px)')
+    const sync = () => setIsDesktop(media.matches)
+    sync()
+    media.addEventListener('change', sync)
+    return () => media.removeEventListener('change', sync)
+  }, [])
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -293,6 +302,8 @@ export function ScrollExploreSequence() {
   const storyProgress = Math.max(0, (scrollProgress - 0.06) / 0.94)
   const localProgress = storyProgress * SECTION_COUNT - sectionIndex
   const copyY = (0.5 - localProgress) * 28
+  const copyX = isDesktop ? (alignLeft ? -24 : 24) : 0
+  const exitX = isDesktop ? (alignLeft ? -16 : 16) : 0
 
   return (
     <section
@@ -308,10 +319,11 @@ export function ScrollExploreSequence() {
           aria-hidden={status !== 'ready'}
         />
 
-        {/* Soft vignette — keeps the visual dominant while lifting text */}
+        {/* Soft vignette — balanced lift on mobile, side wash on desktop */}
+        <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/55 via-[#090909]/20 to-[#090909]/55 md:hidden" />
         <div
           className={cn(
-            'pointer-events-none absolute inset-0 transition-opacity duration-700',
+            'pointer-events-none absolute inset-0 hidden transition-opacity duration-700 md:block',
             alignLeft
               ? 'bg-gradient-to-r from-[#090909]/85 via-[#090909]/35 to-transparent'
               : 'bg-gradient-to-l from-[#090909]/85 via-[#090909]/35 to-transparent',
@@ -345,7 +357,7 @@ export function ScrollExploreSequence() {
         <ScrollHint visible={showHint} />
 
         {showCopy && (
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-end pb-24 pt-24 sm:items-center sm:pb-0 sm:pt-0">
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
             <div className="content-grid w-full px-6 md:px-10 lg:px-16">
               <AnimatePresence mode="wait">
                 <motion.div
@@ -353,7 +365,7 @@ export function ScrollExploreSequence() {
                   initial={{
                     opacity: 0,
                     y: 36,
-                    x: alignLeft ? -24 : 24,
+                    x: copyX,
                     filter: 'blur(10px)',
                   }}
                   animate={{
@@ -365,23 +377,24 @@ export function ScrollExploreSequence() {
                   exit={{
                     opacity: 0,
                     y: -28,
-                    x: alignLeft ? -16 : 16,
+                    x: exitX,
                     filter: 'blur(8px)',
                   }}
                   transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
-                    'relative max-w-xl',
-                    // Keep copy left-aligned on small screens for readability.
-                    'text-left md:max-w-xl',
-                    alignLeft ? 'mr-auto md:text-left' : 'mr-auto md:ml-auto md:text-right',
+                    'relative mx-auto max-w-xl text-center',
+                    alignLeft
+                      ? 'md:mx-0 md:mr-auto md:text-left'
+                      : 'md:mx-0 md:ml-auto md:text-right',
                   )}
                 >
                   <div
                     className={cn(
                       'absolute -inset-x-4 -inset-y-6 -z-10 rounded-[2rem] blur-2xl sm:-inset-x-6 sm:-inset-y-8',
+                      'bg-gradient-to-b from-black/55 via-black/40 to-transparent',
                       alignLeft
-                        ? 'bg-gradient-to-r from-black/75 via-black/40 to-transparent'
-                        : 'bg-gradient-to-r from-black/75 via-black/40 to-transparent md:bg-gradient-to-l',
+                        ? 'md:bg-gradient-to-r md:from-black/75 md:via-black/40 md:to-transparent'
+                        : 'md:bg-gradient-to-l md:from-black/75 md:via-black/40 md:to-transparent',
                     )}
                   />
 
@@ -394,8 +407,8 @@ export function ScrollExploreSequence() {
                   </h2>
                   <p
                     className={cn(
-                      'mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
-                      !alignLeft && 'md:ml-auto',
+                      'mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
+                      alignLeft ? 'md:mx-0' : 'md:ml-auto md:mr-0',
                     )}
                   >
                     {active.description}
