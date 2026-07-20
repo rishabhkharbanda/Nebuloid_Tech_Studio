@@ -142,9 +142,9 @@ export const digitalProjects = [
         label: 'Artificial Intelligence',
       },
       {
-        src: '/assets/digital-experiences/paras-dham/immersive-projections.jpg',
-        alt: 'Mirrored infinity room with hanging sculptural spheres and neon light frames',
-        label: '360° Immersive Projections',
+        src: '/assets/digital-experiences/paras-dham/inside-out-vice-versa.jpg',
+        alt: 'Inside Out interactive avatar exhibit with Vice-Versa emotion control panel at Paras Dham Girnar',
+        label: 'Inside Out · Vice-Versa',
       },
       {
         src: '/assets/digital-experiences/paras-dham/motion-sensor-games.jpg',
@@ -152,9 +152,9 @@ export const digitalProjects = [
         label: 'Motion Sensor Games',
       },
       {
-        src: '/assets/digital-experiences/paras-dham/gesture-recognition.jpg',
-        alt: 'Word Wonderland gesture recognition exhibit with illuminated flowers and green turf',
-        label: 'Gesture Recognition',
+        src: '/assets/digital-experiences/paras-dham/emotions-silent-earthquake.jpg',
+        alt: 'Emotions: The Silent Earthquake exhibit with brick-textured walls and interactive platform at Paras Dham Girnar',
+        label: 'Emotions · Silent Earthquake',
       },
       {
         src: '/assets/digital-experiences/paras-dham/augmented-reality.jpg',
@@ -189,9 +189,9 @@ export const digitalProjects = [
       ],
       technologies: [
         'Artificial Intelligence',
-        '360° Immersive Projections',
+        'Inside Out · Vice-Versa',
         'Motion Sensor Games',
-        'Gesture Recognition Technology',
+        'Emotions · Silent Earthquake',
         'Augmented Reality',
         'Soundscapes & Interactive Audios',
         'Interactive Touch Interfaces',
