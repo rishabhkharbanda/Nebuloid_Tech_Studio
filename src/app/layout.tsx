@@ -84,8 +84,8 @@ export const metadata: Metadata = {
     },
   },
   icons: {
-    icon: '/assets/nebuloid-logo-mark.png',
-    apple: '/assets/nebuloid-logo-mark.png',
+    icon: '/assets/nebuloid-logo-mark-day.png',
+    apple: '/assets/nebuloid-logo-mark-day.png',
   },
 }
 

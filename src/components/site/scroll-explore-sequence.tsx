@@ -7,31 +7,42 @@ import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-/** Ultra-compressed sequence — 50 frames @ ~720px. */
-const FRAME_COUNT = 50
-const SCROLL_VH = 180
-const FRAME_BASE = '/assets/scroll-sequence-ultra/frame-'
+/** HD sequence — every 3rd original frame @ 1920×1080, loaded by story-section belts. */
+const FRAME_COUNT = 100
+const SCROLL_VH = 220
+const FRAME_BASE = '/assets/scroll-sequence-hd/frame-'
 const POSTER_SRC = `${FRAME_BASE}001.jpg`
-const MAX_CANVAS_WIDTH_DESKTOP = 900
-const MAX_CANVAS_WIDTH_MOBILE = 640
+const MAX_CANVAS_WIDTH_DESKTOP = 1920
+const MAX_CANVAS_WIDTH_MOBILE = 1080
 const SECTIONS = scrollExploreSections
 const SECTION_COUNT = SECTIONS.length
+const BELT_COUNT = SECTION_COUNT
+const BELT_SIZE = Math.ceil(FRAME_COUNT / BELT_COUNT)
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
 }
 
-type FrameSource = HTMLImageElement
+function beltForFrame(index: number) {
+  return Math.min(BELT_COUNT - 1, Math.floor(index / BELT_SIZE))
+}
 
-function shouldUseStaticSequence() {
-  if (typeof window === 'undefined') return true
-  const finePointer = window.matchMedia('(pointer: fine)').matches
-  const wide = window.matchMedia('(min-width: 900px)').matches
+function framesInBelt(belt: number) {
+  const start = belt * BELT_SIZE
+  const end = Math.min(FRAME_COUNT, start + BELT_SIZE)
+  const indices: number[] = []
+  for (let i = start; i < end; i += 1) indices.push(i)
+  return indices
+}
+
+type FrameSource = HTMLImageElement | ImageBitmap
+
+function prefersStaticMode() {
+  if (typeof window === 'undefined') return false
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
     ?.saveData
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  const cores = navigator.hardwareConcurrency || 8
-  return !finePointer || !wide || Boolean(saveData || reducedMotion || cores <= 2)
+  return Boolean(saveData || reducedMotion)
 }
 
 function getCanvasMetrics(canvas: HTMLCanvasElement) {
@@ -43,7 +54,7 @@ function getCanvasMetrics(canvas: HTMLCanvasElement) {
   if (cssWidth <= 0 || cssHeight <= 0) return null
 
   const maxWidth = cssWidth < 768 ? MAX_CANVAS_WIDTH_MOBILE : MAX_CANVAS_WIDTH_DESKTOP
-  const dpr = Math.min(window.devicePixelRatio || 1, 1.15)
+  const dpr = Math.min(window.devicePixelRatio || 1, cssWidth > 900 ? 1.5 : 1.25)
   const pixelWidth = Math.max(1, Math.min(maxWidth, Math.round(cssWidth * dpr)))
   const pixelHeight = Math.max(1, Math.round(pixelWidth * (cssHeight / cssWidth)))
 
@@ -63,8 +74,8 @@ function drawCover(
   pixelWidth: number,
   pixelHeight: number,
 ) {
-  const sourceWidth = image.naturalWidth || image.width
-  const sourceHeight = image.naturalHeight || image.height
+  const sourceWidth = 'naturalWidth' in image ? image.naturalWidth : image.width
+  const sourceHeight = 'naturalHeight' in image ? image.naturalHeight : image.height
   if (!sourceWidth || !sourceHeight) return
 
   const imgRatio = sourceWidth / sourceHeight
@@ -89,17 +100,26 @@ function drawCover(
 
   ctx.setTransform(1, 0, 0, 1, 0, 0)
   ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'low'
+  ctx.imageSmoothingQuality = 'high'
   ctx.clearRect(0, 0, pixelWidth, pixelHeight)
   ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
 }
 
-function loadImage(src: string): Promise<HTMLImageElement> {
-  return new Promise((resolve, reject) => {
+async function loadFrame(index: number, priority: 'high' | 'low' = 'low'): Promise<FrameSource> {
+  const src = frameSrc(index)
+
+  if (typeof createImageBitmap === 'function') {
+    const response = await fetch(src, { priority } as RequestInit)
+    if (!response.ok) throw new Error(`Failed to load frame ${index + 1}`)
+    const blob = await response.blob()
+    return createImageBitmap(blob)
+  }
+
+  return new Promise<HTMLImageElement>((resolve, reject) => {
     const img = new Image()
     img.decoding = 'async'
     img.onload = () => resolve(img)
-    img.onerror = () => reject(new Error(`Failed to load ${src}`))
+    img.onerror = () => reject(new Error(`Failed to load frame ${index + 1}`))
     img.src = src
   })
 }
@@ -115,33 +135,13 @@ function nearestLoadedFrame(frames: Array<FrameSource | undefined>, index: numbe
   return undefined
 }
 
-function buildLoadOrder(total: number) {
-  const order: number[] = []
-  const seen = new Set<number>()
-  const push = (index: number) => {
-    const clamped = Math.max(0, Math.min(total - 1, index))
-    if (seen.has(clamped)) return
-    seen.add(clamped)
-    order.push(clamped)
-  }
-
-  push(0)
-  push(total - 1)
-  for (let step = Math.floor(total / 3); step >= 1; step = Math.floor(step / 2)) {
-    for (let i = step; i < total; i += step) push(i)
-    if (step === 1) break
-  }
-  for (let i = 0; i < total; i += 1) push(i)
-  return order
-}
-
 function ScrollHint({ visible }: { visible: boolean }) {
   return (
     <motion.div
       className="pointer-events-none absolute inset-x-0 bottom-10 z-20 flex flex-col items-center gap-4"
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: visible ? 1 : 0, y: visible ? 0 : 10 }}
-      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
       aria-hidden={!visible}
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.28em] text-[#F1E9DB]/55">
@@ -170,8 +170,15 @@ export function ScrollExploreSequence() {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
   const sectionIndexRef = useRef(0)
   const startedRef = useRef(false)
+  const posterHiddenRef = useRef(false)
+  const readyRef = useRef(false)
+  const beltStateRef = useRef<Array<'idle' | 'loading' | 'ready'>>(
+    Array.from({ length: BELT_COUNT }, () => 'idle'),
+  )
+  const ensureBeltRef = useRef<(belt: number) => void>(() => {})
 
-  const [status, setStatus] = useState<'boot' | 'ready' | 'static' | 'error'>('boot')
+  const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
+  const [loadProgress, setLoadProgress] = useState(0)
   const [scrollProgress, setScrollProgress] = useState(0)
   const [sectionIndex, setSectionIndex] = useState(0)
   const [isDesktop, setIsDesktop] = useState(false)
@@ -196,15 +203,22 @@ export function ScrollExploreSequence() {
     let cancelled = false
     let resizeObserver: ResizeObserver | null = null
     let intersectionObserver: IntersectionObserver | null = null
+    let loadedCount = 0
+
     ctxRef.current = canvas.getContext('2d', {
       alpha: false,
       desynchronized: true,
     })
 
+    const bumpProgress = () => {
+      const next = Math.round((loadedCount / FRAME_COUNT) * 100)
+      setLoadProgress(next)
+    }
+
     const renderFrame = (index: number, force = false) => {
       const frames = framesRef.current
       const ctx = ctxRef.current
-      if (!ctx) return
+      if (!ctx || frames.length === 0) return
 
       const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
       if (!force && clamped === frameRef.current) return
@@ -217,7 +231,10 @@ export function ScrollExploreSequence() {
 
       frameRef.current = clamped
       drawCover(ctx, frame, metrics.pixelWidth, metrics.pixelHeight)
-      setShowPoster(false)
+      if (!posterHiddenRef.current) {
+        posterHiddenRef.current = true
+        setShowPoster(false)
+      }
     }
 
     const scheduleFrame = (index: number) => {
@@ -229,6 +246,12 @@ export function ScrollExploreSequence() {
       })
     }
 
+    const ensureBeltsAround = (belt: number) => {
+      ensureBeltRef.current(belt)
+      if (belt + 1 < BELT_COUNT) ensureBeltRef.current(belt + 1)
+      if (belt + 2 < BELT_COUNT) ensureBeltRef.current(belt + 2)
+    }
+
     const setupScroll = () => {
       if (cancelled || triggerRef.current) return
 
@@ -238,12 +261,13 @@ export function ScrollExploreSequence() {
         end: 'bottom bottom',
         pin,
         pinSpacing: true,
-        scrub: 0.25,
+        scrub: 0.35,
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const progress = self.progress
-          scheduleFrame(Math.round(progress * (FRAME_COUNT - 1)))
+          const frameIndex = Math.round(progress * (FRAME_COUNT - 1))
+          scheduleFrame(frameIndex)
           setScrollProgress(progress)
 
           const storyProgress = Math.max(0, (progress - 0.06) / 0.94)
@@ -255,6 +279,8 @@ export function ScrollExploreSequence() {
             sectionIndexRef.current = nextSection
             setSectionIndex(nextSection)
           }
+
+          ensureBeltsAround(beltForFrame(frameIndex))
         },
         onLeave: () => {
           pin.style.visibility = 'hidden'
@@ -268,8 +294,53 @@ export function ScrollExploreSequence() {
 
       frameRef.current = -1
       renderFrame(0, true)
+      readyRef.current = true
       setStatus('ready')
       ScrollTrigger.refresh()
+    }
+
+    const loadBelt = async (belt: number, priority: 'high' | 'low' = 'low') => {
+      if (cancelled || belt < 0 || belt >= BELT_COUNT) return
+      if (beltStateRef.current[belt] !== 'idle') return
+
+      beltStateRef.current[belt] = 'loading'
+      const frames = framesRef.current
+      const indices = framesInBelt(belt)
+      const batchSize = priority === 'high' ? 4 : 3
+
+      try {
+        for (let start = 0; start < indices.length; start += batchSize) {
+          if (cancelled) return
+          const batch = indices.slice(start, start + batchSize)
+          await Promise.all(
+            batch.map(async (index) => {
+              if (frames[index]) return
+              frames[index] = await loadFrame(index, priority)
+              loadedCount += 1
+              if (!cancelled) bumpProgress()
+            }),
+          )
+
+          const current = triggerRef.current
+            ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
+            : Math.max(0, frameRef.current)
+          if (beltForFrame(current) === belt || Math.abs(current - indices[0]) < BELT_SIZE) {
+            frameRef.current = -1
+            renderFrame(current, true)
+          }
+        }
+
+        if (!cancelled) beltStateRef.current[belt] = 'ready'
+      } catch {
+        beltStateRef.current[belt] = 'idle'
+        throw new Error(`Belt ${belt} failed`)
+      }
+    }
+
+    ensureBeltRef.current = (belt: number) => {
+      void loadBelt(belt, belt <= 1 ? 'high' : 'low').catch(() => {
+        if (!cancelled && !readyRef.current) setStatus('error')
+      })
     }
 
     const startSequence = async () => {
@@ -277,36 +348,50 @@ export function ScrollExploreSequence() {
       startedRef.current = true
 
       try {
-        // Instant first paint — never block the page on a full preload.
-        const first = await loadImage(POSTER_SRC)
-        framesRef.current = new Array(FRAME_COUNT)
-        framesRef.current[0] = first
-        renderFrame(0, true)
+        const first = await loadFrame(0, 'high')
+        if (cancelled) return
 
-        if (shouldUseStaticSequence()) {
+        if (prefersStaticMode()) {
+          framesRef.current = [first]
+          renderFrame(0, true)
           setStatus('static')
+          setLoadProgress(100)
           return
         }
 
+        setStatus('loading')
+        const frames: Array<FrameSource | undefined> = new Array(FRAME_COUNT)
+        frames[0] = first
+        framesRef.current = frames
+        loadedCount = 1
+        bumpProgress()
+        renderFrame(0, true)
+
+        // First story belt must be complete before scrubbing — then warm the next belts.
+        await loadBelt(0, 'high')
+        if (cancelled) return
         setupScroll()
 
-        const order = buildLoadOrder(FRAME_COUNT).filter((index) => index !== 0)
-        const batchSize = 6
-        for (let start = 0; start < order.length; start += batchSize) {
-          if (cancelled) return
-          const batch = order.slice(start, start + batchSize)
-          await Promise.all(
-            batch.map(async (index) => {
-              if (framesRef.current[index]) return
-              framesRef.current[index] = await loadImage(frameSrc(index))
-            }),
-          )
-          const current = triggerRef.current
-            ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
-            : 0
-          frameRef.current = -1
-          renderFrame(current, true)
+        void loadBelt(1, 'high')
+        void loadBelt(2, 'low')
+
+        // Idle-fill remaining belts so scrubbing ahead stays smooth.
+        const idleFill = () => {
+          for (let belt = 3; belt < BELT_COUNT; belt += 1) {
+            if (beltStateRef.current[belt] === 'idle') {
+              void loadBelt(belt, 'low')
+              break
+            }
+          }
+          if (!cancelled && beltStateRef.current.some((state) => state === 'idle')) {
+            if (typeof window.requestIdleCallback === 'function') {
+              window.requestIdleCallback(idleFill, { timeout: 1200 })
+            } else {
+              setTimeout(idleFill, 250)
+            }
+          }
         }
+        idleFill()
       } catch {
         if (!cancelled) setStatus('error')
       }
@@ -325,7 +410,6 @@ export function ScrollExploreSequence() {
     resizeObserver.observe(pin)
     window.addEventListener('resize', onResize)
 
-    // Start as soon as the section is near — but poster is already visible via <img>.
     intersectionObserver = new IntersectionObserver(
       (entries) => {
         if (entries.some((entry) => entry.isIntersecting)) {
@@ -333,7 +417,7 @@ export function ScrollExploreSequence() {
           void startSequence()
         }
       },
-      { rootMargin: '120% 0px', threshold: 0 },
+      { rootMargin: '180% 0px', threshold: 0.01 },
     )
     intersectionObserver.observe(section)
 
@@ -344,15 +428,20 @@ export function ScrollExploreSequence() {
       resizeObserver?.disconnect()
       intersectionObserver?.disconnect()
       window.removeEventListener('resize', onResize)
+      framesRef.current.forEach((frame) => {
+        if (frame && typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
+          frame.close()
+        }
+      })
       framesRef.current = []
     }
   }, [])
 
   const active = SECTIONS[sectionIndex]
   const alignLeft = sectionIndex % 2 === 0
-  const interactive = status === 'ready'
-  const showHint = interactive && scrollProgress < 0.08
-  const showCopy = interactive && scrollProgress >= 0.05
+  const showHint = status === 'ready' && scrollProgress < 0.08
+  const showCopy = status === 'ready' && scrollProgress >= 0.05
+  const isBooting = status === 'idle' || status === 'loading'
 
   const storyProgress = Math.max(0, (scrollProgress - 0.06) / 0.94)
   const localProgress = storyProgress * SECTION_COUNT - sectionIndex
@@ -365,7 +454,7 @@ export function ScrollExploreSequence() {
       ref={sectionRef}
       aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
-      style={{ height: status === 'ready' ? `${SCROLL_VH}vh` : '100vh' }}
+      style={{ height: status === 'static' ? '100vh' : `${SCROLL_VH}vh` }}
     >
       <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
         {showPoster && (
@@ -386,7 +475,7 @@ export function ScrollExploreSequence() {
             'absolute inset-0 h-full w-full scale-[1.02] transform-gpu will-change-transform',
             showPoster ? 'opacity-0' : 'opacity-100',
           )}
-          aria-hidden
+          aria-hidden={status !== 'ready' && status !== 'static'}
         />
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/55 via-[#090909]/20 to-[#090909]/55 md:hidden" />
@@ -399,6 +488,20 @@ export function ScrollExploreSequence() {
           )}
         />
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/45 via-transparent to-[#090909]/55" />
+
+        {isBooting && (
+          <div className="pointer-events-none absolute inset-x-0 bottom-8 z-20 flex flex-col items-center gap-2">
+            <div className="h-0.5 w-28 overflow-hidden rounded-full bg-[#F1E9DB]/15">
+              <div
+                className="h-full rounded-full bg-[#d4af37] transition-[width] duration-300 ease-out"
+                style={{ width: `${Math.max(8, loadProgress)}%` }}
+              />
+            </div>
+            <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#F1E9DB]/45">
+              Loading HD sequence
+            </p>
+          </div>
+        )}
 
         {status === 'error' && (
           <div className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-3 bg-[#090909]/90 px-6 text-center">
@@ -413,74 +516,86 @@ export function ScrollExploreSequence() {
 
         <ScrollHint visible={showHint} />
 
-        {(showCopy || status === 'static' || status === 'boot') && (
+        {showCopy && status === 'ready' && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
             <div className="content-grid w-full px-6 md:px-10 lg:px-16">
-              {interactive ? (
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={active.title}
-                    initial={{
-                      opacity: 0,
-                      y: 36,
-                      x: copyX,
-                      filter: 'blur(8px)',
-                    }}
-                    animate={{
-                      opacity: 1,
-                      y: copyY,
-                      x: 0,
-                      filter: 'blur(0px)',
-                    }}
-                    exit={{
-                      opacity: 0,
-                      y: -28,
-                      x: exitX,
-                      filter: 'blur(6px)',
-                    }}
-                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={active.title}
+                  initial={{
+                    opacity: 0,
+                    y: 36,
+                    x: copyX,
+                    filter: 'blur(10px)',
+                  }}
+                  animate={{
+                    opacity: 1,
+                    y: copyY,
+                    x: 0,
+                    filter: 'blur(0px)',
+                  }}
+                  exit={{
+                    opacity: 0,
+                    y: -28,
+                    x: exitX,
+                    filter: 'blur(8px)',
+                  }}
+                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                  className={cn(
+                    'relative mx-auto max-w-xl text-center',
+                    alignLeft
+                      ? 'md:mx-0 md:mr-auto md:text-left'
+                      : 'md:mx-0 md:ml-auto md:text-right',
+                  )}
+                >
+                  <div
                     className={cn(
-                      'relative mx-auto max-w-xl text-center',
+                      'absolute -inset-x-4 -inset-y-6 -z-10 rounded-[2rem] blur-2xl sm:-inset-x-6 sm:-inset-y-8',
+                      'bg-gradient-to-b from-black/55 via-black/40 to-transparent',
                       alignLeft
-                        ? 'md:mx-0 md:mr-auto md:text-left'
-                        : 'md:mx-0 md:ml-auto md:text-right',
+                        ? 'md:bg-gradient-to-r md:from-black/75 md:via-black/40 md:to-transparent'
+                        : 'md:bg-gradient-to-l md:from-black/75 md:via-black/40 md:to-transparent',
+                    )}
+                  />
+
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                    {String(sectionIndex + 1).padStart(2, '0')} /{' '}
+                    {String(SECTION_COUNT).padStart(2, '0')}
+                  </p>
+                  <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
+                    {active.title}
+                  </h2>
+                  <p
+                    className={cn(
+                      'mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
+                      alignLeft ? 'md:mx-0' : 'md:ml-auto md:mr-0',
                     )}
                   >
-                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
-                      {String(sectionIndex + 1).padStart(2, '0')} /{' '}
-                      {String(SECTION_COUNT).padStart(2, '0')}
-                    </p>
-                    <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
-                      {active.title}
-                    </h2>
-                    <p
-                      className={cn(
-                        'mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
-                        alignLeft ? 'md:mx-0' : 'md:ml-auto md:mr-0',
-                      )}
-                    >
-                      {active.description}
-                    </p>
-                  </motion.div>
-                </AnimatePresence>
-              ) : (
-                <div className="relative mx-auto max-w-xl text-center md:mx-0 md:text-left">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
-                    Explore
+                    {active.description}
                   </p>
-                  <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
-                    {SECTIONS[0]?.title}
-                  </h2>
-                  <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 md:mx-0 md:text-base">
-                    {SECTIONS[0]?.description}
-                  </p>
-                </div>
-              )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         )}
 
-        {interactive && (
+        {status === 'static' && (
+          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
+            <div className="content-grid w-full px-6 text-center md:px-10 md:text-left lg:px-16">
+              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                Explore
+              </p>
+              <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
+                {SECTIONS[0]?.title}
+              </h2>
+              <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 md:mx-0 md:text-base">
+                {SECTIONS[0]?.description}
+              </p>
+            </div>
+          </div>
+        )}
+
+        {status === 'ready' && (
           <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center gap-1.5 px-6 sm:bottom-6">
             {SECTIONS.map((item, index) => (
               <span

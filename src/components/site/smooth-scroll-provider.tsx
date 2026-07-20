@@ -84,7 +84,7 @@ export function SmoothScrollProvider({
         delete window.__nebuloidLenis
       }
       lenis.destroy()
-      ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
+      // Do not kill foreign ScrollTriggers — section effects own their own cleanup.
     }
   }, [])
 
