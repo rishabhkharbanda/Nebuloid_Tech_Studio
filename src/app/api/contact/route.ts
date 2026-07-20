@@ -44,7 +44,7 @@ function buildEmailText(inquiry: ContactInquiry) {
     '',
     `Name: ${inquiry.name}`,
     `Email: ${inquiry.email}`,
-    `Organization: ${inquiry.company || '—'}`,
+    `Organisation: ${inquiry.company || '—'}`,
     `Event Type: ${inquiry.eventType}`,
     `Industry: ${inquiry.industry || '—'}`,
     `Budget: ${inquiry.budget || '—'}`,
@@ -66,7 +66,7 @@ function buildEmailHtml(inquiry: ContactInquiry) {
       <table style="border-collapse:collapse;width:100%;border:1px solid #eee;">
         ${row('Name', inquiry.name)}
         ${row('Email', inquiry.email)}
-        ${row('Organization', inquiry.company || '—')}
+        ${row('Organisation', inquiry.company || '—')}
         ${row('Event Type', inquiry.eventType)}
         ${row('Industry', inquiry.industry || '—')}
         ${row('Budget', inquiry.budget || '—')}

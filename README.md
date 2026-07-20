@@ -97,6 +97,6 @@ src/
 - **Phone:** +91 7303922260
 - **Email:** NebuloidTechStudio@gmail.com
 
-## License
+## Licence
 
 Private — © Nebuloid Tech Studio LLP. All rights reserved.

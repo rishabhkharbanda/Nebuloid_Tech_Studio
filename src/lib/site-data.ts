@@ -85,7 +85,7 @@ export const scrollExploreSections = [
   {
     title: 'Motion Design.',
     description:
-      'Opening sequences, transitions, and ambient loops that keep energy high between program moments.',
+      'Opening sequences, transitions, and ambient loops that keep energy high between programme moments.',
   },
   {
     title: 'Creative Production.',
@@ -209,8 +209,8 @@ export const services = [
     description:
       'Intelligence woven into the experience — not bolted on as an afterthought.',
     detail:
-      'AI photo booths, personalized interactions, and smart engagement layers that feel magical, not mechanical.',
-    tags: ['AI Booth', 'Vision AI', 'Personalization', 'Engagement'],
+      'AI photo booths, personalised interactions, and smart engagement layers that feel magical, not mechanical.',
+    tags: ['AI Booth', 'Vision AI', 'Personalisation', 'Engagement'],
     image: '/assets/site-content/ai-photo-booth.jpg',
   },
   {
@@ -285,7 +285,7 @@ export const projects = [
   },
   {
     slug: 'registration-command-center',
-    title: 'Registration Command Center',
+    title: 'Registration Command Centre',
     category: 'Live Guest Operations',
     tech: 'Badge Printing · Guest Flow · Arrival Ops',
     image: '/assets/site-content/registration-guest-journey.jpg',
@@ -343,8 +343,8 @@ export const processSteps = [
     step: 'Measure',
     description: 'Data, insight, and clarity for what comes next.',
     detail:
-      'Engagement analytics, performance reporting, and optimization insights that inform your next experience.',
-    outputs: ['Analytics dashboards', 'Engagement reports', 'Optimization roadmap'],
+      'Engagement analytics, performance reporting, and optimisation insights that inform your next experience.',
+    outputs: ['Analytics dashboards', 'Engagement reports', 'Optimisation roadmap'],
   },
 ] as const
 

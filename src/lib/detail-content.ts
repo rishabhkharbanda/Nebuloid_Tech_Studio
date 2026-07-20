@@ -41,7 +41,7 @@ export const projectDetails: Record<
       {
         title: 'The Challenge',
         content:
-          'The event needed to elevate a traditional awards format into a premium celebration that honored winners while keeping 600 guests engaged throughout the evening.',
+          'The event needed to elevate a traditional awards format into a premium celebration that honoured winners while keeping 600 guests engaged throughout the evening.',
       },
       {
         title: 'Our Approach',
@@ -87,7 +87,7 @@ export const projectDetails: Record<
       'LED wall launch content',
       'Booth spatial design',
       'Lead capture integration',
-      'Live demo synchronization',
+      'Live demo synchronisation',
     ],
   },
   'ai-photo-booth-experience': {
@@ -204,7 +204,7 @@ export const projectDetails: Record<
   },
   'registration-command-center': {
     intro:
-      'A registration ecosystem built for 2,000 guests — QR check-in, badge printing, kiosk self-service, and a live command center for the events team.',
+      'A registration ecosystem built for 2,000 guests — QR check-in, badge printing, kiosk self-service, and a live command centre for the events team.',
     sections: [
       {
         title: 'The Challenge',
@@ -219,7 +219,7 @@ export const projectDetails: Record<
       {
         title: 'The Outcome',
         content:
-          'Peak check-in processed 400 guests per hour. Average wait time dropped to under three minutes. The command center became standard for all future events.',
+          'Peak check-in processed 400 guests per hour. Average wait time dropped to under three minutes. The command centre became standard for all future events.',
       },
     ],
     highlights: [
@@ -303,7 +303,7 @@ export const serviceDetails: Record<
       {
         title: 'Why It Matters',
         content:
-          'Registration is the first real interaction between your event and your guest. Friction here creates frustration that colors the entire experience.',
+          'Registration is the first real interaction between your event and your guest. Friction here creates frustration that colours the entire experience.',
       },
       {
         title: 'Attendee Experience',
@@ -354,7 +354,7 @@ export const serviceDetails: Record<
   },
   'ai-powered-experiences': {
     intro:
-      'Intelligence woven into the fabric of your event — personalized, surprising, and designed to feel magical rather than mechanical.',
+      'Intelligence woven into the fabric of your event — personalised, surprising, and designed to feel magical rather than mechanical.',
     sections: [
       {
         title: 'Why It Matters',
@@ -364,7 +364,7 @@ export const serviceDetails: Record<
       {
         title: 'Attendee Experience',
         content:
-          'From AI photo booths to personalized content recommendations, guests encounter moments that feel tailored, playful, and worth sharing.',
+          'From AI photo booths to personalised content recommendations, guests encounter moments that feel tailored, playful, and worth sharing.',
       },
       {
         title: 'Business Outcome',
@@ -374,7 +374,7 @@ export const serviceDetails: Record<
     ],
     highlights: [
       'AI photo booth experiences',
-      'Personalized guest interactions',
+      'Personalised guest interactions',
       'Vision-based engagement',
       'Smart content delivery',
       'Real-time AI analytics',
@@ -420,7 +420,7 @@ export const serviceDetails: Record<
       {
         title: 'Attendee Experience',
         content:
-          'While invisible to guests, intelligence systems enable smoother operations, faster support, and increasingly personalized touchpoints.',
+          'While invisible to guests, intelligence systems enable smoother operations, faster support, and increasingly personalised touchpoints.',
       },
       {
         title: 'Business Outcome',
@@ -461,7 +461,7 @@ export const blogDetails: Record<
     body: [
       'Registration should be invisible. Not because it lacks importance, but because when it works perfectly, guests do not think about it at all — they simply arrive and the event begins.',
       'The friction points are predictable: long queues, manual lookups, badge reprints, and unclear signage. Each one erodes the emotional investment guests brought with them.',
-      'QR check-in, self-service kiosks, and live command centers change the equation. Guests scan, receive their badge, and move forward. Operations teams see throughput in real time and adjust before problems become visible.',
+      'QR check-in, self-service kiosks, and live command centres change the equation. Guests scan, receive their badge, and move forward. Operations teams see throughput in real time and adjust before problems become visible.',
       'When registration disappears into the experience, the event starts on the right note — every single time.',
     ],
   },
@@ -470,7 +470,7 @@ export const blogDetails: Record<
       'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=80',
     body: [
       'AI at events is often reduced to a novelty — a photo booth with filters and a queue. But the technology is capable of far more when integrated thoughtfully into the experience ecosystem.',
-      'Personalized content delivery, intelligent wayfinding, real-time translation, and adaptive signage are all within reach. The key is designing AI as an invisible layer that enhances human moments rather than replacing them.',
+      'Personalised content delivery, intelligent wayfinding, real-time translation, and adaptive signage are all within reach. The key is designing AI as an invisible layer that enhances human moments rather than replacing them.',
       'The events that get AI right treat it as a creative tool — one that generates shareable moments, captures rich engagement data, and surprises guests in ways that feel intentional rather than gimmicky.',
       'The photo booth is just the beginning. The future of AI at events is quieter, smarter, and deeply integrated into how experiences are designed and measured.',
     ],
@@ -482,7 +482,7 @@ export const blogDetails: Record<
       'The stage is the emotional anchor of any corporate celebration. It is where attention converges, stories are told, and the brand speaks loudest.',
       'Great stage design goes beyond backdrop graphics. It considers sightlines, lighting transitions, motion content timing, and the rhythm of reveal moments that keep an audience of hundreds engaged for hours.',
       'When stage design aligns with the event\'s visual identity and narrative arc, winner announcements land with weight, keynote speakers feel authoritative, and the entire evening gains a cinematic quality.',
-      'Corporate celebrations deserve the same design rigor as product launches. The stage is not a utility — it is the narrative center of the experience.',
+      'Corporate celebrations deserve the same design rigour as product launches. The stage is not a utility — it is the narrative centre of the experience.',
     ],
   },
   'experiential-marketing-that-earns-attention-not-just-impressions': {
@@ -585,7 +585,7 @@ export const industryDetails: Record<
   },
   agriculture: {
     intro:
-      'Agriculture expos, farmer outreach programs, and institutional platforms where clarity, accessibility, and trust are essential.',
+      'Agriculture expos, farmer outreach programmes, and institutional platforms where clarity, accessibility, and trust are essential.',
     sections: [
       {
         title: 'What We Deliver',
@@ -619,7 +619,7 @@ export const industryDetails: Record<
   },
   'more-sectors': {
     intro:
-      'Beyond our core sectors, we partner with organizations across corporate, healthcare, education, government, exhibitions, and emerging industries.',
+      'Beyond our core sectors, we partner with organisations across corporate, healthcare, education, government, exhibitions, and emerging industries.',
     sections: [
       {
         title: 'What We Deliver',
@@ -695,7 +695,7 @@ export const technologyDetails: Record<
   'mobile-applications': {
     intro: 'Companion apps that keep guests connected to your event from pocket to venue and back.',
     sections: [
-      { title: 'Use Cases', content: 'Event schedules, push notifications, networking, maps, live polls, and personalized agendas.' },
+      { title: 'Use Cases', content: 'Event schedules, push notifications, networking, maps, live polls, and personalised agendas.' },
       { title: 'Impact', content: 'Increases engagement during the event and provides a direct post-event communication channel.' },
     ],
     highlights: ['Live schedules', 'Push updates', 'Venue maps', 'Networking tools', 'Personal agendas'],
@@ -714,7 +714,7 @@ export const technologyDetails: Record<
       { title: 'Use Cases', content: 'Touchscreen quizzes, prize wheels, AR games, leaderboard challenges, and team competitions.' },
       { title: 'Impact', content: 'Increases dwell time, captures leads, and creates memorable brand interactions.' },
     ],
-    highlights: ['Touchscreen games', 'Leaderboards', 'Prize mechanics', 'Lead integration', 'Brand customization'],
+    highlights: ['Touchscreen games', 'Leaderboards', 'Prize mechanics', 'Lead integration', 'Brand customisation'],
   },
   'live-dashboards': {
     intro: 'Real-time operational intelligence that keeps your team informed and responsive throughout the event.',
@@ -736,7 +736,7 @@ export const technologyDetails: Record<
     intro: 'Animated content that brings event stages, screens, and digital touchpoints to life with rhythm and narrative.',
     sections: [
       { title: 'Use Cases', content: 'Show openers, transitions, award reveals, speaker intros, social content, and LED loop animations.' },
-      { title: 'Impact', content: 'Adds cinematic quality to live moments and maintains visual energy between program segments.' },
+      { title: 'Impact', content: 'Adds cinematic quality to live moments and maintains visual energy between programme segments.' },
     ],
     highlights: ['Show openers', 'Award sequences', 'Speaker intros', 'LED loops', 'Social cutdowns'],
   },

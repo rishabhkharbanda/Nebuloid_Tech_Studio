@@ -205,9 +205,9 @@ export function ContactSection() {
                     htmlFor="company"
                     className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/45"
                   >
-                    Organization
+                    Organisation
                   </label>
-                  <Input id="company" name="company" placeholder="Organization" />
+                  <Input id="company" name="company" placeholder="Organisation" />
                 </div>
                 <div className="space-y-2">
                   <label

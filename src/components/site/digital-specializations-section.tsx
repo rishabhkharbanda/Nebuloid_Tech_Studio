@@ -13,7 +13,7 @@ export function DigitalSpecializationsSection() {
             Expertise
           </p>
           <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4.5vw,4.5rem)] font-bold leading-tight tracking-[-0.03em]">
-            Technologies We Specialize In
+            Technologies We Specialise In
           </h2>
         </SectionReveal>
 

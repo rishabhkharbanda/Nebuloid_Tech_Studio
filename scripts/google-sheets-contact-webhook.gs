@@ -30,7 +30,7 @@ function setupSheet() {
     'Received At',
     'Name',
     'Email',
-    'Organization',
+    'Organisation',
     'Event Type',
     'Industry',
     'Budget',
@@ -50,7 +50,7 @@ function buildEmailBody(payload) {
     '',
     'Name: ' + (payload.name || ''),
     'Email: ' + (payload.email || ''),
-    'Organization: ' + (payload.company || '—'),
+    'Organisation: ' + (payload.company || '—'),
     'Event Type: ' + (payload.eventType || ''),
     'Industry: ' + (payload.industry || '—'),
     'Budget: ' + (payload.budget || '—'),
@@ -82,7 +82,7 @@ function buildEmailHtml(payload) {
     '<table style="border-collapse:collapse;width:100%;border:1px solid #eee;">' +
     row('Name', payload.name) +
     row('Email', payload.email) +
-    row('Organization', payload.company) +
+    row('Organisation', payload.company) +
     row('Event Type', payload.eventType) +
     row('Industry', payload.industry) +
     row('Budget', payload.budget) +

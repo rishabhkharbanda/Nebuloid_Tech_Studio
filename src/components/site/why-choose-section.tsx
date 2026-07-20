@@ -14,7 +14,7 @@ export function WhyChooseSection() {
             Why Nebuloid
           </p>
           <h2 className="mt-4 max-w-4xl text-[clamp(2rem,4.5vw,4.5rem)] font-bold leading-tight tracking-[-0.03em]">
-            Why Organizations Choose Nebuloid
+            Why Organisations Choose Nebuloid
           </h2>
         </SectionReveal>
 

@@ -235,14 +235,14 @@ export const digitalProjects = [
       'Touchscreen Applications',
       'CMS',
       'Responsive UI',
-      'Performance Optimization',
+      'Performance Optimisation',
       'Analytics Integration',
     ],
     impact: [
       'Increased visitor engagement',
       'Enhanced learning experience',
       'Better accessibility to information',
-      'Digitized visitor journey',
+      'Digitised visitor journey',
       'Modern digital presence',
       'Memorable interactive experiences',
     ],
@@ -274,7 +274,7 @@ export const digitalCapabilities = [
     title: 'AI-Powered Visitor Experiences',
     category: 'AI & Engagement',
     description:
-      'Intelligent activations woven into the visitor journey — themed photo moments, personalization, and memorable AI-first interactions.',
+      'Intelligent activations woven into the visitor journey — themed photo moments, personalisation, and memorable AI-first interactions.',
     href: '/technology/ai-photo-booths',
     featured: true,
   },
@@ -314,7 +314,7 @@ export const digitalCapabilities = [
     title: 'Government Digital Platforms',
     category: 'Platforms & Web',
     description:
-      'Accessible, scalable public-facing platforms that modernize institutional presence and simplify information delivery.',
+      'Accessible, scalable public-facing platforms that modernise institutional presence and simplify information delivery.',
     href: '/digital-experiences/bharattex',
     featured: false,
   },
@@ -354,7 +354,7 @@ export const digitalCapabilities = [
     title: 'Analytics Dashboards',
     category: 'Data & Systems',
     description:
-      'Live dashboards and engagement analytics that translate visitor behavior into actionable performance insight.',
+      'Live dashboards and engagement analytics that translate visitor behaviour into actionable performance insight.',
     href: '/technology/live-dashboards',
     featured: false,
   },
@@ -397,7 +397,7 @@ export const digitalSpecializations = [
   'CMS Solutions',
   'API Integrations',
   'Analytics Dashboards',
-  'SEO Optimization',
+  'SEO Optimisation',
 ] as const
 
 export const digitalWorkflow = [
@@ -405,9 +405,9 @@ export const digitalWorkflow = [
   { step: 'Design', description: 'We craft interfaces, flows, and interactions that feel intuitive and premium.' },
   { step: 'Develop', description: 'We engineer scalable platforms with performance and reliability at the core.' },
   { step: 'Deploy', description: 'We launch across venues, devices, and environments — ready for real-world use.' },
-  { step: 'Engage Visitors', description: 'We optimize touchpoints so every interaction feels seamless and memorable.' },
+  { step: 'Engage Visitors', description: 'We optimise touchpoints so every interaction feels seamless and memorable.' },
   { step: 'Measure Performance', description: 'We track engagement, usage, and outcomes with live analytics.' },
-  { step: 'Optimize & Scale', description: 'We refine, expand, and evolve the experience based on real data.' },
+  { step: 'Optimise & Scale', description: 'We refine, expand, and evolve the experience based on real data.' },
 ] as const
 
 export const whyChooseNebuloid = [
@@ -416,7 +416,7 @@ export const whyChooseNebuloid = [
   { title: 'Enterprise-grade Software', description: 'Built for scale, reliability, and the demands of high-traffic environments.' },
   { title: 'Event Technology Solutions', description: 'Kiosks, AI activations, and engagement systems engineered for live events.' },
   { title: 'Government Digital Platforms', description: 'Accessible, compliant, and modern platforms for public institutions.' },
-  { title: 'Scalable Architecture', description: 'Systems designed to grow with your organization and your audience.' },
+  { title: 'Scalable Architecture', description: 'Systems designed to grow with your organisation and your audience.' },
   { title: 'Premium UI/UX', description: 'Every interface crafted with intent — elegant, intuitive, and on-brand.' },
   { title: 'End-to-End Development', description: 'From concept to deployment — one partner for the complete digital experience.' },
 ] as const
