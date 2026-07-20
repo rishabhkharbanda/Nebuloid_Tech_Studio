@@ -5,6 +5,12 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import Lenis from 'lenis'
 import { useEffect } from 'react'
 
+declare global {
+  interface Window {
+    __nebuloidLenis?: Lenis
+  }
+}
+
 export function SmoothScrollProvider({
   children,
 }: {
@@ -57,9 +63,14 @@ export function SmoothScrollProvider({
     frameId = requestAnimationFrame(raf)
     ScrollTrigger.refresh()
 
+    window.__nebuloidLenis = lenis
+
     return () => {
       cancelAnimationFrame(frameId)
       ScrollTrigger.removeEventListener('refresh', onRefresh)
+      if (window.__nebuloidLenis === lenis) {
+        delete window.__nebuloidLenis
+      }
       lenis.destroy()
       ScrollTrigger.getAll().forEach((trigger) => trigger.kill())
     }

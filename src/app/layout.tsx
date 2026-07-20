@@ -7,6 +7,7 @@ import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { CustomCursor } from '@/components/site/custom-cursor'
 import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
+import { BackToTopButton } from '@/components/site/back-to-top-button'
 import {
   getOrganizationSchema,
   getWebsiteSchema,
@@ -101,6 +102,7 @@ export default function RootLayout({
       </head>
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
+        <BackToTopButton />
         <SecretDaylightToggle />
         <CustomCursor />
         <Analytics />

@@ -48,6 +48,11 @@ const socialLinks = [
 
 export function Footer() {
   const scrollToTop = () => {
+    const lenis = window.__nebuloidLenis
+    if (lenis) {
+      lenis.scrollTo(0, { duration: 1.2 })
+      return
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' })
   }
 
