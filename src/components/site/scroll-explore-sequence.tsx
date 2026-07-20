@@ -270,7 +270,7 @@ export function ScrollExploreSequence() {
           scheduleFrame(frameIndex)
           setScrollProgress(progress)
 
-          const storyProgress = Math.max(0, (progress - 0.06) / 0.94)
+          const storyProgress = Math.max(0, progress)
           const nextSection = Math.min(
             SECTION_COUNT - 1,
             Math.floor(storyProgress * SECTION_COUNT),
@@ -439,15 +439,15 @@ export function ScrollExploreSequence() {
 
   const active = SECTIONS[sectionIndex]
   const alignLeft = sectionIndex % 2 === 0
-  const showHint = status === 'ready' && scrollProgress < 0.08
-  const showCopy = status === 'ready' && scrollProgress >= 0.05
+  const showHint = status === 'ready' && scrollProgress < 0.06
+  const showCopy = status !== 'error'
   const isBooting = status === 'idle' || status === 'loading'
 
-  const storyProgress = Math.max(0, (scrollProgress - 0.06) / 0.94)
+  const storyProgress = Math.max(0, scrollProgress)
   const localProgress = storyProgress * SECTION_COUNT - sectionIndex
-  const copyY = (0.5 - localProgress) * 28
-  const copyX = isDesktop ? (alignLeft ? -24 : 24) : 0
-  const exitX = isDesktop ? (alignLeft ? -16 : 16) : 0
+  const copyY = (0.5 - localProgress) * 16
+  const copyX = isDesktop ? (alignLeft ? -10 : 10) : 0
+  const exitX = isDesktop ? (alignLeft ? -8 : 8) : 0
 
   return (
     <section
@@ -516,81 +516,69 @@ export function ScrollExploreSequence() {
 
         <ScrollHint visible={showHint} />
 
-        {showCopy && status === 'ready' && (
+        {showCopy && (
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
             <div className="content-grid w-full px-6 md:px-10 lg:px-16">
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={active.title}
-                  initial={{
-                    opacity: 0,
-                    y: 36,
-                    x: copyX,
-                    filter: 'blur(10px)',
-                  }}
-                  animate={{
-                    opacity: 1,
-                    y: copyY,
-                    x: 0,
-                    filter: 'blur(0px)',
-                  }}
-                  exit={{
-                    opacity: 0,
-                    y: -28,
-                    x: exitX,
-                    filter: 'blur(8px)',
-                  }}
-                  transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                  className={cn(
-                    'relative mx-auto max-w-xl text-center',
-                    alignLeft
-                      ? 'md:mx-0 md:mr-auto md:text-left'
-                      : 'md:mx-0 md:ml-auto md:text-right',
-                  )}
-                >
-                  <div
+              {status === 'ready' ? (
+                <AnimatePresence mode="popLayout" initial={false}>
+                  <motion.div
+                    key={active.title}
+                    initial={{ opacity: 0, y: 12, x: copyX }}
+                    animate={{ opacity: 1, y: copyY, x: 0 }}
+                    exit={{ opacity: 0, y: -10, x: exitX }}
+                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
                     className={cn(
-                      'absolute -inset-x-4 -inset-y-6 -z-10 rounded-[2rem] blur-2xl sm:-inset-x-6 sm:-inset-y-8',
-                      'bg-gradient-to-b from-black/55 via-black/40 to-transparent',
+                      'relative mx-auto max-w-xl text-center',
                       alignLeft
-                        ? 'md:bg-gradient-to-r md:from-black/75 md:via-black/40 md:to-transparent'
-                        : 'md:bg-gradient-to-l md:from-black/75 md:via-black/40 md:to-transparent',
-                    )}
-                  />
-
-                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
-                    {String(sectionIndex + 1).padStart(2, '0')} /{' '}
-                    {String(SECTION_COUNT).padStart(2, '0')}
-                  </p>
-                  <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
-                    {active.title}
-                  </h2>
-                  <p
-                    className={cn(
-                      'mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
-                      alignLeft ? 'md:mx-0' : 'md:ml-auto md:mr-0',
+                        ? 'md:mx-0 md:mr-auto md:text-left'
+                        : 'md:mx-0 md:ml-auto md:text-right',
                     )}
                   >
-                    {active.description}
-                  </p>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </div>
-        )}
+                    <div
+                      className={cn(
+                        'absolute -inset-x-4 -inset-y-6 -z-10 rounded-[2rem] blur-2xl sm:-inset-x-6 sm:-inset-y-8',
+                        'bg-gradient-to-b from-black/55 via-black/40 to-transparent',
+                        alignLeft
+                          ? 'md:bg-gradient-to-r md:from-black/75 md:via-black/40 md:to-transparent'
+                          : 'md:bg-gradient-to-l md:from-black/75 md:via-black/40 md:to-transparent',
+                      )}
+                    />
 
-        {status === 'static' && (
-          <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
-            <div className="content-grid w-full px-6 text-center md:px-10 md:text-left lg:px-16">
-              <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
-                Explore
-              </p>
-              <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
-                {SECTIONS[0]?.title}
-              </h2>
-              <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 md:mx-0 md:text-base">
-                {SECTIONS[0]?.description}
-              </p>
+                    <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                      {String(sectionIndex + 1).padStart(2, '0')} /{' '}
+                      {String(SECTION_COUNT).padStart(2, '0')}
+                    </p>
+                    <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
+                      {active.title}
+                    </h2>
+                    <p
+                      className={cn(
+                        'mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:text-lg',
+                        alignLeft ? 'md:mx-0' : 'md:ml-auto md:mr-0',
+                      )}
+                    >
+                      {active.description}
+                    </p>
+                  </motion.div>
+                </AnimatePresence>
+              ) : (
+                <div
+                  className={cn(
+                    'relative mx-auto max-w-xl text-center',
+                    'md:mx-0 md:mr-auto md:text-left',
+                  )}
+                >
+                  <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
+                    01 / {String(SECTION_COUNT).padStart(2, '0')}
+                  </p>
+                  <h2 className="mt-3 text-[clamp(1.85rem,8vw,4.75rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB] sm:mt-4">
+                    {SECTIONS[0]?.title}
+                  </h2>
+                  <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:mx-0 md:text-lg">
+                    {SECTIONS[0]?.description}
+                  </p>
+                </div>
+              )}
             </div>
           </div>
         )}
@@ -601,7 +589,7 @@ export function ScrollExploreSequence() {
               <span
                 key={item.title}
                 className={cn(
-                  'h-1 rounded-full transition-all duration-500',
+                  'h-1 rounded-full transition-all duration-300',
                   index === sectionIndex
                     ? 'w-6 bg-[#d4af37] sm:w-8'
                     : 'w-1.5 bg-[#F1E9DB]/25 sm:w-2',
