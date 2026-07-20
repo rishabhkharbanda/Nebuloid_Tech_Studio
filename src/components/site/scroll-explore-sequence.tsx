@@ -469,9 +469,9 @@ export function ScrollExploreSequence() {
 
   const storyProgress = Math.max(0, scrollProgress)
   const localProgress = storyProgress * sectionCount - sectionIndex
-  const copyY = (0.5 - localProgress) * 16
-  const copyX = isDesktop ? (alignLeft ? -10 : 10) : 0
-  const exitX = isDesktop ? (alignLeft ? -8 : 8) : 0
+  const copyY = (0.5 - localProgress) * 24
+  const copyX = isDesktop ? (alignLeft ? -18 : 18) : 0
+  const exitX = isDesktop ? (alignLeft ? -12 : 12) : 0
 
   return (
     <section
@@ -544,13 +544,33 @@ export function ScrollExploreSequence() {
           <div className="pointer-events-none absolute inset-0 z-10 flex items-center">
             <div className="content-grid w-full px-6 md:px-10 lg:px-16">
               {status === 'ready' ? (
-                <AnimatePresence mode="popLayout" initial={false}>
+                <AnimatePresence mode="sync" initial={false}>
                   <motion.div
                     key={active.title}
-                    initial={{ opacity: 0, y: 12, x: copyX }}
-                    animate={{ opacity: 1, y: copyY, x: 0 }}
-                    exit={{ opacity: 0, y: -10, x: exitX }}
-                    transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                    initial={{
+                      opacity: 0,
+                      y: 28,
+                      x: copyX,
+                      filter: 'blur(6px)',
+                    }}
+                    animate={{
+                      opacity: 1,
+                      y: copyY,
+                      x: 0,
+                      filter: 'blur(0px)',
+                    }}
+                    exit={{
+                      opacity: 0,
+                      y: -22,
+                      x: exitX,
+                      filter: 'blur(4px)',
+                    }}
+                    transition={{
+                      opacity: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                      y: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+                      x: { duration: 0.45, ease: [0.22, 1, 0.36, 1] },
+                      filter: { duration: 0.4, ease: [0.22, 1, 0.36, 1] },
+                    }}
                     className={cn(
                       'relative mx-auto max-w-xl text-center',
                       alignLeft
@@ -586,7 +606,10 @@ export function ScrollExploreSequence() {
                   </motion.div>
                 </AnimatePresence>
               ) : (
-                <div
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className={cn(
                     'relative mx-auto max-w-xl text-center',
                     'md:mx-0 md:mr-auto md:text-left',
@@ -601,7 +624,7 @@ export function ScrollExploreSequence() {
                   <p className="mx-auto mt-4 max-w-md text-sm leading-relaxed text-[#F1E9DB]/72 sm:mt-6 sm:text-base md:mx-0 md:text-lg">
                     {sections[0]?.description}
                   </p>
-                </div>
+                </motion.div>
               )}
             </div>
           </div>
@@ -613,7 +636,7 @@ export function ScrollExploreSequence() {
               <span
                 key={item.title}
                 className={cn(
-                  'h-1 rounded-full transition-all duration-300',
+                  'h-1 rounded-full transition-all duration-500 ease-out',
                   index === sectionIndex
                     ? 'w-6 bg-[#d4af37] sm:w-8'
                     : 'w-1.5 bg-[#F1E9DB]/25 sm:w-2',
