@@ -209,9 +209,11 @@ export function ScrollExploreSequence() {
         },
         onLeave: () => {
           pin.style.visibility = 'hidden'
+          pin.style.pointerEvents = 'none'
         },
         onEnterBack: () => {
           pin.style.visibility = 'visible'
+          pin.style.pointerEvents = 'auto'
         },
       })
 
