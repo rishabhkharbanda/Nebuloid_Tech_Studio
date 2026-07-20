@@ -238,6 +238,29 @@ html.day-theme .theme-preserve-dark .text-outline-display {
   -webkit-text-stroke-color: #ffffff;
 }
 
+/* Outline buttons: keep contrast when day-theme remaps cream text to dark */
+html.day-theme [data-slot='button'][class*='border-[#F1E9DB]'] {
+  color: #181712 !important;
+  border-color: rgba(24, 23, 18, 0.28) !important;
+  background-color: transparent !important;
+}
+
+html.day-theme [data-slot='button'][class*='border-[#F1E9DB]']:hover {
+  border-color: rgba(164, 126, 8, 0.55) !important;
+  background-color: rgba(24, 23, 18, 0.05) !important;
+}
+
+html.day-theme .theme-preserve-dark [data-slot='button'][class*='border-[#F1E9DB]'] {
+  color: #f1e9db !important;
+  border-color: rgba(241, 233, 219, 0.35) !important;
+  background-color: transparent !important;
+}
+
+html.day-theme .theme-preserve-dark [data-slot='button'][class*='border-[#F1E9DB]']:hover {
+  border-color: rgba(212, 175, 55, 0.6) !important;
+  background-color: rgba(241, 233, 219, 0.1) !important;
+}
+
 html.day-theme ::selection {
   background: rgba(164, 126, 8, 0.22);
   color: #181712;

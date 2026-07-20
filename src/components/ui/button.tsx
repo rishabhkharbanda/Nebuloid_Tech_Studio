@@ -12,7 +12,7 @@ const buttonVariants = cva(
         default:
           'bg-[#F1E9DB] text-[#090909] hover:bg-[#d4af37] hover:text-[#090909]',
         outline:
-          'border border-[#F1E9DB]/30 bg-[#111111] text-[#F1E9DB] hover:border-[#d4af37]/60 hover:bg-[#171717]',
+          'border border-[#F1E9DB]/35 bg-transparent text-[#F1E9DB] hover:border-[#d4af37]/60 hover:bg-[#F1E9DB]/10',
         ghost: 'bg-transparent text-[#F1E9DB] hover:bg-[#F1E9DB]/10',
       },
       size: {

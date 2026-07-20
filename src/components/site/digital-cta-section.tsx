@@ -44,6 +44,7 @@ export function DigitalCtaSection() {
                 <Button
                   variant="outline"
                   size="lg"
+                  className="min-w-[10.5rem]"
                   onClick={() => router.push('/digital-experiences')}
                 >
                   View Our Work
