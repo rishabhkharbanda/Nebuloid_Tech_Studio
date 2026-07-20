@@ -4,10 +4,19 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef, useState } from 'react'
 
-const FRAME_COUNT = 240
+const FRAME_COUNT = 300
 const SCROLL_VH = 240
 const FRAME_BASE = '/assets/scroll-sequence-web/ezgif-frame-'
 const MAX_CANVAS_WIDTH = 1600
+
+const SCROLL_CAPTIONS = [
+  'Scroll to explore',
+  'Discover emotion in motion',
+  'Touch the interactive story',
+  'Step into immersive worlds',
+  'Experience, then share',
+  'Ready to begin your journey',
+] as const
 
 function frameSrc(index: number) {
   return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
@@ -103,6 +112,8 @@ export function AppleScrollSequence() {
   const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [progress, setProgress] = useState(0)
+  const [captionIndex, setCaptionIndex] = useState(0)
+  const captionIndexRef = useRef(0)
 
   useEffect(() => {
     gsap.registerPlugin(ScrollTrigger)
@@ -160,7 +171,17 @@ export function AppleScrollSequence() {
         anticipatePin: 0,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
-          scheduleFrame(Math.round(self.progress * (FRAME_COUNT - 1)))
+          const nextFrame = Math.round(self.progress * (FRAME_COUNT - 1))
+          scheduleFrame(nextFrame)
+
+          const nextCaption = Math.min(
+            SCROLL_CAPTIONS.length - 1,
+            Math.floor(self.progress * SCROLL_CAPTIONS.length),
+          )
+          if (captionIndexRef.current !== nextCaption) {
+            captionIndexRef.current = nextCaption
+            setCaptionIndex(nextCaption)
+          }
         },
         onLeave: () => {
           pin.style.visibility = 'hidden'
@@ -280,7 +301,7 @@ export function AppleScrollSequence() {
         {status === 'ready' && (
           <div className="pointer-events-none absolute inset-x-0 bottom-10 z-10 flex justify-center px-6">
             <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#F1E9DB]/40">
-              Scroll to explore
+              {SCROLL_CAPTIONS[captionIndex]}
             </p>
           </div>
         )}
