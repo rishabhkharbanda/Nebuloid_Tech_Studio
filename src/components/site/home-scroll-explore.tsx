@@ -11,12 +11,15 @@ const ScrollExploreSequence = dynamic(
   {
     ssr: false,
     loading: () => (
-      <section aria-hidden className="relative z-0 h-[100vh] overflow-hidden bg-[#090909]">
+      <section
+        aria-hidden
+        className="relative z-0 h-[240vh] overflow-hidden bg-[#090909]"
+      >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
           src="/assets/scroll-sequence-hd/frame-001.jpg"
           alt=""
-          className="h-full w-full object-cover opacity-80"
+          className="sticky top-0 h-screen w-full object-cover opacity-80"
         />
       </section>
     ),
