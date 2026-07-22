@@ -17,7 +17,7 @@ const ScrollExploreSequence = dynamic(
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img
-          src="/assets/scroll-sequence-hd/frame-001.jpg"
+          src="/assets/scroll-explore-poster.jpg"
           alt=""
           className="sticky top-0 h-screen w-full object-cover opacity-80"
         />
@@ -28,13 +28,22 @@ const ScrollExploreSequence = dynamic(
 
 export function HomeScrollExplore() {
   useEffect(() => {
-    const link = document.createElement('link')
-    link.rel = 'preload'
-    link.as = 'image'
-    link.href = '/assets/scroll-sequence-hd/frame-001.jpg'
-    document.head.appendChild(link)
+    const poster = document.createElement('link')
+    poster.rel = 'preload'
+    poster.as = 'image'
+    poster.href = '/assets/scroll-explore-poster.jpg'
+    document.head.appendChild(poster)
+
+    const video = document.createElement('link')
+    video.rel = 'preload'
+    video.as = 'video'
+    video.href = '/assets/scroll-explore.mp4'
+    video.type = 'video/mp4'
+    document.head.appendChild(video)
+
     return () => {
-      link.remove()
+      poster.remove()
+      video.remove()
     }
   }, [])
 

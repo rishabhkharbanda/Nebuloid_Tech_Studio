@@ -7,18 +7,11 @@ import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-/** HD sequence — every 3rd original frame @ 1920×1080, loaded by story-section belts. */
-const FRAME_COUNT = 100
 const SCROLL_VH = 240
-const FRAME_BASE = '/assets/scroll-sequence-hd/frame-'
-const POSTER_SRC = `${FRAME_BASE}001.jpg`
-const MAX_CANVAS_WIDTH_DESKTOP = 1920
-const MAX_CANVAS_WIDTH_MOBILE = 1080
+const VIDEO_SRC = '/assets/scroll-explore.mp4'
+const POSTER_SRC = '/assets/scroll-explore-poster.jpg'
 /** Show 5 beats per visit, drawn from the full 9-capability pool. */
 const ACTIVE_SECTION_COUNT = 5
-/** Smaller loading belts cap decoded frame memory without reducing source quality. */
-const BELT_COUNT = 10
-const BELT_SIZE = Math.ceil(FRAME_COUNT / BELT_COUNT)
 
 type ExploreSection = (typeof scrollExploreSections)[number]
 
@@ -39,141 +32,12 @@ function pickExploreSections(
     .map((index) => pool[index])
 }
 
-function frameSrc(index: number) {
-  return `${FRAME_BASE}${String(index + 1).padStart(3, '0')}.jpg`
-}
-
-function beltForFrame(index: number) {
-  return Math.min(BELT_COUNT - 1, Math.floor(index / BELT_SIZE))
-}
-
-function framesInBelt(belt: number) {
-  const start = belt * BELT_SIZE
-  const end = Math.min(FRAME_COUNT, start + BELT_SIZE)
-  const indices: number[] = []
-  for (let i = start; i < end; i += 1) indices.push(i)
-  return indices
-}
-
-type FrameSource = HTMLImageElement | ImageBitmap
-
 function prefersStaticMode() {
   if (typeof window === 'undefined') return false
   const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection
     ?.saveData
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
   return Boolean(saveData || reducedMotion)
-}
-
-function getCanvasMetrics(canvas: HTMLCanvasElement) {
-  const parent = canvas.parentElement
-  if (!parent) return null
-
-  const cssWidth = parent.clientWidth
-  const cssHeight = parent.clientHeight
-  if (cssWidth <= 0 || cssHeight <= 0) return null
-
-  const maxWidth = cssWidth < 768 ? MAX_CANVAS_WIDTH_MOBILE : MAX_CANVAS_WIDTH_DESKTOP
-  const dpr = Math.min(window.devicePixelRatio || 1, cssWidth > 900 ? 1.5 : 1.25)
-  const pixelWidth = Math.max(1, Math.min(maxWidth, Math.round(cssWidth * dpr)))
-  const pixelHeight = Math.max(1, Math.round(pixelWidth * (cssHeight / cssWidth)))
-
-  if (canvas.width !== pixelWidth || canvas.height !== pixelHeight) {
-    canvas.width = pixelWidth
-    canvas.height = pixelHeight
-    canvas.style.width = `${cssWidth}px`
-    canvas.style.height = `${cssHeight}px`
-  }
-
-  return { pixelWidth, pixelHeight }
-}
-
-function drawCover(
-  ctx: CanvasRenderingContext2D,
-  image: FrameSource,
-  pixelWidth: number,
-  pixelHeight: number,
-) {
-  const sourceWidth = 'naturalWidth' in image ? image.naturalWidth : image.width
-  const sourceHeight = 'naturalHeight' in image ? image.naturalHeight : image.height
-  if (!sourceWidth || !sourceHeight) return
-
-  const imgRatio = sourceWidth / sourceHeight
-  const canvasRatio = pixelWidth / pixelHeight
-
-  let drawWidth: number
-  let drawHeight: number
-  let offsetX: number
-  let offsetY: number
-
-  if (imgRatio > canvasRatio) {
-    drawHeight = pixelHeight
-    drawWidth = Math.round(sourceWidth * (pixelHeight / sourceHeight))
-    offsetX = Math.round((pixelWidth - drawWidth) / 2)
-    offsetY = 0
-  } else {
-    drawWidth = pixelWidth
-    drawHeight = Math.round(sourceHeight * (pixelWidth / sourceWidth))
-    offsetX = 0
-    offsetY = Math.round((pixelHeight - drawHeight) / 2)
-  }
-
-  ctx.setTransform(1, 0, 0, 1, 0, 0)
-  ctx.imageSmoothingEnabled = true
-  ctx.imageSmoothingQuality = 'high'
-  ctx.clearRect(0, 0, pixelWidth, pixelHeight)
-  ctx.drawImage(image, offsetX, offsetY, drawWidth, drawHeight)
-}
-
-async function loadFrame(
-  index: number,
-  priority: 'high' | 'low' = 'low',
-  signal?: AbortSignal,
-): Promise<FrameSource> {
-  const src = frameSrc(index)
-  if (signal?.aborted) throw new DOMException('Frame load aborted', 'AbortError')
-
-  if (typeof createImageBitmap === 'function') {
-    const response = await fetch(src, { priority, signal } as RequestInit)
-    if (!response.ok) throw new Error(`Failed to load frame ${index + 1}`)
-    const blob = await response.blob()
-    const bitmap = await createImageBitmap(blob)
-    if (signal?.aborted) {
-      bitmap.close()
-      throw new DOMException('Frame load aborted', 'AbortError')
-    }
-    return bitmap
-  }
-
-  return new Promise<HTMLImageElement>((resolve, reject) => {
-    const img = new Image()
-    const onAbort = () => {
-      img.src = ''
-      reject(new DOMException('Frame load aborted', 'AbortError'))
-    }
-    img.decoding = 'async'
-    img.onload = () => {
-      signal?.removeEventListener('abort', onAbort)
-      resolve(img)
-    }
-    img.onerror = () => {
-      signal?.removeEventListener('abort', onAbort)
-      reject(new Error(`Failed to load frame ${index + 1}`))
-    }
-    signal?.addEventListener('abort', onAbort, { once: true })
-    img.src = src
-  })
-}
-
-function nearestLoadedFrame(frames: Array<FrameSource | undefined>, index: number) {
-  if (frames[index]) return frames[index]
-  for (let distance = 1; distance < FRAME_COUNT; distance += 1) {
-    const before = frames[index - distance]
-    if (before) return before
-    const after = frames[index + distance]
-    if (after) return after
-  }
-  return undefined
 }
 
 function ScrollHint({ visible }: { visible: boolean }) {
@@ -207,29 +71,14 @@ export function ScrollExploreSequence() {
 
   const sectionRef = useRef<HTMLElement>(null)
   const pinRef = useRef<HTMLDivElement>(null)
-  const canvasRef = useRef<HTMLCanvasElement>(null)
-  const framesRef = useRef<Array<FrameSource | undefined>>([])
-  const frameRef = useRef(-1)
+  const videoRef = useRef<HTMLVideoElement>(null)
   const triggerRef = useRef<ScrollTrigger | null>(null)
-  const pendingFrameRef = useRef(0)
   const rafRef = useRef(0)
-  const ctxRef = useRef<CanvasRenderingContext2D | null>(null)
+  const pendingProgressRef = useRef(0)
   const sectionIndexRef = useRef(0)
   const hintVisibleRef = useRef(false)
   const startedRef = useRef(false)
-  const staticModeRef = useRef(false)
-  const posterHiddenRef = useRef(false)
-  const readyRef = useRef(false)
-  const activeBeltRef = useRef(0)
-  const lastRequestedFrameRef = useRef(0)
-  const beltStateRef = useRef<Array<'idle' | 'loading' | 'ready'>>(
-    Array.from({ length: BELT_COUNT }, () => 'idle'),
-  )
-  const beltPromiseRef = useRef<Array<Promise<void> | undefined>>(
-    Array.from({ length: BELT_COUNT }),
-  )
-  const ensureBeltRef = useRef<(belt: number) => Promise<void>>(async () => {})
-  const evictBeltsRef = useRef<(keep: ReadonlySet<number>) => void>(() => {})
+  const durationRef = useRef(0)
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
   const [loadProgress, setLoadProgress] = useState(0)
@@ -242,268 +91,180 @@ export function ScrollExploreSequence() {
 
     const section = sectionRef.current
     const pin = pinRef.current
-    const canvas = canvasRef.current
-    if (!section || !pin || !canvas) return
+    const video = videoRef.current
+    if (!section || !pin || !video) return
 
     let cancelled = false
-    let resizeObserver: ResizeObserver | null = null
     let intersectionObserver: IntersectionObserver | null = null
-    let loadedCount = 0
-    const abortController = new AbortController()
 
-    ctxRef.current = canvas.getContext('2d', {
-      alpha: false,
-      desynchronized: true,
-    })
-
-    const bumpProgress = () => {
-      const next = Math.round((loadedCount / FRAME_COUNT) * 100)
-      setLoadProgress(next)
-    }
-
-    const renderFrame = (index: number, force = false) => {
-      const frames = framesRef.current
-      const ctx = ctxRef.current
-      if (!ctx || frames.length === 0) return
-
-      const clamped = Math.max(0, Math.min(FRAME_COUNT - 1, index))
-      if (!force && clamped === frameRef.current) return
-
-      const frame = nearestLoadedFrame(frames, clamped)
-      if (!frame) return
-
-      const metrics = getCanvasMetrics(canvas)
-      if (!metrics) return
-
-      frameRef.current = clamped
-      drawCover(ctx, frame, metrics.pixelWidth, metrics.pixelHeight)
-      if (!posterHiddenRef.current) {
-        posterHiddenRef.current = true
-        setShowPoster(false)
+    const setSectionFromProgress = (progress: number) => {
+      const next = Math.min(
+        sectionCount - 1,
+        Math.max(0, Math.floor(progress * sectionCount)),
+      )
+      if (next !== sectionIndexRef.current) {
+        sectionIndexRef.current = next
+        setDisplaySectionIndex(next)
       }
     }
 
-    const scheduleFrame = (index: number) => {
-      pendingFrameRef.current = index
+    const setHintVisible = (visible: boolean) => {
+      if (visible === hintVisibleRef.current) return
+      hintVisibleRef.current = visible
+      setShowHint(visible)
+    }
+
+    const scrubToProgress = (progress: number) => {
+      const duration = durationRef.current
+      if (!duration || !Number.isFinite(duration)) return
+
+      const target = Math.min(duration - 0.001, Math.max(0, progress * duration))
+      if (Math.abs(video.currentTime - target) < 0.016) return
+
+      try {
+        video.currentTime = target
+      } catch {
+        // Some browsers throw while seeking before ready; ignore.
+      }
+    }
+
+    const flushScrub = () => {
+      rafRef.current = 0
+      scrubToProgress(pendingProgressRef.current)
+    }
+
+    const queueScrub = (progress: number) => {
+      pendingProgressRef.current = progress
       if (rafRef.current) return
-      rafRef.current = requestAnimationFrame(() => {
-        rafRef.current = 0
-        renderFrame(pendingFrameRef.current)
-      })
+      rafRef.current = requestAnimationFrame(flushScrub)
     }
 
-    const ensureBeltsAround = (frameIndex: number) => {
-      if (staticModeRef.current) return
-
-      const belt = beltForFrame(frameIndex)
-      const direction = frameIndex >= lastRequestedFrameRef.current ? 1 : -1
-      const adjacent = Math.max(0, Math.min(BELT_COUNT - 1, belt + direction))
-      const keep = new Set([belt, adjacent])
-
-      activeBeltRef.current = belt
-      lastRequestedFrameRef.current = frameIndex
-
-      void Promise.all([...keep].map((target) => ensureBeltRef.current(target)))
-        .then(() => {
-          if (!cancelled && activeBeltRef.current === belt) {
-            evictBeltsRef.current(keep)
-          }
-        })
-        .catch(() => {})
-    }
-
-    const setupScroll = () => {
-      if (cancelled || triggerRef.current) return
-
+    const mountTrigger = () => {
+      triggerRef.current?.kill()
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
         end: 'bottom bottom',
-        pin,
-        pinSpacing: true,
-        scrub: 0.45,
-        anticipatePin: 0,
-        invalidateOnRefresh: true,
+        pin: pin,
+        pinSpacing: false,
+        scrub: true,
+        anticipatePin: 1,
         onUpdate: (self) => {
           const progress = self.progress
-          const frameIndex = Math.round(progress * (FRAME_COUNT - 1))
-          scheduleFrame(frameIndex)
-
-          const storyProgress = Math.max(0, progress)
-          const nextSection = Math.min(
-            sectionCount - 1,
-            Math.floor(storyProgress * sectionCount),
-          )
-          if (sectionIndexRef.current !== nextSection) {
-            sectionIndexRef.current = nextSection
-            setDisplaySectionIndex(nextSection)
-          }
-
-          const hintVisible = progress < 0.06
-          if (hintVisibleRef.current !== hintVisible) {
-            hintVisibleRef.current = hintVisible
-            setShowHint(hintVisible)
-          }
-
-          ensureBeltsAround(frameIndex)
+          queueScrub(progress)
+          setSectionFromProgress(progress)
+          setHintVisible(progress < 0.04)
         },
-        onLeave: () => {
-          pin.style.visibility = 'hidden'
-          pin.style.pointerEvents = 'none'
-        },
-        onEnterBack: () => {
-          pin.style.visibility = 'visible'
-          pin.style.pointerEvents = 'auto'
-        },
+        onEnter: () => setHintVisible(true),
+        onLeave: () => setHintVisible(false),
+        onEnterBack: () => setHintVisible(false),
+        onLeaveBack: () => setHintVisible(true),
       })
 
-      frameRef.current = -1
-      renderFrame(0, true)
-      readyRef.current = true
-      setStatus('ready')
-      hintVisibleRef.current = true
-      setShowHint(true)
+      queueScrub(triggerRef.current.progress)
+      setSectionFromProgress(triggerRef.current.progress)
+      setHintVisible(triggerRef.current.progress < 0.04)
       ScrollTrigger.refresh()
     }
 
-    const loadBelt = async (belt: number, priority: 'high' | 'low' = 'low') => {
-      if (cancelled || belt < 0 || belt >= BELT_COUNT) return
-      if (beltStateRef.current[belt] !== 'idle') return
-
-      beltStateRef.current[belt] = 'loading'
-      const frames = framesRef.current
-      const indices = framesInBelt(belt)
-      const batchSize = priority === 'high' ? 4 : 3
-
-      try {
-        for (let start = 0; start < indices.length; start += batchSize) {
-          if (cancelled) return
-          const batch = indices.slice(start, start + batchSize)
-          await Promise.all(
-            batch.map(async (index) => {
-              if (frames[index]) return
-              const frame = await loadFrame(index, priority, abortController.signal)
-              if (cancelled || abortController.signal.aborted) {
-                if (typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
-                  frame.close()
-                }
-                return
-              }
-              frames[index] = frame
-              loadedCount += 1
-              if (!cancelled) bumpProgress()
-            }),
-          )
-
-          const current = triggerRef.current
-            ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
-            : Math.max(0, frameRef.current)
-          if (beltForFrame(current) === belt || Math.abs(current - indices[0]) < BELT_SIZE) {
-            frameRef.current = -1
-            renderFrame(current, true)
-          }
-        }
-
-        if (!cancelled) beltStateRef.current[belt] = 'ready'
-      } catch {
-        beltStateRef.current[belt] = 'idle'
-        throw new Error(`Belt ${belt} failed`)
-      }
-    }
-
-    evictBeltsRef.current = (keep: ReadonlySet<number>) => {
-      for (let belt = 0; belt < BELT_COUNT; belt += 1) {
-        if (keep.has(belt) || beltStateRef.current[belt] !== 'ready') continue
-
-        for (const index of framesInBelt(belt)) {
-          const frame = framesRef.current[index]
-          if (frame && typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
-            frame.close()
-          }
-          if (frame) {
-            framesRef.current[index] = undefined
-            loadedCount = Math.max(0, loadedCount - 1)
-          }
-        }
-        beltStateRef.current[belt] = 'idle'
-      }
-    }
-
-    ensureBeltRef.current = async (belt: number) => {
-      const existing = beltPromiseRef.current[belt]
-      if (existing) return existing
-
-      const promise = loadBelt(
-        belt,
-        belt <= activeBeltRef.current + 1 ? 'high' : 'low',
-      )
-      beltPromiseRef.current[belt] = promise
-
-      try {
-        await promise
-      } catch (error) {
-        if (!cancelled && !readyRef.current) setStatus('error')
-        throw error
-      } finally {
-        if (beltPromiseRef.current[belt] === promise) {
-          beltPromiseRef.current[belt] = undefined
-        }
-      }
+    const enableStaticMode = () => {
+      if (cancelled) return
+      setStatus('static')
+      setShowPoster(true)
+      setShowHint(false)
+      setDisplaySectionIndex(0)
+      sectionIndexRef.current = 0
     }
 
     const startSequence = async () => {
       if (cancelled || startedRef.current) return
       startedRef.current = true
 
+      if (prefersStaticMode()) {
+        enableStaticMode()
+        return
+      }
+
+      setStatus('loading')
+      setLoadProgress(8)
+
+      const onProgress = () => {
+        if (!video.duration) return
+        const buffered = video.buffered
+        if (buffered.length === 0) return
+        const end = buffered.end(buffered.length - 1)
+        const pct = Math.min(100, Math.round((end / video.duration) * 100))
+        setLoadProgress((prev) => Math.max(prev, pct))
+      }
+
+      const waitForReady = () =>
+        new Promise<void>((resolve, reject) => {
+          const cleanup = () => {
+            video.removeEventListener('loadedmetadata', onMeta)
+            video.removeEventListener('canplay', onCanPlay)
+            video.removeEventListener('error', onError)
+            video.removeEventListener('progress', onProgress)
+          }
+
+          const onMeta = () => {
+            durationRef.current = video.duration || 0
+            setLoadProgress((prev) => Math.max(prev, 20))
+          }
+
+          const onCanPlay = () => {
+            durationRef.current = video.duration || durationRef.current
+            cleanup()
+            resolve()
+          }
+
+          const onError = () => {
+            cleanup()
+            reject(new Error('Failed to load scroll explore video'))
+          }
+
+          video.addEventListener('loadedmetadata', onMeta)
+          video.addEventListener('canplay', onCanPlay)
+          video.addEventListener('error', onError)
+          video.addEventListener('progress', onProgress)
+
+          if (video.readyState >= 2 && video.duration) {
+            durationRef.current = video.duration
+            cleanup()
+            resolve()
+            return
+          }
+
+          video.load()
+        })
+
       try {
-        const first = await loadFrame(0, 'high', abortController.signal)
-        if (cancelled || abortController.signal.aborted) {
-          if (typeof ImageBitmap !== 'undefined' && first instanceof ImageBitmap) first.close()
-          return
-        }
-
-        if (prefersStaticMode()) {
-          staticModeRef.current = true
-          const frames: Array<FrameSource | undefined> = new Array(FRAME_COUNT)
-          frames[0] = first
-          framesRef.current = frames
-          renderFrame(0, true)
-          setLoadProgress(100)
-          setupScroll()
-          return
-        }
-
-        setStatus('loading')
-        const frames: Array<FrameSource | undefined> = new Array(FRAME_COUNT)
-        frames[0] = first
-        framesRef.current = frames
-        loadedCount = 1
-        bumpProgress()
-        renderFrame(0, true)
-
-        // Complete the first small belt before scrubbing, then keep only nearby belts.
-        await ensureBeltRef.current(0)
+        video.muted = true
+        video.playsInline = true
+        video.preload = 'auto'
+        await waitForReady()
         if (cancelled) return
-        setupScroll()
 
-        void ensureBeltRef.current(1).catch(() => {})
+        // Nudge decode pipeline so the first seek paints immediately.
+        try {
+          await video.play()
+          video.pause()
+          video.currentTime = 0
+        } catch {
+          // Autoplay policies can block play(); seeking still works when muted.
+        }
+
+        if (cancelled) return
+
+        setLoadProgress(100)
+        setStatus('ready')
+        setShowPoster(false)
+        mountTrigger()
       } catch {
-        if (!cancelled) setStatus('error')
+        if (cancelled) return
+        setStatus('error')
+        setShowPoster(true)
       }
     }
-
-    const onResize = () => {
-      const index = triggerRef.current
-        ? Math.round(triggerRef.current.progress * (FRAME_COUNT - 1))
-        : Math.max(0, frameRef.current)
-      frameRef.current = -1
-      renderFrame(index, true)
-      ScrollTrigger.refresh()
-    }
-
-    resizeObserver = new ResizeObserver(onResize)
-    resizeObserver.observe(pin)
-    window.addEventListener('resize', onResize)
 
     intersectionObserver = new IntersectionObserver(
       (entries) => {
@@ -518,26 +279,13 @@ export function ScrollExploreSequence() {
 
     return () => {
       cancelled = true
-      abortController.abort()
       if (rafRef.current) cancelAnimationFrame(rafRef.current)
       triggerRef.current?.kill()
       triggerRef.current = null
-      resizeObserver?.disconnect()
       intersectionObserver?.disconnect()
-      window.removeEventListener('resize', onResize)
-      framesRef.current.forEach((frame) => {
-        if (frame && typeof ImageBitmap !== 'undefined' && frame instanceof ImageBitmap) {
-          frame.close()
-        }
-      })
-      framesRef.current = []
-      frameRef.current = -1
+      video.pause()
       startedRef.current = false
-      staticModeRef.current = false
-      readyRef.current = false
       hintVisibleRef.current = false
-      beltStateRef.current = Array.from({ length: BELT_COUNT }, () => 'idle')
-      beltPromiseRef.current = Array.from({ length: BELT_COUNT })
     }
   }, [sectionCount])
 
@@ -566,13 +314,18 @@ export function ScrollExploreSequence() {
           />
         )}
 
-        <canvas
-          ref={canvasRef}
+        <video
+          ref={videoRef}
           className={cn(
-            'absolute inset-0 h-full w-full scale-[1.02] transform-gpu will-change-transform',
+            'absolute inset-0 h-full w-full scale-[1.02] object-cover transform-gpu will-change-transform',
             showPoster ? 'opacity-0' : 'opacity-100',
           )}
-          aria-hidden={status !== 'ready' && status !== 'static'}
+          src={VIDEO_SRC}
+          poster={POSTER_SRC}
+          muted
+          playsInline
+          preload="auto"
+          aria-hidden={status !== 'ready'}
         />
 
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-[#090909]/55 via-[#090909]/20 to-[#090909]/55 md:hidden" />
@@ -595,7 +348,7 @@ export function ScrollExploreSequence() {
               />
             </div>
             <p className="font-mono text-[10px] uppercase tracking-[0.22em] text-[#F1E9DB]/45">
-              Loading HD sequence
+              Loading experience
             </p>
           </div>
         )}
@@ -606,7 +359,7 @@ export function ScrollExploreSequence() {
               Sequence unavailable
             </p>
             <p className="max-w-sm text-sm text-[#F1E9DB]/55">
-              Scroll continues normally. Refresh to retry loading the animation frames.
+              Scroll continues normally. Refresh to retry loading the experience.
             </p>
           </div>
         )}
