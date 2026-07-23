@@ -7,7 +7,9 @@ import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-const SCROLL_VH = 240
+/** Extra scroll distance while the viewport stays pinned (beyond 100vh). */
+const SCROLL_DISTANCE_VH = 140
+const TOTAL_SCROLL_VH = 100 + SCROLL_DISTANCE_VH
 const VIDEO_SRC = '/assets/scroll-explore.mp4'
 const POSTER_SRC = '/assets/scroll-explore-poster.jpg'
 /** Show 5 beats per visit, drawn from the full 9-capability pool. */
@@ -79,6 +81,7 @@ export function ScrollExploreSequence() {
   const hintVisibleRef = useRef(false)
   const startedRef = useRef(false)
   const durationRef = useRef(0)
+  const objectUrlRef = useRef<string | null>(null)
 
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
   const [loadProgress, setLoadProgress] = useState(0)
@@ -114,12 +117,19 @@ export function ScrollExploreSequence() {
       setShowHint(visible)
     }
 
+    const setPinnedLayer = (active: boolean) => {
+      // Keep the pinned frame above following sections so "Trusted By" can't bleed through.
+      pin.style.zIndex = active ? '30' : ''
+    }
+
     const scrubToProgress = (progress: number) => {
       const duration = durationRef.current
       if (!duration || !Number.isFinite(duration)) return
 
-      const target = Math.min(duration - 0.001, Math.max(0, progress * duration))
-      if (Math.abs(video.currentTime - target) < 0.016) return
+      // Leave a tiny epsilon so browsers don't clamp/reject seeks at exact duration.
+      const maxTime = Math.max(0, duration - 0.05)
+      const target = progress >= 0.999 ? maxTime : Math.min(maxTime, Math.max(0, progress * maxTime))
+      if (Math.abs(video.currentTime - target) < 0.01) return
 
       try {
         video.currentTime = target
@@ -144,26 +154,43 @@ export function ScrollExploreSequence() {
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: 'bottom bottom',
+        end: `+=${SCROLL_DISTANCE_VH}vh`,
         pin: pin,
-        pinSpacing: false,
+        pinSpacing: true,
         scrub: true,
         anticipatePin: 1,
+        invalidateOnRefresh: true,
         onUpdate: (self) => {
           const progress = self.progress
           queueScrub(progress)
           setSectionFromProgress(progress)
           setHintVisible(progress < 0.04)
         },
-        onEnter: () => setHintVisible(true),
-        onLeave: () => setHintVisible(false),
-        onEnterBack: () => setHintVisible(false),
-        onLeaveBack: () => setHintVisible(true),
+        onEnter: () => {
+          setPinnedLayer(true)
+          setHintVisible(true)
+        },
+        onEnterBack: () => {
+          setPinnedLayer(true)
+          setHintVisible(false)
+        },
+        onLeave: () => {
+          setPinnedLayer(false)
+          setHintVisible(false)
+          queueScrub(1)
+        },
+        onLeaveBack: () => {
+          setPinnedLayer(false)
+          setHintVisible(true)
+          queueScrub(0)
+        },
       })
 
-      queueScrub(triggerRef.current.progress)
-      setSectionFromProgress(triggerRef.current.progress)
-      setHintVisible(triggerRef.current.progress < 0.04)
+      const progress = triggerRef.current.progress
+      setPinnedLayer(progress > 0 && progress < 1)
+      queueScrub(progress)
+      setSectionFromProgress(progress)
+      setHintVisible(progress < 0.04)
       ScrollTrigger.refresh()
     }
 
@@ -176,6 +203,59 @@ export function ScrollExploreSequence() {
       sectionIndexRef.current = 0
     }
 
+    const loadVideoSource = async () => {
+      // Blob URL keeps the full file seekable so the scrub doesn't freeze near the end.
+      const response = await fetch(VIDEO_SRC, { priority: 'high' } as RequestInit)
+      if (!response.ok) throw new Error('Failed to fetch scroll explore video')
+
+      setLoadProgress(35)
+      const blob = await response.blob()
+      if (cancelled) return
+
+      setLoadProgress(90)
+      const url = URL.createObjectURL(blob)
+      objectUrlRef.current = url
+      video.src = url
+    }
+
+    const waitForDecode = () =>
+      new Promise<void>((resolve, reject) => {
+        const cleanup = () => {
+          video.removeEventListener('loadedmetadata', onMeta)
+          video.removeEventListener('canplaythrough', onReady)
+          video.removeEventListener('error', onError)
+        }
+
+        const onMeta = () => {
+          durationRef.current = video.duration || 0
+          setLoadProgress((prev) => Math.max(prev, 94))
+        }
+
+        const onReady = () => {
+          durationRef.current = video.duration || durationRef.current
+          cleanup()
+          resolve()
+        }
+
+        const onError = () => {
+          cleanup()
+          reject(new Error('Failed to decode scroll explore video'))
+        }
+
+        video.addEventListener('loadedmetadata', onMeta)
+        video.addEventListener('canplaythrough', onReady)
+        video.addEventListener('error', onError)
+
+        if (video.readyState >= 4 && video.duration) {
+          durationRef.current = video.duration
+          cleanup()
+          resolve()
+          return
+        }
+
+        video.load()
+      })
+
     const startSequence = async () => {
       if (cancelled || startedRef.current) return
       startedRef.current = true
@@ -186,65 +266,18 @@ export function ScrollExploreSequence() {
       }
 
       setStatus('loading')
-      setLoadProgress(8)
-
-      const onProgress = () => {
-        if (!video.duration) return
-        const buffered = video.buffered
-        if (buffered.length === 0) return
-        const end = buffered.end(buffered.length - 1)
-        const pct = Math.min(100, Math.round((end / video.duration) * 100))
-        setLoadProgress((prev) => Math.max(prev, pct))
-      }
-
-      const waitForReady = () =>
-        new Promise<void>((resolve, reject) => {
-          const cleanup = () => {
-            video.removeEventListener('loadedmetadata', onMeta)
-            video.removeEventListener('canplay', onCanPlay)
-            video.removeEventListener('error', onError)
-            video.removeEventListener('progress', onProgress)
-          }
-
-          const onMeta = () => {
-            durationRef.current = video.duration || 0
-            setLoadProgress((prev) => Math.max(prev, 20))
-          }
-
-          const onCanPlay = () => {
-            durationRef.current = video.duration || durationRef.current
-            cleanup()
-            resolve()
-          }
-
-          const onError = () => {
-            cleanup()
-            reject(new Error('Failed to load scroll explore video'))
-          }
-
-          video.addEventListener('loadedmetadata', onMeta)
-          video.addEventListener('canplay', onCanPlay)
-          video.addEventListener('error', onError)
-          video.addEventListener('progress', onProgress)
-
-          if (video.readyState >= 2 && video.duration) {
-            durationRef.current = video.duration
-            cleanup()
-            resolve()
-            return
-          }
-
-          video.load()
-        })
+      setLoadProgress(6)
 
       try {
         video.muted = true
         video.playsInline = true
         video.preload = 'auto'
-        await waitForReady()
+        await loadVideoSource()
+        if (cancelled) return
+        await waitForDecode()
         if (cancelled) return
 
-        // Nudge decode pipeline so the first seek paints immediately.
+        // Nudge decode pipeline so the first and last seeks paint immediately.
         try {
           await video.play()
           video.pause()
@@ -284,6 +317,11 @@ export function ScrollExploreSequence() {
       triggerRef.current = null
       intersectionObserver?.disconnect()
       video.pause()
+      pin.style.zIndex = ''
+      if (objectUrlRef.current) {
+        URL.revokeObjectURL(objectUrlRef.current)
+        objectUrlRef.current = null
+      }
       startedRef.current = false
       hintVisibleRef.current = false
     }
@@ -299,9 +337,12 @@ export function ScrollExploreSequence() {
       ref={sectionRef}
       aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
-      style={{ height: `${SCROLL_VH}vh` }}
+      style={{ minHeight: `${TOTAL_SCROLL_VH}vh` }}
     >
-      <div ref={pinRef} className="relative z-0 h-screen w-full overflow-hidden bg-[#090909]">
+      <div
+        ref={pinRef}
+        className="relative h-screen w-full overflow-hidden bg-[#090909]"
+      >
         {showPoster && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -320,7 +361,6 @@ export function ScrollExploreSequence() {
             'absolute inset-0 h-full w-full scale-[1.02] object-cover transform-gpu will-change-transform',
             showPoster ? 'opacity-0' : 'opacity-100',
           )}
-          src={VIDEO_SRC}
           poster={POSTER_SRC}
           muted
           playsInline
