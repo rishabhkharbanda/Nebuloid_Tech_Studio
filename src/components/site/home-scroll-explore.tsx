@@ -13,7 +13,7 @@ const ScrollExploreSequence = dynamic(
     loading: () => (
       <section
         aria-hidden
-        className="relative z-0 h-[240vh] min-h-[240vh] overflow-hidden bg-[#090909]"
+        className="relative z-0 h-[420vh] min-h-[420vh] overflow-hidden bg-[#090909]"
       >
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img

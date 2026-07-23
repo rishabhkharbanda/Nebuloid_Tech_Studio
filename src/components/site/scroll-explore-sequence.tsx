@@ -8,8 +8,12 @@ import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
 /** Extra scroll distance while the viewport stays pinned (beyond 100vh). */
-const SCROLL_DISTANCE_VH = 140
+const SCROLL_DISTANCE_VH = 320
 const TOTAL_SCROLL_VH = 100 + SCROLL_DISTANCE_VH
+/** GSAP scrub lag in seconds — higher = silkier catch-up after scroll. */
+const SCRUB_SMOOTHING = 1.35
+/** How quickly rendered video time eases toward the scroll target (0–1). */
+const VIDEO_LERP = 0.14
 const VIDEO_SRC = '/assets/scroll-explore.mp4'
 const POSTER_SRC = '/assets/scroll-explore-poster.jpg'
 /** Show 5 beats per visit, drawn from the full 9-capability pool. */
@@ -76,7 +80,8 @@ export function ScrollExploreSequence() {
   const videoRef = useRef<HTMLVideoElement>(null)
   const triggerRef = useRef<ScrollTrigger | null>(null)
   const rafRef = useRef(0)
-  const pendingProgressRef = useRef(0)
+  const targetProgressRef = useRef(0)
+  const renderedProgressRef = useRef(0)
   const sectionIndexRef = useRef(0)
   const hintVisibleRef = useRef(false)
   const startedRef = useRef(false)
@@ -122,14 +127,15 @@ export function ScrollExploreSequence() {
       pin.style.zIndex = active ? '30' : ''
     }
 
-    const scrubToProgress = (progress: number) => {
+    const applyVideoProgress = (progress: number) => {
       const duration = durationRef.current
       if (!duration || !Number.isFinite(duration)) return
 
       // Leave a tiny epsilon so browsers don't clamp/reject seeks at exact duration.
       const maxTime = Math.max(0, duration - 0.05)
-      const target = progress >= 0.999 ? maxTime : Math.min(maxTime, Math.max(0, progress * maxTime))
-      if (Math.abs(video.currentTime - target) < 0.01) return
+      const target =
+        progress >= 0.999 ? maxTime : Math.min(maxTime, Math.max(0, progress * maxTime))
+      if (Math.abs(video.currentTime - target) < 0.008) return
 
       try {
         video.currentTime = target
@@ -138,15 +144,36 @@ export function ScrollExploreSequence() {
       }
     }
 
-    const flushScrub = () => {
-      rafRef.current = 0
-      scrubToProgress(pendingProgressRef.current)
+    const tickScrub = () => {
+      const target = targetProgressRef.current
+      const current = renderedProgressRef.current
+      const delta = target - current
+
+      if (Math.abs(delta) < 0.0004) {
+        renderedProgressRef.current = target
+        applyVideoProgress(target)
+        rafRef.current = 0
+        return
+      }
+
+      renderedProgressRef.current = current + delta * VIDEO_LERP
+      applyVideoProgress(renderedProgressRef.current)
+      rafRef.current = requestAnimationFrame(tickScrub)
     }
 
-    const queueScrub = (progress: number) => {
-      pendingProgressRef.current = progress
+    const queueScrub = (progress: number, immediate = false) => {
+      targetProgressRef.current = progress
+      if (immediate) {
+        renderedProgressRef.current = progress
+        applyVideoProgress(progress)
+        if (rafRef.current) {
+          cancelAnimationFrame(rafRef.current)
+          rafRef.current = 0
+        }
+        return
+      }
       if (rafRef.current) return
-      rafRef.current = requestAnimationFrame(flushScrub)
+      rafRef.current = requestAnimationFrame(tickScrub)
     }
 
     const mountTrigger = () => {
@@ -157,7 +184,7 @@ export function ScrollExploreSequence() {
         end: `+=${SCROLL_DISTANCE_VH}vh`,
         pin: pin,
         pinSpacing: true,
-        scrub: true,
+        scrub: SCRUB_SMOOTHING,
         anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
@@ -177,18 +204,18 @@ export function ScrollExploreSequence() {
         onLeave: () => {
           setPinnedLayer(false)
           setHintVisible(false)
-          queueScrub(1)
+          queueScrub(1, true)
         },
         onLeaveBack: () => {
           setPinnedLayer(false)
           setHintVisible(true)
-          queueScrub(0)
+          queueScrub(0, true)
         },
       })
 
       const progress = triggerRef.current.progress
       setPinnedLayer(progress > 0 && progress < 1)
-      queueScrub(progress)
+      queueScrub(progress, true)
       setSectionFromProgress(progress)
       setHintVisible(progress < 0.04)
       ScrollTrigger.refresh()
