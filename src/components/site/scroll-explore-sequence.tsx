@@ -7,13 +7,12 @@ import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-/** Extra scroll distance while the viewport stays pinned (beyond 100vh). */
-const SCROLL_DISTANCE_VH = 320
-const TOTAL_SCROLL_VH = 100 + SCROLL_DISTANCE_VH
+/** Total section height — sticky viewport holds for (TOTAL - 100)vh of scrub. */
+const TOTAL_SCROLL_VH = 280
 /** GSAP scrub lag in seconds — higher = silkier catch-up after scroll. */
-const SCRUB_SMOOTHING = 1.35
+const SCRUB_SMOOTHING = 1.2
 /** How quickly rendered video time eases toward the scroll target (0–1). */
-const VIDEO_LERP = 0.14
+const VIDEO_LERP = 0.16
 const VIDEO_SRC = '/assets/scroll-explore.mp4'
 const POSTER_SRC = '/assets/scroll-explore-poster.jpg'
 /** Show 5 beats per visit, drawn from the full 9-capability pool. */
@@ -123,7 +122,7 @@ export function ScrollExploreSequence() {
     }
 
     const setPinnedLayer = (active: boolean) => {
-      // Keep the pinned frame above following sections so "Trusted By" can't bleed through.
+      // Keep the sticky frame above following sections so "Trusted By" can't bleed through.
       pin.style.zIndex = active ? '30' : ''
     }
 
@@ -178,20 +177,20 @@ export function ScrollExploreSequence() {
 
     const mountTrigger = () => {
       triggerRef.current?.kill()
+      // CSS sticky holds the frame; ScrollTrigger only drives scrub progress.
+      // This avoids GSAP pin-spacer gaps that left a long blank stretch after the video.
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
-        end: `+=${SCROLL_DISTANCE_VH}vh`,
-        pin: pin,
-        pinSpacing: true,
+        end: 'bottom bottom',
         scrub: SCRUB_SMOOTHING,
-        anticipatePin: 1,
         invalidateOnRefresh: true,
         onUpdate: (self) => {
           const progress = self.progress
           queueScrub(progress)
           setSectionFromProgress(progress)
           setHintVisible(progress < 0.04)
+          setPinnedLayer(progress > 0 && progress < 1)
         },
         onEnter: () => {
           setPinnedLayer(true)
@@ -364,11 +363,11 @@ export function ScrollExploreSequence() {
       ref={sectionRef}
       aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
-      style={{ minHeight: `${TOTAL_SCROLL_VH}vh` }}
+      style={{ height: `${TOTAL_SCROLL_VH}vh` }}
     >
       <div
         ref={pinRef}
-        className="relative h-screen w-full overflow-hidden bg-[#090909]"
+        className="sticky top-0 h-screen w-full overflow-hidden bg-[#090909]"
       >
         {showPoster && (
           // eslint-disable-next-line @next/next/no-img-element
