@@ -5,16 +5,21 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useEffect, useRef, useState } from 'react'
 import { scrollExploreSections } from '@/lib/site-data'
+import {
+  SCROLL_EXPLORE_POSTER_SRC,
+  SCROLL_EXPLORE_VH,
+  SCROLL_EXPLORE_VIDEO_SRC,
+} from '@/lib/scroll-explore'
 import { cn } from '@/lib/utils'
 
 /** Total section height — sticky viewport holds for (TOTAL - 100)vh of scrub. */
-const TOTAL_SCROLL_VH = 280
+const TOTAL_SCROLL_VH = SCROLL_EXPLORE_VH
 /** GSAP scrub lag in seconds — higher = silkier catch-up after scroll. */
 const SCRUB_SMOOTHING = 1.2
 /** How quickly rendered video time eases toward the scroll target (0–1). */
 const VIDEO_LERP = 0.16
-const VIDEO_SRC = '/assets/scroll-explore.mp4'
-const POSTER_SRC = '/assets/scroll-explore-poster.jpg'
+const VIDEO_SRC = SCROLL_EXPLORE_VIDEO_SRC
+const POSTER_SRC = SCROLL_EXPLORE_POSTER_SRC
 /** Show 5 beats per visit, drawn from the full 9-capability pool. */
 const ACTIVE_SECTION_COUNT = 5
 
@@ -176,9 +181,9 @@ export function ScrollExploreSequence() {
     }
 
     const mountTrigger = () => {
-      triggerRef.current?.kill()
+      if (triggerRef.current) return
       // CSS sticky holds the frame; ScrollTrigger only drives scrub progress.
-      // This avoids GSAP pin-spacer gaps that left a long blank stretch after the video.
+      // Geometry is fixed by section height — do not call refresh() here (CLS risk).
       triggerRef.current = ScrollTrigger.create({
         trigger: section,
         start: 'top top',
@@ -217,7 +222,6 @@ export function ScrollExploreSequence() {
       queueScrub(progress, true)
       setSectionFromProgress(progress)
       setHintVisible(progress < 0.04)
-      ScrollTrigger.refresh()
     }
 
     const enableStaticMode = () => {
@@ -291,6 +295,8 @@ export function ScrollExploreSequence() {
         return
       }
 
+      // Mount scrub geometry immediately so page height never changes when media arrives.
+      mountTrigger()
       setStatus('loading')
       setLoadProgress(6)
 
@@ -317,7 +323,7 @@ export function ScrollExploreSequence() {
         setLoadProgress(100)
         setStatus('ready')
         setShowPoster(false)
-        mountTrigger()
+        queueScrub(triggerRef.current?.progress ?? 0, true)
       } catch {
         if (cancelled) return
         setStatus('error')
@@ -363,7 +369,7 @@ export function ScrollExploreSequence() {
       ref={sectionRef}
       aria-label="Scroll to explore Nebuloid capabilities"
       className="theme-preserve-dark relative z-0"
-      style={{ height: `${TOTAL_SCROLL_VH}vh` }}
+      style={{ height: `${TOTAL_SCROLL_VH}vh`, minHeight: `${TOTAL_SCROLL_VH}vh` }}
     >
       <div
         ref={pinRef}
@@ -375,6 +381,8 @@ export function ScrollExploreSequence() {
             src={POSTER_SRC}
             alt=""
             aria-hidden
+            width={1920}
+            height={1080}
             fetchPriority="high"
             decoding="async"
             className="absolute inset-0 h-full w-full object-cover"

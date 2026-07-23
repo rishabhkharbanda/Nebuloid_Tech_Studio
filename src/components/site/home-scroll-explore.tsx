@@ -1,43 +1,24 @@
 'use client'
 
-import dynamic from 'next/dynamic'
 import { useEffect } from 'react'
-
-const ScrollExploreSequence = dynamic(
-  () =>
-    import('@/components/site/scroll-explore-sequence').then(
-      (mod) => mod.ScrollExploreSequence,
-    ),
-  {
-    ssr: false,
-    loading: () => (
-      <section
-        aria-hidden
-        className="relative z-0 h-[280vh] min-h-[280vh] overflow-hidden bg-[#090909]"
-      >
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src="/assets/scroll-explore-poster.jpg"
-          alt=""
-          className="sticky top-0 h-screen w-full object-cover opacity-80"
-        />
-      </section>
-    ),
-  },
-)
+import { ScrollExploreSequence } from '@/components/site/scroll-explore-sequence'
+import {
+  SCROLL_EXPLORE_POSTER_SRC,
+  SCROLL_EXPLORE_VIDEO_SRC,
+} from '@/lib/scroll-explore'
 
 export function HomeScrollExplore() {
   useEffect(() => {
     const poster = document.createElement('link')
     poster.rel = 'preload'
     poster.as = 'image'
-    poster.href = '/assets/scroll-explore-poster.jpg'
+    poster.href = SCROLL_EXPLORE_POSTER_SRC
     document.head.appendChild(poster)
 
     const video = document.createElement('link')
     video.rel = 'preload'
     video.as = 'video'
-    video.href = '/assets/scroll-explore.mp4'
+    video.href = SCROLL_EXPLORE_VIDEO_SRC
     video.type = 'video/mp4'
     document.head.appendChild(video)
 
@@ -47,5 +28,6 @@ export function HomeScrollExplore() {
     }
   }, [])
 
+  // Sync client import keeps the 280vh shell in the first HTML paint (no dynamic swap CLS).
   return <ScrollExploreSequence />
 }

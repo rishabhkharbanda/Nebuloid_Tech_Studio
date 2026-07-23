@@ -21,6 +21,7 @@ const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
   subsets: ['latin'],
   display: 'swap',
+  adjustFontFallback: true,
 })
 
 const bebasNeue = Bebas_Neue({
@@ -28,12 +29,14 @@ const bebasNeue = Bebas_Neue({
   weight: '400',
   subsets: ['latin'],
   display: 'swap',
+  adjustFontFallback: true,
 })
 
 const jetBrainsMono = JetBrains_Mono({
   variable: '--font-jetbrains-mono',
   subsets: ['latin'],
   display: 'swap',
+  adjustFontFallback: true,
 })
 
 export const metadata: Metadata = {
