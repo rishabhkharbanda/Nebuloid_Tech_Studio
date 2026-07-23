@@ -7,8 +7,21 @@ import { SectionReveal } from '@/components/site/section-reveal'
 import { digitalProjects } from '@/lib/digital-data'
 import { cn } from '@/lib/utils'
 
+type DigitalCard = {
+  slug: string
+  title: string
+  overview: string
+  image: string
+  imageAlt?: string
+  category: string
+  client: string
+  ctaText?: string
+  ctaHref?: string
+}
+
 type DigitalExperiencesSectionProps = {
   variant?: 'full' | 'preview'
+  cards?: DigitalCard[]
 }
 
 function FeatureList({ title, items }: { title: string; items: readonly string[] }) {
@@ -27,9 +40,24 @@ function FeatureList({ title, items }: { title: string; items: readonly string[]
   )
 }
 
-export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperiencesSectionProps) {
+export function DigitalExperiencesSection({
+  variant = 'full',
+  cards,
+}: DigitalExperiencesSectionProps) {
   const isPreview = variant === 'preview'
-  const projects = isPreview ? digitalProjects.slice(0, 3) : digitalProjects
+  const fallbackCards: DigitalCard[] = digitalProjects.map((project) => ({
+    slug: project.slug,
+    title: project.title,
+    overview: project.overview,
+    image: project.image,
+    imageAlt: project.client,
+    category: project.category,
+    client: project.client,
+    ctaText: 'View Case Study',
+    ctaHref: `/digital-experiences/${project.slug}`,
+  }))
+  const source = cards && cards.length > 0 ? cards : fallbackCards
+  const projects = isPreview ? source.slice(0, 3) : source
 
   return (
     <section id="digital-experiences" className="section-padding">
@@ -61,12 +89,15 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
           <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project, index) => (
               <SectionReveal key={project.slug} delay={index * 0.06}>
-                <Link href={`/digital-experiences/${project.slug}`} className="group block h-full">
+                <Link
+                  href={project.ctaHref || `/digital-experiences/${project.slug}`}
+                  className="group block h-full"
+                >
                   <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:border-[#d4af37]/25 hover:bg-white/[0.05]">
                     <div className="relative aspect-[16/10] overflow-hidden">
                       <Image
                         src={project.image}
-                        alt={project.client}
+                        alt={project.imageAlt || project.client}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-105"
                         sizes="(max-width: 768px) 100vw, 33vw"
@@ -89,7 +120,7 @@ export function DigitalExperiencesSection({ variant = 'full' }: DigitalExperienc
                         {project.overview}
                       </p>
                       <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-                        View Case Study
+                        {project.ctaText || 'View Case Study'}
                         <ArrowUpRight size={16} />
                       </span>
                     </div>

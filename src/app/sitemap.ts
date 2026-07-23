@@ -26,8 +26,9 @@ const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/terms'), changeFrequency: 'yearly', priority: 0.3 },
 ]
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date()
+  const blogSlugs = await getAllBlogSlugs()
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
     ...getAllProjectSlugs().map((slug) => ({
@@ -48,7 +49,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     })),
-    ...getAllBlogSlugs().map((slug) => ({
+    ...blogSlugs.map((slug) => ({
       url: absoluteUrl(`/insights/${slug}`),
       lastModified,
       changeFrequency: 'monthly' as const,

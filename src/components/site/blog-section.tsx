@@ -6,9 +6,25 @@ import { motion } from 'framer-motion'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { blogPosts } from '@/lib/site-data'
 
-export function BlogSection({ limit }: { limit?: number }) {
-  const posts = limit ? blogPosts.slice(0, limit) : blogPosts
-  const [featured, ...rest] = posts
+type BlogListItem = {
+  slug: string
+  title: string
+  excerpt: string
+  date: string
+  category: string
+  readTime: string
+}
+
+export function BlogSection({
+  limit,
+  posts,
+}: {
+  limit?: number
+  posts?: BlogListItem[]
+}) {
+  const source = posts ?? [...blogPosts]
+  const list = limit ? source.slice(0, limit) : source
+  const [featured, ...rest] = list
 
   if (!featured) return null
 

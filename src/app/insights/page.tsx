@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
-import { blogPosts } from '@/lib/site-data'
+import { getBlogPostsForListing } from '@/lib/content'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
@@ -17,8 +17,9 @@ export const metadata: Metadata = createPageMetadata({
   ],
 })
 
-export default function InsightsIndexPage() {
-  const items = blogPosts.map((post) => ({
+export default async function InsightsIndexPage() {
+  const posts = await getBlogPostsForListing()
+  const items = posts.map((post) => ({
     href: `/insights/${post.slug}`,
     title: post.title,
     category: post.category,

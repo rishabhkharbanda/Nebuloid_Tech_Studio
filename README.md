@@ -69,6 +69,43 @@ CONTACT_FROM_EMAIL="Nebuloid Contact <onboarding@resend.dev>"
 
 If Resend sends successfully, the Apps Script skips its email to avoid duplicates.
 
+## Admin CMS
+
+Secure content admin at `/admin` for blogs, digital experience cards, media, and SEO scoring.
+
+Public site UI stays unchanged and falls back to static content when the CMS database is not configured.
+
+### Setup
+
+1. Create a Neon Postgres database and Vercel Blob store
+2. Copy `.env.example` → `.env.local` and fill:
+
+```bash
+DATABASE_URL=postgresql://...
+BLOB_READ_WRITE_TOKEN=vercel_blob_...
+ADMIN_SESSION_SECRET=use-a-long-random-secret-32chars-min
+ADMIN_EMAIL=admin@nebuloidtechstudio.com
+ADMIN_PASSWORD=your-strong-password
+```
+
+3. Push schema and seed admin:
+
+```bash
+npm run cms:push
+npm run cms:seed
+```
+
+4. Open `/admin/login`
+
+### Scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run cms:push` | Push Drizzle schema to Postgres |
+| `npm run cms:generate` | Generate SQL migrations |
+| `npm run cms:migrate` | Run migrations |
+| `npm run cms:seed` | Create/update admin user |
+
 ## Scripts
 
 | Command         | Description              |
@@ -77,16 +114,20 @@ If Resend sends successfully, the Apps Script skips its email to avoid duplicate
 | `npm run build` | Production build         |
 | `npm run start` | Start production server  |
 | `npm run lint`  | Run ESLint               |
+| `npm run cms:push` | Sync CMS database schema |
+| `npm run cms:seed` | Seed CMS admin user |
 
 ## Project Structure
 
 ```
 src/
-├── app/              # Next.js app router & global styles
+├── app/              # Next.js app router, public pages, /admin CMS
 ├── components/
-│   ├── site/         # Page sections (hero, services, work, etc.)
+│   ├── site/         # Public page sections
+│   ├── admin/        # CMS UI
 │   └── ui/           # Reusable UI primitives
-└── lib/              # Site data & utilities
+├── db/               # Drizzle schema + client
+└── lib/              # Content, auth, SEO, CMS helpers
 ```
 
 ## Contact

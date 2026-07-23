@@ -18,17 +18,18 @@ type PageProps = {
 }
 
 export async function generateStaticParams() {
-  return getAllBlogSlugs().map((slug) => ({ slug }))
+  const slugs = await getAllBlogSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const post = getBlogPostBySlug(slug)
+  const post = await getBlogPostBySlug(slug)
   if (!post) return { title: 'Insight Not Found' }
 
   return createPageMetadata({
-    title: post.title,
-    description: post.excerpt,
+    title: post.metaTitle || post.title,
+    description: post.metaDescription || post.excerpt,
     path: `/insights/${slug}`,
     image: post.image,
     type: 'article',
@@ -38,7 +39,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function InsightPage({ params }: PageProps) {
   const { slug } = await params
-  const post = getBlogPostBySlug(slug)
+  const post = await getBlogPostBySlug(slug)
   if (!post) notFound()
 
   return (
@@ -89,7 +90,7 @@ export default async function InsightPage({ params }: PageProps) {
           <div className="relative mt-12 aspect-[21/9] overflow-hidden rounded-3xl border border-white/10">
             <Image
               src={post.image}
-              alt={post.title}
+              alt={post.imageAlt || post.title}
               fill
               className="object-cover"
               sizes="100vw"
@@ -99,14 +100,21 @@ export default async function InsightPage({ params }: PageProps) {
           </div>
 
           <div className="mx-auto mt-12 max-w-3xl space-y-6 border-t border-white/10 pt-12">
-            {post.body.map((paragraph) => (
-              <p
-                key={paragraph.slice(0, 40)}
-                className="text-lg leading-relaxed text-[#F1E9DB]/70"
-              >
-                {paragraph}
-              </p>
-            ))}
+            {post.bodyHtml ? (
+              <div
+                className="space-y-6 text-lg leading-relaxed text-[#F1E9DB]/70 [&_h2]:mt-10 [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-[#F1E9DB] [&_ul]:list-disc [&_ul]:pl-5"
+                dangerouslySetInnerHTML={{ __html: post.bodyHtml }}
+              />
+            ) : (
+              post.body.map((paragraph) => (
+                <p
+                  key={paragraph.slice(0, 40)}
+                  className="text-lg leading-relaxed text-[#F1E9DB]/70"
+                >
+                  {paragraph}
+                </p>
+              ))
+            )}
           </div>
 
           <div className="mx-auto mt-16 max-w-3xl border-t border-white/10 pt-12">
