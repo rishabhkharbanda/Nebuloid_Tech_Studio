@@ -571,7 +571,8 @@ export const footerLinks = [
   { label: 'Home', href: '/' },
   { label: 'Solutions', href: '/solutions' },
   { label: 'Experiences', href: '/experiences' },
-  { label: 'Insights', href: '/insights' },
+  { label: 'Digital Experiences', href: '/digital-experiences' },
+  { label: 'Blogs', href: '/insights' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ] as const

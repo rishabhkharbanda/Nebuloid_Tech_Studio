@@ -6,6 +6,7 @@ import {
   upsertBlogPostCms,
 } from '@/lib/cms/queries'
 import { analyzeBlogSeo } from '@/lib/cms/seo-analyzer'
+import { apiErrorStatus, blogInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
 
 type Ctx = { params: Promise<{ id: string }> }
@@ -29,8 +30,7 @@ export async function GET(_request: Request, context: Ctx) {
     })
     return NextResponse.json({ post, seo })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
@@ -43,7 +43,8 @@ export async function PUT(request: Request, context: Ctx) {
     }
     const { id } = await context.params
     const body = await request.json()
-    const post = await upsertBlogPostCms(id, body)
+    const input = parseWithZod(blogInputSchema, body)
+    const post = await upsertBlogPostCms(id, input)
     const seo = analyzeBlogSeo({
       title: post.title,
       slug: post.slug,
@@ -57,21 +58,19 @@ export async function PUT(request: Request, context: Ctx) {
     })
     return NextResponse.json({ post, seo })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
 
 export async function DELETE(_request: Request, context: Ctx) {
   try {
-    await requireSessionUser(['admin', 'editor'])
+    await requireSessionUser(['admin'])
     const { id } = await context.params
     await deleteBlogPostCms(id)
     return NextResponse.json({ ok: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }

@@ -17,6 +17,10 @@ type PageProps = {
   params: Promise<{ slug: string }>
 }
 
+/** Keep CMS publishes visible without a full redeploy. */
+export const revalidate = 60
+export const dynamicParams = true
+
 export async function generateStaticParams() {
   const slugs = await getAllBlogSlugs()
   return slugs.map((slug) => ({ slug }))
@@ -48,7 +52,7 @@ export default async function InsightPage({ params }: PageProps) {
         data={[
           getBreadcrumbSchema([
             { name: 'Home', path: '/' },
-            { name: 'Insights', path: '/insights' },
+            { name: 'Blogs', path: '/insights' },
             { name: post.title, path: `/insights/${slug}` },
           ]),
           getArticleSchema({
@@ -68,7 +72,7 @@ export default async function InsightPage({ params }: PageProps) {
             className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
           >
             <ArrowLeft size={14} />
-            All Insights
+            All Blogs
           </Link>
 
           <div className="mt-8 flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server'
 import { requireSessionUser } from '@/lib/auth/session'
 import { listBlogPostsCms, upsertBlogPostCms } from '@/lib/cms/queries'
 import { analyzeBlogSeo } from '@/lib/cms/seo-analyzer'
+import { apiErrorStatus, blogInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
 
 export async function GET() {
@@ -13,8 +14,7 @@ export async function GET() {
     const posts = await listBlogPostsCms()
     return NextResponse.json({ posts, cmsEnabled: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
@@ -26,8 +26,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'DATABASE_URL is not configured.' }, { status: 503 })
     }
     const body = await request.json()
+    const input = parseWithZod(blogInputSchema, body)
     const post = await upsertBlogPostCms(null, {
-      ...body,
+      ...input,
       createdBy: user.id,
     })
     const seo = analyzeBlogSeo({
@@ -43,8 +44,7 @@ export async function POST(request: Request) {
     })
     return NextResponse.json({ post, seo })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }

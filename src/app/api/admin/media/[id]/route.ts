@@ -2,6 +2,7 @@ import { del } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 import { requireSessionUser } from '@/lib/auth/session'
 import { deleteMediaAsset, updateMediaAsset } from '@/lib/cms/queries'
+import { apiErrorStatus } from '@/lib/cms/validation'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -13,15 +14,14 @@ export async function PATCH(request: Request, context: Ctx) {
     const asset = await updateMediaAsset(id, body)
     return NextResponse.json({ asset })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
 
 export async function DELETE(_request: Request, context: Ctx) {
   try {
-    await requireSessionUser()
+    await requireSessionUser(['admin'])
     const { id } = await context.params
     const asset = await deleteMediaAsset(id)
     if (asset?.url && process.env.BLOB_READ_WRITE_TOKEN) {
@@ -33,8 +33,7 @@ export async function DELETE(_request: Request, context: Ctx) {
     }
     return NextResponse.json({ ok: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }

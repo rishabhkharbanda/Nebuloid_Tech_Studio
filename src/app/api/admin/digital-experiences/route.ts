@@ -5,6 +5,12 @@ import {
   reorderDigitalCardsCms,
   upsertDigitalCardCms,
 } from '@/lib/cms/queries'
+import {
+  apiErrorStatus,
+  digitalCardInputSchema,
+  parseWithZod,
+  reorderDigitalSchema,
+} from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
 
 export async function GET() {
@@ -16,8 +22,7 @@ export async function GET() {
     const cards = await listDigitalCardsCms(true)
     return NextResponse.json({ cards, cmsEnabled: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
@@ -30,15 +35,16 @@ export async function POST(request: Request) {
     }
     const body = await request.json()
     if (Array.isArray(body.orderedIds)) {
-      await reorderDigitalCardsCms(body.orderedIds as string[])
+      const { orderedIds } = parseWithZod(reorderDigitalSchema, body)
+      await reorderDigitalCardsCms(orderedIds)
       const cards = await listDigitalCardsCms(true)
       return NextResponse.json({ cards })
     }
-    const card = await upsertDigitalCardCms(null, body)
+    const input = parseWithZod(digitalCardInputSchema, body)
+    const card = await upsertDigitalCardCms(null, input)
     return NextResponse.json({ card })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }

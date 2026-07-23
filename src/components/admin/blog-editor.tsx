@@ -1,8 +1,9 @@
 'use client'
 
-import { FormEvent, useEffect, useMemo, useState } from 'react'
+import { FormEvent, useEffect, useMemo, useRef, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { SeoScorePanel, TagInput } from '@/components/admin/seo-score-panel'
+import { parseBlogHtmlFile } from '@/lib/cms/html-import'
 import { analyzeBlogSeo, slugify, type SeoAnalysis } from '@/lib/cms/seo-analyzer'
 
 type BlogFormProps = {
@@ -32,6 +33,9 @@ export function BlogEditor({ postId }: BlogFormProps) {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [seo, setSeo] = useState<SeoAnalysis | null>(null)
+  const [previewUrl, setPreviewUrl] = useState('')
+  const [importNote, setImportNote] = useState('')
+  const htmlInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     if (!postId) return
@@ -60,6 +64,9 @@ export function BlogEditor({ postId }: BlogFormProps) {
         focusKeyword: data.post.focusKeyword,
         displayDate: data.post.displayDate,
       })
+      if (data.post.slug && data.post.previewToken) {
+        setPreviewUrl(`/preview/insights/${data.post.slug}?token=${data.post.previewToken}`)
+      }
       setSeo(data.seo)
       setLoading(false)
     })()
@@ -106,6 +113,9 @@ export function BlogEditor({ postId }: BlogFormProps) {
       return
     }
     setSeo(data.seo)
+    if (data.post?.slug && data.post?.previewToken) {
+      setPreviewUrl(`/preview/insights/${data.post.slug}?token=${data.post.previewToken}`)
+    }
     if (!postId) {
       router.replace(`/admin/blogs/${data.post.id}`)
       router.refresh()
@@ -121,9 +131,43 @@ export function BlogEditor({ postId }: BlogFormProps) {
     if (!postId) return
     if (!confirm('Delete this post permanently?')) return
     const response = await fetch(`/api/admin/blogs/${postId}`, { method: 'DELETE' })
-    if (response.ok) {
-      router.replace('/admin/blogs')
-      router.refresh()
+    const data = await response.json()
+    if (!response.ok) {
+      setError(data.error || 'Delete failed (admins only)')
+      return
+    }
+    router.replace('/admin/blogs')
+    router.refresh()
+  }
+
+  async function onHtmlFileSelected(file: File | null) {
+    if (!file) return
+    setError('')
+    setImportNote('')
+    if (!/\.html?$/i.test(file.name) && file.type !== 'text/html') {
+      setError('Please upload a .html file.')
+      return
+    }
+    try {
+      const text = await file.text()
+      const imported = parseBlogHtmlFile(text, file.name)
+      setForm((prev) => ({
+        ...prev,
+        title: imported.title || prev.title,
+        slug: imported.slug || prev.slug || slugify(imported.title),
+        excerpt: imported.excerpt || prev.excerpt,
+        body: imported.bodyHtml,
+        featuredImageUrl: imported.featuredImageUrl || prev.featuredImageUrl,
+        featuredImageAlt: imported.featuredImageAlt || prev.featuredImageAlt,
+        metaTitle: imported.metaTitle || prev.metaTitle,
+        metaDescription: imported.metaDescription || prev.metaDescription,
+        focusKeyword: prev.focusKeyword || imported.title.split(':')[0]?.trim() || '',
+      }))
+      setImportNote(`Imported “${file.name}”. Review fields, then Save or Publish.`)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not parse HTML file.')
+    } finally {
+      if (htmlInputRef.current) htmlInputRef.current.value = ''
     }
   }
 
@@ -153,6 +197,16 @@ export function BlogEditor({ postId }: BlogFormProps) {
             >
               Publish
             </button>
+            {previewUrl ? (
+              <a
+                href={previewUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="rounded-xl border border-[#d4af37]/40 px-3 py-2 text-sm text-[#92400e]"
+              >
+                Open preview
+              </a>
+            ) : null}
             {postId ? (
               <button
                 type="button"
@@ -166,6 +220,29 @@ export function BlogEditor({ postId }: BlogFormProps) {
         </div>
 
         {error ? <p className="text-sm text-red-600">{error}</p> : null}
+        {importNote ? <p className="text-sm text-emerald-700">{importNote}</p> : null}
+
+        <div className="rounded-2xl border border-dashed border-black/15 bg-[#fafafa] p-4">
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <div>
+              <p className="text-sm font-medium">Import from HTML file</p>
+              <p className="mt-1 text-xs text-[#6b7280]">
+                Upload an exported article `.html` (title, meta, body, and first image are filled
+                automatically).
+              </p>
+            </div>
+            <label className="cursor-pointer rounded-xl border border-black/10 bg-white px-3 py-2 text-sm font-medium hover:bg-black/[0.03]">
+              Choose HTML file
+              <input
+                ref={htmlInputRef}
+                type="file"
+                accept=".html,text/html"
+                className="hidden"
+                onChange={(e) => onHtmlFileSelected(e.target.files?.[0] ?? null)}
+              />
+            </label>
+          </div>
+        </div>
 
         <Field label="Title">
           <input

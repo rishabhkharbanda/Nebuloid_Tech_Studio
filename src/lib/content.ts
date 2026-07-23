@@ -1,10 +1,13 @@
 import {
   getPublishedBlogBySlug,
   getPublishedBlogPostsCms,
+  getPublishedDigitalBySlug,
   listDigitalCardsCms,
   mapCmsBlogToPublic,
+  mapCmsDigitalToPublic,
   cmsEnabled,
 } from '@/lib/cms/queries'
+import type { PublicDigitalProject } from '@/lib/cms/types'
 import { digitalProjects } from '@/lib/digital-data'
 import {
   blogPosts,
@@ -109,17 +112,7 @@ export function getAllBlogSlugsSync() {
 }
 
 export async function getBlogPostsForListing() {
-  if (cmsEnabled()) {
-    try {
-      const cmsPosts = await getPublishedBlogPostsCms()
-      if (cmsPosts.length > 0) {
-        return cmsPosts.map(mapCmsBlogToPublic)
-      }
-    } catch {
-      // Fall through.
-    }
-  }
-  return blogPosts.map((post) => {
+  const staticList = blogPosts.map((post) => {
     const details = blogDetails[post.slug]
     return {
       ...post,
@@ -131,6 +124,21 @@ export async function getBlogPostsForListing() {
       bodyHtml: '',
     }
   })
+
+  if (cmsEnabled()) {
+    try {
+      const cmsPosts = await getPublishedBlogPostsCms()
+      if (cmsPosts.length > 0) {
+        const cmsMapped = cmsPosts.map(mapCmsBlogToPublic)
+        const cmsSlugs = new Set(cmsMapped.map((post) => post.slug))
+        return [...cmsMapped, ...staticList.filter((post) => !cmsSlugs.has(post.slug))]
+      }
+    } catch {
+      // Fall through.
+    }
+  }
+
+  return staticList
 }
 
 export function getAllIndustrySlugs() {
@@ -141,11 +149,81 @@ export function getAllTechnologySlugs() {
   return technologies.map((technology) => technology.slug)
 }
 
-export function getDigitalProjectBySlug(slug: string) {
-  return digitalProjects.find((project) => project.slug === slug) ?? null
+function mapStaticDigitalProject(slug: string): PublicDigitalProject | null {
+  const project = digitalProjects.find((item) => item.slug === slug)
+  if (!project) return null
+  const interactive =
+    'interactiveExperiences' in project
+      ? {
+          aiBooth:
+            'aiBooth' in project.interactiveExperiences
+              ? [...project.interactiveExperiences.aiBooth]
+              : undefined,
+          games:
+            'games' in project.interactiveExperiences
+              ? [...project.interactiveExperiences.games]
+              : undefined,
+          technologies:
+            'technologies' in project.interactiveExperiences
+              ? [...project.interactiveExperiences.technologies]
+              : undefined,
+        }
+      : undefined
+  return {
+    slug: project.slug,
+    client: project.client,
+    subtitle: 'subtitle' in project ? project.subtitle : undefined,
+    category: project.category,
+    title: project.title,
+    overview: project.overview,
+    image: project.image,
+    galleryTitle: 'galleryTitle' in project ? project.galleryTitle : undefined,
+    galleryHeading: 'galleryHeading' in project ? project.galleryHeading : undefined,
+    galleryAspect: 'galleryAspect' in project ? project.galleryAspect : undefined,
+    gallery: 'gallery' in project ? project.gallery.map((item) => ({ ...item })) : [],
+    contribution: [...project.contribution],
+    interactiveExperiences: interactive,
+    techStack: [...project.techStack],
+    impact: [...project.impact],
+  }
 }
 
-export function getAllDigitalProjectSlugs() {
+export async function getDigitalProjectBySlug(slug: string): Promise<PublicDigitalProject | null> {
+  if (cmsEnabled()) {
+    try {
+      const cms = await getPublishedDigitalBySlug(slug)
+      const hasCaseStudy =
+        Boolean(cms) &&
+        (((cms!.gallery?.length ?? 0) > 0) ||
+          ((cms!.contribution?.length ?? 0) > 0) ||
+          ((cms!.impact?.length ?? 0) > 0) ||
+          ((cms!.techStack?.length ?? 0) > 0))
+      if (cms && hasCaseStudy) {
+        return mapCmsDigitalToPublic(cms)
+      }
+    } catch {
+      // Fall through.
+    }
+  }
+  return mapStaticDigitalProject(slug)
+}
+
+export function getDigitalProjectBySlugSync(slug: string) {
+  return mapStaticDigitalProject(slug)
+}
+
+export async function getAllDigitalProjectSlugs() {
+  const staticSlugs = digitalProjects.map((project) => project.slug)
+  if (!cmsEnabled()) return staticSlugs
+  try {
+    const cards = await listDigitalCardsCms(false)
+    return Array.from(new Set([...cards.map((card) => card.slug), ...staticSlugs]))
+  } catch {
+    return staticSlugs
+  }
+}
+
+export function getAllDigitalProjectSlugsSync() {
   return digitalProjects.map((project) => project.slug)
 }
 

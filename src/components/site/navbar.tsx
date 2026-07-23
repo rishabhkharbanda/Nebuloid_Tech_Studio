@@ -16,7 +16,7 @@ const navLinks = [
   { label: 'Solutions', href: '/solutions' },
   { label: 'Experiences', href: '/experiences' },
   { label: 'Digital', href: '/digital-experiences' },
-  { label: 'Insights', href: '/insights' },
+  { label: 'Blogs', href: '/insights' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ]

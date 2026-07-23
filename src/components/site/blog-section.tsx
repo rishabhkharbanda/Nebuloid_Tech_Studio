@@ -33,7 +33,7 @@ export function BlogSection({
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            Insights
+            Blogs
           </p>
           <h2 className="mt-4 max-w-3xl text-[clamp(2rem,4.5vw,4rem)] font-bold leading-tight tracking-[-0.03em] text-[#F1E9DB]">
             Thinking on events, experience, and creative technology.
@@ -42,7 +42,7 @@ export function BlogSection({
             href="/insights"
             className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
           >
-            View all insights
+            View all blogs
             <ArrowUpRight size={16} />
           </Link>
         </SectionReveal>

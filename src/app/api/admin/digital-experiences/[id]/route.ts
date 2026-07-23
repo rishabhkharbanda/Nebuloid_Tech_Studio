@@ -5,6 +5,7 @@ import {
   getDigitalCardCmsById,
   upsertDigitalCardCms,
 } from '@/lib/cms/queries'
+import { apiErrorStatus, digitalCardInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
 
 type Ctx = { params: Promise<{ id: string }> }
@@ -17,8 +18,7 @@ export async function GET(_request: Request, context: Ctx) {
     if (!card) return NextResponse.json({ error: 'Not found' }, { status: 404 })
     return NextResponse.json({ card })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
@@ -31,24 +31,23 @@ export async function PUT(request: Request, context: Ctx) {
     }
     const { id } = await context.params
     const body = await request.json()
-    const card = await upsertDigitalCardCms(id, body)
+    const input = parseWithZod(digitalCardInputSchema, body)
+    const card = await upsertDigitalCardCms(id, input)
     return NextResponse.json({ card })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }
 
 export async function DELETE(_request: Request, context: Ctx) {
   try {
-    await requireSessionUser()
+    await requireSessionUser(['admin'])
     const { id } = await context.params
     await deleteDigitalCardCms(id)
     return NextResponse.json({ ok: true })
   } catch (error) {
-    const message = error instanceof Error ? error.message : 'Error'
-    const status = message === 'UNAUTHORIZED' ? 401 : 500
+    const { status, message } = apiErrorStatus(error)
     return NextResponse.json({ error: message }, { status })
   }
 }

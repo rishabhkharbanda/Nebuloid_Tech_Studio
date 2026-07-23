@@ -10,6 +10,7 @@ import {
   type MediaAsset,
 } from '@/db/schema'
 import { bodyToParagraphs, estimateReadTime, slugify } from '@/lib/cms/seo-analyzer'
+import type { PublicDigitalProject } from '@/lib/cms/types'
 
 export function cmsEnabled() {
   return hasDatabase()
@@ -68,12 +69,27 @@ export type BlogInput = {
   createdBy?: string
 }
 
+function nextPreviewToken(existing?: string | null) {
+  return existing && existing.length >= 16 ? existing : nanoid(24)
+}
+
+function resolvePublishedAt(
+  status: 'draft' | 'published' | 'unpublished',
+  previous: Date | null | undefined,
+  now: Date,
+) {
+  if (status === 'published') return previous ?? now
+  if (status === 'unpublished') return null
+  return previous ?? null
+}
+
 export async function upsertBlogPostCms(id: string | null, input: BlogInput) {
   const db = getDb()
   const now = new Date()
   const slug = slugify(input.slug || input.title)
   const body = input.body ?? ''
   const status = input.status ?? 'draft'
+  const existing = id ? await getBlogPostCmsById(id) : null
   const values = {
     slug,
     title: input.title.trim(),
@@ -91,9 +107,11 @@ export async function upsertBlogPostCms(id: string | null, input: BlogInput) {
     readTime: estimateReadTime(body),
     displayDate:
       input.displayDate?.trim() ||
+      existing?.displayDate ||
       now.toLocaleString('en-US', { month: 'long', year: 'numeric' }),
+    previewToken: nextPreviewToken(existing?.previewToken),
     updatedAt: now,
-    publishedAt: status === 'published' ? now : null,
+    publishedAt: resolvePublishedAt(status, existing?.publishedAt, now),
   }
 
   if (id) {
@@ -114,6 +132,14 @@ export async function upsertBlogPostCms(id: string | null, input: BlogInput) {
       createdBy: input.createdBy ?? null,
     })
     .returning()
+  return row
+}
+
+export async function getBlogByPreviewToken(slug: string, token: string) {
+  if (!cmsEnabled() || !token) return null
+  const db = getDb()
+  const [row] = await db.select().from(blogPostsCms).where(eq(blogPostsCms.slug, slug)).limit(1)
+  if (!row || row.previewToken !== token) return null
   return row
 }
 
@@ -211,7 +237,8 @@ export async function listDigitalCardsCms(includeDisabled = true) {
     .select()
     .from(digitalExperienceCards)
     .orderBy(asc(digitalExperienceCards.displayOrder), desc(digitalExperienceCards.updatedAt))
-  return includeDisabled ? rows : rows.filter((row) => row.enabled)
+  if (includeDisabled) return rows
+  return rows.filter((row) => row.enabled && row.status === 'published')
 }
 
 export async function getDigitalCardCmsById(id: string) {
@@ -225,10 +252,36 @@ export async function getDigitalCardCmsById(id: string) {
   return row ?? null
 }
 
+export async function getPublishedDigitalBySlug(slug: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(digitalExperienceCards)
+    .where(eq(digitalExperienceCards.slug, slug))
+    .limit(1)
+  if (!row || !row.enabled || row.status !== 'published') return null
+  return row
+}
+
+export async function getDigitalByPreviewToken(slug: string, token: string) {
+  if (!cmsEnabled() || !token) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(digitalExperienceCards)
+    .where(eq(digitalExperienceCards.slug, slug))
+    .limit(1)
+  if (!row || row.previewToken !== token) return null
+  return row
+}
+
 export type DigitalCardInput = {
   title: string
   slug?: string
   shortDescription?: string
+  overview?: string
+  subtitle?: string
   imageUrl?: string
   imageAlt?: string
   iconUrl?: string
@@ -238,24 +291,100 @@ export type DigitalCardInput = {
   clientLabel?: string
   displayOrder?: number
   enabled?: boolean
+  status?: 'draft' | 'published' | 'unpublished'
+  galleryTitle?: string
+  galleryHeading?: string
+  galleryAspect?: 'wide' | 'video' | null
+  gallery?: Array<{ src: string; alt: string; label: string }>
+  contribution?: string[]
+  interactiveExperiences?: {
+    aiBooth?: string[]
+    games?: string[]
+    technologies?: string[]
+  }
+  techStack?: string[]
+  impact?: string[]
+  metaTitle?: string
+  metaDescription?: string
+}
+
+export function mapCmsDigitalToPublic(card: DigitalExperienceCard): PublicDigitalProject {
+  const overview = card.overview || card.shortDescription
+  const aspect =
+    card.galleryAspect === 'wide' || card.galleryAspect === 'video'
+      ? card.galleryAspect
+      : undefined
+  return {
+    slug: card.slug,
+    client: card.clientLabel || card.category,
+    subtitle: card.subtitle || undefined,
+    category: card.category,
+    title: card.title,
+    overview,
+    image: card.imageUrl,
+    galleryTitle: card.galleryTitle || undefined,
+    galleryHeading: card.galleryHeading || undefined,
+    galleryAspect: aspect,
+    gallery: [...(card.gallery ?? [])],
+    contribution: [...(card.contribution ?? [])],
+    interactiveExperiences: card.interactiveExperiences
+      ? {
+          aiBooth: card.interactiveExperiences.aiBooth
+            ? [...card.interactiveExperiences.aiBooth]
+            : undefined,
+          games: card.interactiveExperiences.games
+            ? [...card.interactiveExperiences.games]
+            : undefined,
+          technologies: card.interactiveExperiences.technologies
+            ? [...card.interactiveExperiences.technologies]
+            : undefined,
+        }
+      : undefined,
+    techStack: [...(card.techStack ?? [])],
+    impact: [...(card.impact ?? [])],
+  }
 }
 
 export async function upsertDigitalCardCms(id: string | null, input: DigitalCardInput) {
   const db = getDb()
   const now = new Date()
+  const existing = id ? await getDigitalCardCmsById(id) : null
+  const status = input.status ?? existing?.status ?? 'draft'
+  const shortDescription = input.shortDescription?.trim() ?? existing?.shortDescription ?? ''
+  const overview = input.overview?.trim() || shortDescription
+  const slug = slugify(input.slug || input.title)
   const values = {
-    slug: slugify(input.slug || input.title),
+    slug,
     title: input.title.trim(),
-    shortDescription: input.shortDescription?.trim() ?? '',
-    imageUrl: input.imageUrl ?? '',
-    imageAlt: input.imageAlt ?? '',
-    iconUrl: input.iconUrl ?? '',
-    ctaText: input.ctaText?.trim() || 'View Case Study',
-    ctaHref: input.ctaHref?.trim() || '',
-    category: input.category?.trim() ?? '',
-    clientLabel: input.clientLabel?.trim() ?? '',
-    displayOrder: input.displayOrder ?? 0,
-    enabled: input.enabled ?? true,
+    shortDescription: shortDescription || overview,
+    overview,
+    subtitle: input.subtitle?.trim() ?? existing?.subtitle ?? '',
+    imageUrl: input.imageUrl ?? existing?.imageUrl ?? '',
+    imageAlt: input.imageAlt ?? existing?.imageAlt ?? '',
+    iconUrl: input.iconUrl ?? existing?.iconUrl ?? '',
+    ctaText: input.ctaText?.trim() || existing?.ctaText || 'View Case Study',
+    ctaHref: input.ctaHref?.trim() || existing?.ctaHref || `/digital-experiences/${slug}`,
+    category: input.category?.trim() ?? existing?.category ?? '',
+    clientLabel: input.clientLabel?.trim() ?? existing?.clientLabel ?? '',
+    displayOrder: input.displayOrder ?? existing?.displayOrder ?? 0,
+    enabled: input.enabled ?? existing?.enabled ?? true,
+    status,
+    galleryTitle: input.galleryTitle?.trim() ?? existing?.galleryTitle ?? '',
+    galleryHeading: input.galleryHeading?.trim() ?? existing?.galleryHeading ?? '',
+    galleryAspect: input.galleryAspect === null ? '' : (input.galleryAspect ?? existing?.galleryAspect ?? ''),
+    gallery: input.gallery ?? existing?.gallery ?? [],
+    contribution: input.contribution ?? existing?.contribution ?? [],
+    interactiveExperiences: input.interactiveExperiences ?? existing?.interactiveExperiences ?? {},
+    techStack: input.techStack ?? existing?.techStack ?? [],
+    impact: input.impact ?? existing?.impact ?? [],
+    metaTitle: input.metaTitle?.trim() ?? existing?.metaTitle ?? '',
+    metaDescription: input.metaDescription?.trim() ?? existing?.metaDescription ?? '',
+    previewToken: nextPreviewToken(existing?.previewToken),
+    publishedAt: resolvePublishedAt(
+      status as 'draft' | 'published' | 'unpublished',
+      existing?.publishedAt,
+      now,
+    ),
     updatedAt: now,
   }
 

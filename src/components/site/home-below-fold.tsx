@@ -24,7 +24,7 @@ export async function HomeBelowFold() {
       <AboutSection />
       <TestimonialsSection />
       <BlogSection
-        limit={2}
+        limit={4}
         posts={blogPosts.map((post) => ({
           slug: post.slug,
           title: post.title,

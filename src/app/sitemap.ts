@@ -28,7 +28,10 @@ const staticRoutes: MetadataRoute.Sitemap = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const lastModified = new Date()
-  const blogSlugs = await getAllBlogSlugs()
+  const [blogSlugs, digitalSlugs] = await Promise.all([
+    getAllBlogSlugs(),
+    getAllDigitalProjectSlugs(),
+  ])
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
     ...getAllProjectSlugs().map((slug) => ({
@@ -37,7 +40,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
-    ...getAllDigitalProjectSlugs().map((slug) => ({
+    ...digitalSlugs.map((slug) => ({
       url: absoluteUrl(`/digital-experiences/${slug}`),
       lastModified,
       changeFrequency: 'monthly' as const,

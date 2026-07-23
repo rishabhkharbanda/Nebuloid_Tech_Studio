@@ -3,6 +3,7 @@ import { notFound } from 'next/navigation'
 import { DetailLayout } from '@/components/site/detail-layout'
 import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
+import type { PublicDigitalProject } from '@/lib/cms/types'
 import { getAllDigitalProjectSlugs, getDigitalProjectBySlug } from '@/lib/content'
 import { createPageMetadata, getBreadcrumbSchema } from '@/lib/seo'
 
@@ -10,28 +11,25 @@ type PageProps = {
   params: Promise<{ slug: string }>
 }
 
-function buildSections(project: NonNullable<ReturnType<typeof getDigitalProjectBySlug>>) {
+function buildSections(project: PublicDigitalProject) {
   const sections: { title: string; items: string[] }[] = []
-  const interactive =
-    'interactiveExperiences' in project ? project.interactiveExperiences : undefined
-  const hasGallery = 'gallery' in project && project.gallery.length > 0
+  const interactive = project.interactiveExperiences
+  const hasGallery = project.gallery.length > 0
 
   if (interactive) {
-    if ('aiBooth' in interactive) {
+    if (interactive.aiBooth?.length) {
       sections.push({
         title: 'AI Selfie Booth',
         items: [...interactive.aiBooth],
       })
     }
-    if ('games' in interactive) {
+    if (interactive.games?.length) {
       sections.push({
         title: 'Interactive Games',
         items: [...interactive.games],
       })
     }
-    // Skip technologies when the gallery already labels each installation —
-    // avoids repeating the same capability names twice on the page.
-    if ('technologies' in interactive && !hasGallery) {
+    if (interactive.technologies?.length && !hasGallery) {
       sections.push({
         title: 'Interactive Technologies',
         items: [...interactive.technologies],
@@ -39,19 +37,20 @@ function buildSections(project: NonNullable<ReturnType<typeof getDigitalProjectB
     }
   }
 
-  sections.push({
-    title: 'Business Impact',
-    items: [...project.impact],
-  })
+  if (project.impact.length) {
+    sections.push({
+      title: 'Business Impact',
+      items: [...project.impact],
+    })
+  }
 
   return sections
 }
 
-function buildHighlights(project: NonNullable<ReturnType<typeof getDigitalProjectBySlug>>) {
-  const hasGallery = 'gallery' in project && project.gallery.length > 0
+function buildHighlights(project: PublicDigitalProject) {
+  const hasGallery = project.gallery.length > 0
   if (!hasGallery) return [...project.contribution]
 
-  // Drop deliverables that merely restate gallery-covered tech / games.
   const skip = new Set([
     'interactive gaming experiences',
     'gamification',
@@ -61,12 +60,13 @@ function buildHighlights(project: NonNullable<ReturnType<typeof getDigitalProjec
 }
 
 export async function generateStaticParams() {
-  return getAllDigitalProjectSlugs().map((slug) => ({ slug }))
+  const slugs = await getAllDigitalProjectSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const project = getDigitalProjectBySlug(slug)
+  const project = await getDigitalProjectBySlug(slug)
   if (!project) return { title: 'Digital Experience Not Found' }
 
   return createPageMetadata({
@@ -84,7 +84,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function DigitalExperiencePage({ params }: PageProps) {
   const { slug } = await params
-  const project = getDigitalProjectBySlug(slug)
+  const project = await getDigitalProjectBySlug(slug)
   if (!project) notFound()
 
   return (
@@ -106,16 +106,10 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
         sections={buildSections(project)}
         highlights={buildHighlights(project)}
         meta={[...project.techStack]}
-        gallery={'gallery' in project ? [...project.gallery] : undefined}
-        galleryTitle={
-          'galleryTitle' in project ? project.galleryTitle : undefined
-        }
-        galleryHeading={
-          'galleryHeading' in project ? project.galleryHeading : undefined
-        }
-        galleryAspect={
-          'galleryAspect' in project ? project.galleryAspect : undefined
-        }
+        gallery={project.gallery.length ? [...project.gallery] : undefined}
+        galleryTitle={project.galleryTitle}
+        galleryHeading={project.galleryHeading}
+        galleryAspect={project.galleryAspect}
       />
     </PageShell>
   )

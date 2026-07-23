@@ -71,9 +71,11 @@ If Resend sends successfully, the Apps Script skips its email to avoid duplicate
 
 ## Admin CMS
 
-Secure content admin at `/admin` for blogs, digital experience cards, media, and SEO scoring.
+Secure content admin at `/admin` for blogs, full digital experience case studies, media, and SEO scoring.
 
-Public site UI stays unchanged and falls back to static content when the CMS database is not configured.
+- **Blogs & digital experiences**: draft / publish / unpublish, secret preview links (`/preview/...`), Zod-validated APIs
+- **Roles**: editors can create and edit; only **admins** can delete blogs, digital experiences, and media
+- **Public site**: CMS-first with static fallback when the database is empty or unavailable
 
 ### Setup
 
@@ -88,7 +90,7 @@ ADMIN_EMAIL=admin@nebuloidtechstudio.com
 ADMIN_PASSWORD=your-strong-password
 ```
 
-3. Push schema and seed admin:
+3. Push schema and seed admin + digital case studies:
 
 ```bash
 npm run cms:push
@@ -104,7 +106,7 @@ npm run cms:seed
 | `npm run cms:push` | Push Drizzle schema to Postgres |
 | `npm run cms:generate` | Generate SQL migrations |
 | `npm run cms:migrate` | Run migrations |
-| `npm run cms:seed` | Create/update admin user |
+| `npm run cms:seed` | Create/update admin user and seed digital case studies |
 
 ## Scripts
 

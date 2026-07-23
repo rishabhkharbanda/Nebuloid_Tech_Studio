@@ -23,6 +23,9 @@ export const metadata: Metadata = createPageMetadata({
   ],
 })
 
+/** Refresh homepage blog/digital CMS sections periodically. */
+export const revalidate = 60
+
 export default function Home() {
   return (
     <div className="relative overflow-clip bg-[#090909] text-[#F1E9DB]">

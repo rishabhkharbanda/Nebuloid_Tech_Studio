@@ -4,6 +4,9 @@ import { PageShell } from '@/components/site/page-shell'
 import { getBlogPostsForListing } from '@/lib/content'
 import { createPageMetadata } from '@/lib/seo'
 
+/** Keep CMS publishes visible without a full redeploy. */
+export const revalidate = 60
+
 export const metadata: Metadata = createPageMetadata({
   title: 'Event Industry Insights',
   description:
@@ -30,7 +33,7 @@ export default async function InsightsIndexPage() {
   return (
     <PageShell>
       <ListingPage
-        label="Insights"
+        label="Blogs"
         title="Thinking on events, experience, and creative technology."
         description="Perspectives on event branding, guest journeys, AI experiences, and the craft of designing memorable corporate events."
         items={items}

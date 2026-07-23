@@ -5,8 +5,9 @@ config()
 import { nanoid } from 'nanoid'
 import { eq } from 'drizzle-orm'
 import { getDb, hasDatabase } from '../src/db/client'
-import { adminUsers } from '../src/db/schema'
+import { adminUsers, digitalExperienceCards } from '../src/db/schema'
 import { hashPassword } from '../src/lib/auth/password'
+import { digitalProjects } from '../src/lib/digital-data'
 
 async function main() {
   if (!hasDatabase()) {
@@ -46,6 +47,94 @@ async function main() {
     })
     console.log(`Created admin user: ${email}`)
   }
+
+  await seedDigitalExperienceCards()
+}
+
+function projectToCardValues(
+  project: (typeof digitalProjects)[number],
+  index: number,
+  now: Date,
+) {
+  const interactive =
+    'interactiveExperiences' in project ? { ...project.interactiveExperiences } : {}
+  return {
+    slug: project.slug,
+    title: project.title,
+    shortDescription: project.overview,
+    overview: project.overview,
+    subtitle: 'subtitle' in project ? project.subtitle : '',
+    imageUrl: project.image,
+    imageAlt: project.client,
+    iconUrl: '',
+    ctaText: 'View Case Study',
+    ctaHref: `/digital-experiences/${project.slug}`,
+    category: project.category,
+    clientLabel: project.client,
+    displayOrder: index,
+    enabled: true,
+    status: 'published' as const,
+    galleryTitle: 'galleryTitle' in project ? project.galleryTitle : '',
+    galleryHeading: 'galleryHeading' in project ? project.galleryHeading : '',
+    galleryAspect: 'galleryAspect' in project ? project.galleryAspect : '',
+    gallery: 'gallery' in project ? [...project.gallery] : [],
+    contribution: [...project.contribution],
+    interactiveExperiences: interactive,
+    techStack: [...project.techStack],
+    impact: [...project.impact],
+    metaTitle: project.title,
+    metaDescription: project.overview.slice(0, 160),
+    previewToken: nanoid(24),
+    publishedAt: now,
+    updatedAt: now,
+  }
+}
+
+async function seedDigitalExperienceCards() {
+  const db = getDb()
+  const now = new Date()
+  let inserted = 0
+  let upgraded = 0
+
+  for (const [index, project] of digitalProjects.entries()) {
+    const values = projectToCardValues(project, index, now)
+    const [existing] = await db
+      .select()
+      .from(digitalExperienceCards)
+      .where(eq(digitalExperienceCards.slug, project.slug))
+      .limit(1)
+
+    if (!existing) {
+      await db.insert(digitalExperienceCards).values({
+        id: nanoid(),
+        ...values,
+        createdAt: now,
+      })
+      inserted += 1
+      continue
+    }
+
+    const needsCaseStudy =
+      (existing.gallery?.length ?? 0) === 0 &&
+      (existing.contribution?.length ?? 0) === 0 &&
+      (existing.impact?.length ?? 0) === 0
+
+    if (needsCaseStudy) {
+      await db
+        .update(digitalExperienceCards)
+        .set({
+          ...values,
+          previewToken: existing.previewToken || values.previewToken,
+          createdAt: existing.createdAt,
+        })
+        .where(eq(digitalExperienceCards.id, existing.id))
+      upgraded += 1
+    }
+  }
+
+  console.log(
+    `Digital experiences seed: inserted ${inserted}, upgraded case-study fields on ${upgraded}.`,
+  )
 }
 
 main().catch((error) => {

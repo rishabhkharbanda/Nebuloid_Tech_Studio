@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
-import { digitalProjects } from '@/lib/digital-data'
+import { getDigitalExperienceCards } from '@/lib/content'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
@@ -18,14 +18,15 @@ export const metadata: Metadata = createPageMetadata({
   ],
 })
 
-export default function DigitalExperiencesIndexPage() {
-  const items = digitalProjects.map((project) => ({
-    href: `/digital-experiences/${project.slug}`,
-    title: project.title,
-    category: project.category,
-    description: project.overview,
-    image: project.image,
-    meta: project.client,
+export default async function DigitalExperiencesIndexPage() {
+  const cards = await getDigitalExperienceCards()
+  const items = cards.map((card) => ({
+    href: card.ctaHref || `/digital-experiences/${card.slug}`,
+    title: card.title,
+    category: card.category,
+    description: card.overview,
+    image: card.image,
+    meta: card.client,
   }))
 
   return (
