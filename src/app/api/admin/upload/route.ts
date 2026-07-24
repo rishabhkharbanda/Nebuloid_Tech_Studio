@@ -1,6 +1,7 @@
 import { put } from '@vercel/blob'
 import { NextResponse } from 'next/server'
 import { requireSessionUser } from '@/lib/auth/session'
+import { getBlobAccess, mediaProxyPath } from '@/lib/cms/blob'
 import { createMediaAsset } from '@/lib/cms/queries'
 import { hasDatabase } from '@/db/client'
 
@@ -26,13 +27,17 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: 'File is required.' }, { status: 400 })
     }
 
+    const access = getBlobAccess()
     const blob = await put(`cms/${folder}/${Date.now()}-${file.name}`, file, {
-      access: 'public',
+      access,
       contentType: file.type || undefined,
     })
 
+    // Private blob URLs are not publicly readable — serve via our proxy for site/admin use.
+    const url = access === 'private' ? mediaProxyPath(blob.pathname) : blob.url
+
     const asset = await createMediaAsset({
-      url: blob.url,
+      url,
       pathname: blob.pathname,
       filename: file.name,
       alt,

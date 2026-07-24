@@ -24,9 +24,9 @@ export async function DELETE(_request: Request, context: Ctx) {
     await requireSessionUser(['admin'])
     const { id } = await context.params
     const asset = await deleteMediaAsset(id)
-    if (asset?.url && process.env.BLOB_READ_WRITE_TOKEN) {
+    if (asset && process.env.BLOB_READ_WRITE_TOKEN) {
       try {
-        await del(asset.url)
+        await del(asset.pathname || asset.url)
       } catch {
         // Keep DB deletion even if blob cleanup fails.
       }

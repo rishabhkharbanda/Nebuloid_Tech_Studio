@@ -85,11 +85,13 @@ Secure content admin at `/admin` for blogs, full digital experience case studies
 ```bash
 DATABASE_URL=postgresql://...
 BLOB_READ_WRITE_TOKEN=vercel_blob_...
+BLOB_ACCESS=private
 ADMIN_SESSION_SECRET=use-a-long-random-secret-32chars-min
 ADMIN_EMAIL=admin@nebuloidtechstudio.com
 ADMIN_PASSWORD=your-strong-password
 ```
 
+`BLOB_ACCESS` must match your Vercel Blob store mode (`private` or `public`). Stores cannot be converted after creation — for public marketing images, prefer a **public** store.
 3. Push schema and seed admin + digital case studies:
 
 ```bash
