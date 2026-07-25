@@ -150,7 +150,7 @@ export function ContactSection() {
           </p>
         </SectionReveal>
 
-        <SectionReveal delay={0.1} className="mt-14 border-y border-white/10">
+        <SectionReveal delay={0.1} className="mt-14 border-t border-white/10">
           <div className="grid gap-12 py-12 md:grid-cols-12 md:gap-16 md:py-16 lg:py-20">
             <div className="md:col-span-4 lg:col-span-5">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#F1E9DB]/45">
@@ -161,7 +161,7 @@ export function ContactSection() {
                 {contactItems.map((item) => (
                   <div key={item.label} className="py-7 first:pt-0 last:pb-0">
                     <div className="flex items-center gap-2">
-                      <item.icon size={14} className="text-[#d4af37]" />
+                      <item.icon size={14} className="text-[#d4af37]" aria-hidden />
                       <p className="font-mono text-xs uppercase tracking-[0.16em] text-[#d4af37]">
                         {item.label}
                       </p>
@@ -333,6 +333,43 @@ export function ContactSection() {
                 )}
               </div>
             </form>
+          </div>
+        </SectionReveal>
+
+        <SectionReveal delay={0.15} className="border-t border-white/10 pb-8 pt-14 md:pt-16">
+          <div className="flex flex-wrap items-end justify-between gap-4">
+            <div>
+              <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
+                Visit Us
+              </p>
+              <h2 className="mt-3 text-[clamp(1.5rem,3.5vw,2.5rem)] font-semibold tracking-[-0.03em] text-[#F1E9DB]">
+                Nebuloid Tech Studio, Gurugram
+              </h2>
+              <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#F1E9DB]/60 md:text-base">
+                {contactDetails.address.lines[0]}, {contactDetails.address.lines[1]}
+              </p>
+            </div>
+            <a
+              href={contactDetails.mapDirectionsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
+            >
+              Open in Google Maps
+              <ArrowUpRight size={14} aria-hidden />
+            </a>
+          </div>
+
+          <div className="relative mt-8 overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c0c]">
+            <div className="pointer-events-none absolute inset-0 z-10 ring-1 ring-inset ring-white/10" />
+            <iframe
+              src={contactDetails.mapEmbedUrl}
+              title="Nebuloid Tech Studio LLP on Google Maps"
+              className="block h-[280px] w-full border-0 md:h-[420px] lg:h-[480px] contact-map-embed"
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              allowFullScreen
+            />
           </div>
         </SectionReveal>
       </div>

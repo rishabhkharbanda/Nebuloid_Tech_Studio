@@ -565,6 +565,10 @@ export const contactDetails = {
   phoneHref: 'tel:+917303922260',
   email: 'NebuloidTechStudio@gmail.com',
   emailHref: 'mailto:NebuloidTechStudio@gmail.com',
+  mapEmbedUrl:
+    'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3507.6744476269514!2d77.07950557630477!3d28.459228575759955!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390d196be4f78017%3A0x87776ad354b0c700!2sNebuloid%20Tech%20Studio%20LLP!5e0!3m2!1sen!2sin!4v1785010454117!5m2!1sen!2sin',
+  mapDirectionsUrl:
+    'https://www.google.com/maps/place/Nebuloid+Tech+Studio+LLP/@28.4592286,77.0795056,17z',
 } as const
 
 export const footerLinks = [

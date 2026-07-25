@@ -47,6 +47,11 @@ button {
   background-size: 3px 3px;
 }
 
+/* Tone Google Maps embed toward the dark cream/gold site palette. */
+.contact-map-embed {
+  filter: grayscale(0.35) contrast(1.05) brightness(0.82) saturate(0.75);
+}
+
 .text-gradient-gold {
   background: linear-gradient(120deg, #f1e9db 0%, #d4af37 50%, #f1e9db 100%);
   -webkit-background-clip: text;
