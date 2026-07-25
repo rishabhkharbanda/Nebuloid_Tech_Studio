@@ -23,6 +23,48 @@ const nextConfig: NextConfig = {
       },
     ],
   },
+  async redirects() {
+    return [
+      {
+        source: '/blog',
+        destination: '/insights',
+        permanent: true,
+      },
+      {
+        source: '/blog/:slug',
+        destination: '/insights/:slug',
+        permanent: true,
+      },
+      {
+        source: '/blogs',
+        destination: '/insights',
+        permanent: true,
+      },
+      {
+        source: '/blogs/:slug',
+        destination: '/insights/:slug',
+        permanent: true,
+      },
+      {
+        source: '/ai-photo-booth',
+        destination: '/technology/ai-photo-booths',
+        permanent: true,
+      },
+      {
+        source: '/ai-photobooth',
+        destination: '/technology/ai-photo-booths',
+        permanent: true,
+      },
+    ]
+  },
+  async headers() {
+    return [
+      {
+        source: '/gone',
+        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+      },
+    ]
+  },
 }
 
 export default nextConfig

@@ -5,6 +5,14 @@ const COOKIE_NAME = 'nebuloid_admin_session'
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl
 
+  if (pathname === '/gone') {
+    const response = NextResponse.next()
+    response.headers.set('X-Robots-Tag', 'noindex, nofollow')
+    // Signal permanent removal to crawlers that respect custom status via rewrite marker.
+    response.headers.set('X-Nebuloid-Status', '410')
+    return response
+  }
+
   if (pathname.startsWith('/admin/login')) {
     return NextResponse.next()
   }
@@ -29,5 +37,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/admin/:path*', '/api/admin/:path*'],
+  matcher: ['/admin/:path*', '/api/admin/:path*', '/gone'],
 }

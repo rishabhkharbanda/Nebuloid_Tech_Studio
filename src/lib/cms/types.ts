@@ -26,4 +26,12 @@ export type PublicDigitalProject = {
   interactiveExperiences?: InteractiveExperiencesCms
   techStack: string[]
   impact: string[]
+  metaTitle?: string
+  metaDescription?: string
+  focusKeyword?: string
+  canonicalPath?: string
+  ogImageUrl?: string
+  twitterImageUrl?: string
+  robotsIndex?: boolean
+  schemaType?: string
 }

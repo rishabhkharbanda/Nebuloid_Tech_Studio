@@ -7,6 +7,7 @@ import {
   Images,
   LayoutDashboard,
   LogOut,
+  MapPin,
   MonitorPlay,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -16,6 +17,7 @@ const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/digital-experiences', label: 'Digital Experiences', icon: MonitorPlay },
+  { href: '/admin/location-landings', label: 'Location Landings', icon: MapPin },
   { href: '/admin/media', label: 'Media Library', icon: Images },
 ]
 

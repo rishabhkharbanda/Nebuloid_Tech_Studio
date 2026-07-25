@@ -30,6 +30,12 @@ export const blogInputSchema = z.object({
   metaTitle: z.string().max(255).optional(),
   metaDescription: z.string().max(4000).optional(),
   focusKeyword: z.string().max(128).optional(),
+  canonicalPath: z.string().max(512).optional(),
+  ogImageUrl: z.string().optional(),
+  twitterImageUrl: z.string().optional(),
+  robotsIndex: z.boolean().optional(),
+  authorName: z.string().max(255).optional(),
+  schemaType: z.string().max(64).optional(),
   displayDate: z.string().max(64).optional(),
 })
 
@@ -59,6 +65,53 @@ export const digitalCardInputSchema = z.object({
   impact: stringList.optional(),
   metaTitle: z.string().max(255).optional(),
   metaDescription: z.string().max(4000).optional(),
+  focusKeyword: z.string().max(128).optional(),
+  canonicalPath: z.string().max(512).optional(),
+  ogImageUrl: z.string().optional(),
+  twitterImageUrl: z.string().optional(),
+  robotsIndex: z.boolean().optional(),
+  schemaType: z.string().max(64).optional(),
+})
+
+export const locationLandingInputSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(512),
+  slug: z.string().trim().max(255).optional(),
+  city: z.string().max(128).optional(),
+  serviceLabel: z.string().max(255).optional(),
+  heroIntro: z.string().optional(),
+  whatIsIt: z.string().optional(),
+  benefits: stringList.optional(),
+  features: stringList.optional(),
+  howItWorks: stringList.optional(),
+  industries: stringList.optional(),
+  useCases: stringList.optional(),
+  whyChooseUs: stringList.optional(),
+  faqs: z
+    .array(
+      z.object({
+        question: z.string().trim().min(1),
+        answer: z.string().trim().min(1),
+      }),
+    )
+    .optional(),
+  conclusion: z.string().optional(),
+  relatedPaths: z
+    .array(
+      z.object({
+        label: z.string().trim().min(1),
+        href: z.string().trim().min(1),
+      }),
+    )
+    .optional(),
+  status: z.enum(['draft', 'published', 'unpublished']).optional(),
+  metaTitle: z.string().max(255).optional(),
+  metaDescription: z.string().max(4000).optional(),
+  focusKeyword: z.string().max(128).optional(),
+  canonicalPath: z.string().max(512).optional(),
+  ogImageUrl: z.string().optional(),
+  twitterImageUrl: z.string().optional(),
+  robotsIndex: z.boolean().optional(),
+  schemaType: z.string().max(64).optional(),
 })
 
 export const reorderDigitalSchema = z.object({

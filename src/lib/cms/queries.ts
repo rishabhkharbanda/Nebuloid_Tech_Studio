@@ -4,9 +4,11 @@ import { getDb, hasDatabase } from '@/db/client'
 import {
   blogPostsCms,
   digitalExperienceCards,
+  locationLandingsCms,
   mediaAssets,
   type BlogPostCms,
   type DigitalExperienceCard,
+  type LocationLandingCms,
   type MediaAsset,
 } from '@/db/schema'
 import { bodyToParagraphs, estimateReadTime, slugify } from '@/lib/cms/seo-analyzer'
@@ -65,6 +67,12 @@ export type BlogInput = {
   metaTitle?: string
   metaDescription?: string
   focusKeyword?: string
+  canonicalPath?: string
+  ogImageUrl?: string
+  twitterImageUrl?: string
+  robotsIndex?: boolean
+  authorName?: string
+  schemaType?: string
   displayDate?: string
   createdBy?: string
 }
@@ -104,6 +112,13 @@ export async function upsertBlogPostCms(id: string | null, input: BlogInput) {
     metaTitle: input.metaTitle?.trim() ?? '',
     metaDescription: input.metaDescription?.trim() ?? '',
     focusKeyword: input.focusKeyword?.trim() ?? '',
+    canonicalPath: input.canonicalPath?.trim() || `/insights/${slug}`,
+    ogImageUrl: input.ogImageUrl?.trim() || input.featuredImageUrl || '',
+    twitterImageUrl:
+      input.twitterImageUrl?.trim() || input.ogImageUrl?.trim() || input.featuredImageUrl || '',
+    robotsIndex: input.robotsIndex ?? true,
+    authorName: input.authorName?.trim() || 'Nebuloid Tech Studio',
+    schemaType: input.schemaType?.trim() || 'BlogPosting',
     readTime: estimateReadTime(body),
     displayDate:
       input.displayDate?.trim() ||
@@ -149,17 +164,30 @@ export async function deleteBlogPostCms(id: string) {
 }
 
 export function mapCmsBlogToPublic(post: BlogPostCms) {
+  const datePublished =
+    post.publishedAt?.toISOString() ||
+    (post.displayDate ? new Date(`${post.displayDate} 1`).toISOString() : new Date().toISOString())
   return {
     slug: post.slug,
     title: post.title,
     excerpt: post.excerpt,
     date: post.displayDate || post.publishedAt?.toLocaleString('en-US', { month: 'long', year: 'numeric' }) || '',
+    datePublished,
+    dateModified: post.updatedAt?.toISOString() || datePublished,
     category: post.category,
+    tags: post.tags || [],
     readTime: post.readTime,
     image: post.featuredImageUrl,
     imageAlt: post.featuredImageAlt,
     metaTitle: post.metaTitle || post.title,
     metaDescription: post.metaDescription || post.excerpt,
+    focusKeyword: post.focusKeyword || '',
+    canonicalPath: post.canonicalPath || `/insights/${post.slug}`,
+    ogImageUrl: post.ogImageUrl || post.featuredImageUrl,
+    twitterImageUrl: post.twitterImageUrl || post.ogImageUrl || post.featuredImageUrl,
+    robotsIndex: post.robotsIndex ?? true,
+    authorName: post.authorName || 'Nebuloid Tech Studio',
+    schemaType: post.schemaType || 'BlogPosting',
     body: bodyToParagraphs(post.bodyHtml || post.body),
     bodyHtml: post.bodyHtml || '',
   }
@@ -306,6 +334,12 @@ export type DigitalCardInput = {
   impact?: string[]
   metaTitle?: string
   metaDescription?: string
+  focusKeyword?: string
+  canonicalPath?: string
+  ogImageUrl?: string
+  twitterImageUrl?: string
+  robotsIndex?: boolean
+  schemaType?: string
 }
 
 export function mapCmsDigitalToPublic(card: DigitalExperienceCard): PublicDigitalProject {
@@ -342,6 +376,14 @@ export function mapCmsDigitalToPublic(card: DigitalExperienceCard): PublicDigita
       : undefined,
     techStack: [...(card.techStack ?? [])],
     impact: [...(card.impact ?? [])],
+    metaTitle: card.metaTitle || card.title,
+    metaDescription: card.metaDescription || overview,
+    focusKeyword: card.focusKeyword || '',
+    canonicalPath: card.canonicalPath || `/digital-experiences/${card.slug}`,
+    ogImageUrl: card.ogImageUrl || card.imageUrl,
+    twitterImageUrl: card.twitterImageUrl || card.ogImageUrl || card.imageUrl,
+    robotsIndex: card.robotsIndex !== false,
+    schemaType: card.schemaType || 'Service',
   }
 }
 
@@ -379,6 +421,12 @@ export async function upsertDigitalCardCms(id: string | null, input: DigitalCard
     impact: input.impact ?? existing?.impact ?? [],
     metaTitle: input.metaTitle?.trim() ?? existing?.metaTitle ?? '',
     metaDescription: input.metaDescription?.trim() ?? existing?.metaDescription ?? '',
+    focusKeyword: input.focusKeyword?.trim() ?? existing?.focusKeyword ?? '',
+    canonicalPath: input.canonicalPath?.trim() ?? existing?.canonicalPath ?? '',
+    ogImageUrl: input.ogImageUrl?.trim() ?? existing?.ogImageUrl ?? '',
+    twitterImageUrl: input.twitterImageUrl?.trim() ?? existing?.twitterImageUrl ?? '',
+    robotsIndex: input.robotsIndex ?? existing?.robotsIndex ?? true,
+    schemaType: input.schemaType?.trim() || existing?.schemaType || 'Service',
     previewToken: nextPreviewToken(existing?.previewToken),
     publishedAt: resolvePublishedAt(
       status as 'draft' | 'published' | 'unpublished',
@@ -423,4 +471,201 @@ export async function reorderDigitalCardsCms(orderedIds: string[]) {
         .where(eq(digitalExperienceCards.id, id)),
     ),
   )
+}
+
+export type LocationLandingInput = {
+  title: string
+  slug?: string
+  city?: string
+  serviceLabel?: string
+  heroIntro?: string
+  whatIsIt?: string
+  benefits?: string[]
+  features?: string[]
+  howItWorks?: string[]
+  industries?: string[]
+  useCases?: string[]
+  whyChooseUs?: string[]
+  faqs?: Array<{ question: string; answer: string }>
+  conclusion?: string
+  relatedPaths?: Array<{ label: string; href: string }>
+  status?: 'draft' | 'published' | 'unpublished'
+  metaTitle?: string
+  metaDescription?: string
+  focusKeyword?: string
+  canonicalPath?: string
+  ogImageUrl?: string
+  twitterImageUrl?: string
+  robotsIndex?: boolean
+  schemaType?: string
+}
+
+export async function listLocationLandingsCms() {
+  if (!cmsEnabled()) return [] as LocationLandingCms[]
+  const db = getDb()
+  return db.select().from(locationLandingsCms).orderBy(desc(locationLandingsCms.updatedAt))
+}
+
+export async function getLocationLandingCmsById(id: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(locationLandingsCms)
+    .where(eq(locationLandingsCms.id, id))
+    .limit(1)
+  return row ?? null
+}
+
+export async function getPublishedLocationLandingBySlug(slug: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(locationLandingsCms)
+    .where(eq(locationLandingsCms.slug, slug))
+    .limit(1)
+  if (!row || row.status !== 'published') return null
+  return row
+}
+
+export async function getPublishedLocationLandingSlugsCms() {
+  if (!cmsEnabled()) return [] as string[]
+  const db = getDb()
+  const rows = await db
+    .select({ slug: locationLandingsCms.slug })
+    .from(locationLandingsCms)
+    .where(eq(locationLandingsCms.status, 'published'))
+  return rows.map((row) => row.slug)
+}
+
+export function mapCmsLocationToPublic(row: LocationLandingCms) {
+  return {
+    slug: row.slug,
+    title: row.title,
+    metaTitle: row.metaTitle || row.title,
+    metaDescription: row.metaDescription,
+    focusKeyword: row.focusKeyword,
+    city: row.city,
+    serviceLabel: row.serviceLabel,
+    heroIntro: row.heroIntro,
+    whatIsIt: row.whatIsIt,
+    benefits: [...(row.benefits ?? [])],
+    features: [...(row.features ?? [])],
+    howItWorks: [...(row.howItWorks ?? [])],
+    industries: [...(row.industries ?? [])],
+    useCases: [...(row.useCases ?? [])],
+    whyChooseUs: [...(row.whyChooseUs ?? [])],
+    faqs: [...(row.faqs ?? [])],
+    conclusion: row.conclusion,
+    relatedPaths: [...(row.relatedPaths ?? [])],
+    canonicalPath: row.canonicalPath || `/${row.slug}`,
+    ogImageUrl: row.ogImageUrl,
+    twitterImageUrl: row.twitterImageUrl,
+    robotsIndex: row.robotsIndex !== false,
+    schemaType: row.schemaType || 'Service',
+  }
+}
+
+export async function upsertLocationLandingCms(id: string | null, input: LocationLandingInput) {
+  const db = getDb()
+  const now = new Date()
+  const existing = id ? await getLocationLandingCmsById(id) : null
+  const status = input.status ?? (existing?.status as LocationLandingInput['status']) ?? 'draft'
+  const slug = slugify(input.slug || input.title)
+  const values = {
+    slug,
+    title: input.title.trim(),
+    city: input.city?.trim() ?? existing?.city ?? '',
+    serviceLabel: input.serviceLabel?.trim() ?? existing?.serviceLabel ?? '',
+    heroIntro: input.heroIntro?.trim() ?? existing?.heroIntro ?? '',
+    whatIsIt: input.whatIsIt?.trim() ?? existing?.whatIsIt ?? '',
+    benefits: input.benefits ?? existing?.benefits ?? [],
+    features: input.features ?? existing?.features ?? [],
+    howItWorks: input.howItWorks ?? existing?.howItWorks ?? [],
+    industries: input.industries ?? existing?.industries ?? [],
+    useCases: input.useCases ?? existing?.useCases ?? [],
+    whyChooseUs: input.whyChooseUs ?? existing?.whyChooseUs ?? [],
+    faqs: input.faqs ?? existing?.faqs ?? [],
+    conclusion: input.conclusion?.trim() ?? existing?.conclusion ?? '',
+    relatedPaths: input.relatedPaths ?? existing?.relatedPaths ?? [],
+    status,
+    metaTitle: input.metaTitle?.trim() ?? existing?.metaTitle ?? '',
+    metaDescription: input.metaDescription?.trim() ?? existing?.metaDescription ?? '',
+    focusKeyword: input.focusKeyword?.trim() ?? existing?.focusKeyword ?? '',
+    canonicalPath: input.canonicalPath?.trim() ?? existing?.canonicalPath ?? '',
+    ogImageUrl: input.ogImageUrl?.trim() ?? existing?.ogImageUrl ?? '',
+    twitterImageUrl: input.twitterImageUrl?.trim() ?? existing?.twitterImageUrl ?? '',
+    robotsIndex: input.robotsIndex ?? existing?.robotsIndex ?? true,
+    schemaType: input.schemaType?.trim() || existing?.schemaType || 'Service',
+    publishedAt: resolvePublishedAt(
+      status as 'draft' | 'published' | 'unpublished',
+      existing?.publishedAt,
+      now,
+    ),
+    updatedAt: now,
+  }
+
+  if (id) {
+    const [row] = await db
+      .update(locationLandingsCms)
+      .set(values)
+      .where(eq(locationLandingsCms.id, id))
+      .returning()
+    return row
+  }
+
+  const [row] = await db
+    .insert(locationLandingsCms)
+    .values({
+      id: nanoid(),
+      ...values,
+      createdAt: now,
+    })
+    .returning()
+  return row
+}
+
+export async function deleteLocationLandingCms(id: string) {
+  const db = getDb()
+  await db.delete(locationLandingsCms).where(eq(locationLandingsCms.id, id))
+}
+
+export async function seedLocationLandingsFromStatic(
+  pages: Array<{
+    slug: string
+    title: string
+    metaTitle: string
+    metaDescription: string
+    focusKeyword: string
+    city: string
+    serviceLabel: string
+    heroIntro: string
+    whatIsIt: string
+    benefits: string[]
+    features: string[]
+    howItWorks: string[]
+    industries: string[]
+    useCases: string[]
+    whyChooseUs: string[]
+    faqs: Array<{ question: string; answer: string }>
+    conclusion: string
+    relatedPaths: Array<{ label: string; href: string }>
+  }>,
+) {
+  const existing = await listLocationLandingsCms()
+  const bySlug = new Map(existing.map((row) => [row.slug, row]))
+  const results = []
+  for (const page of pages) {
+    const match = bySlug.get(page.slug)
+    const row = await upsertLocationLandingCms(match?.id ?? null, {
+      ...page,
+      status: 'published',
+      canonicalPath: `/${page.slug}`,
+      schemaType: 'Service',
+      robotsIndex: true,
+    })
+    results.push(row)
+  }
+  return results
 }

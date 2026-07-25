@@ -1,22 +1,21 @@
 import type { Metadata } from 'next'
 import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
-import Script from 'next/script'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { AnalyticsTags, GtmNoscript } from '@/components/site/analytics-tags'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { DeferredCustomCursor } from '@/components/site/deferred-custom-cursor'
 import { BackToTopButton } from '@/components/site/back-to-top-button'
 import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
 import {
+  absoluteUrl,
+  getLocalBusinessSchema,
   getOrganizationSchema,
   getWebsiteSchema,
   siteConfig,
 } from '@/lib/seo'
 import './globals.css'
-
-const GA_MEASUREMENT_ID = 'G-BYJ6D14KLM'
-const GTM_ID = 'GTM-T9NF3BKQ'
 
 const spaceGrotesk = Space_Grotesk({
   variable: '--font-space-grotesk',
@@ -54,6 +53,9 @@ export const metadata: Metadata = {
   category: 'Event Experience & Creative Technology',
   alternates: {
     canonical: siteConfig.url,
+    types: {
+      'application/rss+xml': absoluteUrl('/feed.xml'),
+    },
   },
   openGraph: {
     title: `${siteConfig.shortName} | Event Experience & Creative Technology`,
@@ -64,7 +66,7 @@ export const metadata: Metadata = {
     type: 'website',
     images: [
       {
-        url: siteConfig.defaultOgImage,
+        url: absoluteUrl(siteConfig.defaultOgImage),
         width: 1200,
         height: 630,
         alt: siteConfig.name,
@@ -75,7 +77,7 @@ export const metadata: Metadata = {
     card: 'summary_large_image',
     title: siteConfig.shortName,
     description: siteConfig.defaultDescription,
-    images: [siteConfig.defaultOgImage],
+    images: [absoluteUrl(siteConfig.defaultOgImage)],
   },
   robots: {
     index: true,
@@ -85,11 +87,27 @@ export const metadata: Metadata = {
       follow: true,
       'max-image-preview': 'large',
       'max-snippet': -1,
+      'max-video-preview': -1,
     },
   },
   icons: {
-    icon: '/assets/nebuloid-logo-mark-day.png',
-    apple: '/assets/nebuloid-logo-mark-day.png',
+    icon: [
+      { url: '/assets/nebuloid-logo-mark-day.png', type: 'image/png' },
+      { url: '/icon.png', type: 'image/png' },
+    ],
+    apple: [{ url: '/apple-icon.png', type: 'image/png' }],
+  },
+  verification: {
+    ...(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : {}),
+    ...(process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION
+      ? {
+          other: {
+            'msvalidate.01': process.env.NEXT_PUBLIC_BING_SITE_VERIFICATION,
+          },
+        }
+      : {}),
   },
 }
 
@@ -100,50 +118,24 @@ export default function RootLayout({
 }>) {
   return (
     <html
-      lang="en"
+      lang="en-IN"
       className={`${spaceGrotesk.variable} ${bebasNeue.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
-        {/* Google Tag Manager — as high in <head> as possible */}
-        <Script id="google-tag-manager" strategy="beforeInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${GTM_ID}');`}
-        </Script>
-        <JsonLd data={[getOrganizationSchema(), getWebsiteSchema()]} />
+        <JsonLd
+          data={[getOrganizationSchema(), getWebsiteSchema(), getLocalBusinessSchema()]}
+        />
       </head>
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
-        {/* Google Tag Manager (noscript) */}
-        <noscript>
-          <iframe
-            src={`https://www.googletagmanager.com/ns.html?id=${GTM_ID}`}
-            height="0"
-            width="0"
-            style={{ display: 'none', visibility: 'hidden' }}
-            title="Google Tag Manager"
-          />
-        </noscript>
+        <GtmNoscript />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <BackToTopButton />
         <SecretDaylightToggle />
         <DeferredCustomCursor />
         <Analytics />
         <SpeedInsights />
-        <Script
-          src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}
-          strategy="lazyOnload"
-        />
-        <Script id="google-analytics" strategy="lazyOnload">
-          {`
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', '${GA_MEASUREMENT_ID}');
-          `}
-        </Script>
+        <AnalyticsTags />
       </body>
     </html>
   )

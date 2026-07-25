@@ -1,8 +1,9 @@
 import type { Metadata } from 'next'
+import { JsonLd } from '@/components/site/json-ld'
 import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
 import { getBlogPostsForListing } from '@/lib/content'
-import { createPageMetadata } from '@/lib/seo'
+import { createPageMetadata, getBreadcrumbSchema, getItemListSchema } from '@/lib/seo'
 
 /** Keep CMS publishes visible without a full redeploy. */
 export const revalidate = 60
@@ -17,6 +18,7 @@ export const metadata: Metadata = createPageMetadata({
     'corporate event trends',
     'experiential marketing blog',
     'AI for events articles',
+    'AI photo booth insights',
   ],
 })
 
@@ -32,6 +34,24 @@ export default async function InsightsIndexPage() {
 
   return (
     <PageShell>
+      <JsonLd
+        data={[
+          getBreadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blogs', path: '/insights' },
+          ]),
+          getItemListSchema({
+            name: 'Nebuloid Blog Insights',
+            description: 'Articles on event technology, AI experiences, and digital activations.',
+            path: '/insights',
+            items: posts.map((post) => ({
+              name: post.title,
+              path: `/insights/${post.slug}`,
+              description: post.excerpt,
+            })),
+          }),
+        ]}
+      />
       <ListingPage
         label="Blogs"
         title="Thinking on events, experience, and creative technology."

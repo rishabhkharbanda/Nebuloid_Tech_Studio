@@ -1,10 +1,17 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { DetailLayout } from '@/components/site/detail-layout'
+import { GeoDetailExtras } from '@/components/site/geo-detail-extras'
 import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { getAllServiceSlugs, getServiceBySlug } from '@/lib/content'
-import { createPageMetadata, getBreadcrumbSchema, getServiceSchema } from '@/lib/seo'
+import { getServiceGeo } from '@/lib/geo-enrichment'
+import {
+  createPageMetadata,
+  getBreadcrumbSchema,
+  getFaqSchema,
+  getServiceSchema,
+} from '@/lib/seo'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -32,6 +39,7 @@ export default async function SolutionPage({ params }: PageProps) {
   const { slug } = await params
   const service = getServiceBySlug(slug)
   if (!service) notFound()
+  const geo = getServiceGeo(slug)
 
   return (
     <PageShell>
@@ -48,6 +56,7 @@ export default async function SolutionPage({ params }: PageProps) {
             path: `/solutions/${slug}`,
             image: service.image,
           }),
+          ...(geo ? [getFaqSchema(geo.faqs)] : []),
         ]}
       />
       <DetailLayout
@@ -56,11 +65,13 @@ export default async function SolutionPage({ params }: PageProps) {
         category={`Solution ${service.id}`}
         title={service.title}
         image={service.image}
+        imageAlt={`${service.title} — Nebuloid event solution`}
         intro={service.intro}
         sections={service.sections}
         highlights={service.highlights}
         meta={[...service.tags]}
       />
+      {geo ? <GeoDetailExtras serviceName={service.title} geo={geo} /> : null}
     </PageShell>
   )
 }

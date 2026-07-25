@@ -19,6 +19,7 @@ type DetailLayoutProps = {
   category: string
   title: string
   image: string
+  imageAlt?: string
   intro: string
   sections?: DetailSection[]
   highlights?: string[]
@@ -63,6 +64,7 @@ export function DetailLayout({
   category,
   title,
   image,
+  imageAlt,
   intro,
   sections = [],
   highlights = [],
@@ -73,6 +75,7 @@ export function DetailLayout({
   galleryAspect = 'portrait',
 }: DetailLayoutProps) {
   const hasGallery = gallery.length > 0
+  const resolvedAlt = imageAlt?.trim() || title
 
   return (
     <article className="section-padding pb-32">
@@ -81,7 +84,7 @@ export function DetailLayout({
           href={backHref}
           className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
         >
-          <ArrowLeft size={14} />
+          <ArrowLeft size={14} aria-hidden />
           {backLabel}
         </Link>
 
@@ -119,7 +122,7 @@ export function DetailLayout({
           <div className="relative mt-14 aspect-[16/10] overflow-hidden rounded-3xl border border-white/10 bg-[#0c0c0c] md:mt-16">
             <Image
               src={image}
-              alt={title}
+              alt={resolvedAlt}
               fill
               className="object-cover"
               sizes="100vw"

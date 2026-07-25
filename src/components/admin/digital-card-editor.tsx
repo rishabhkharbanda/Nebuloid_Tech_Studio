@@ -36,6 +36,12 @@ const empty = {
   impactText: '',
   metaTitle: '',
   metaDescription: '',
+  focusKeyword: '',
+  canonicalPath: '',
+  ogImageUrl: '',
+  twitterImageUrl: '',
+  robotsIndex: true,
+  schemaType: 'Service',
   previewToken: '',
 }
 
@@ -116,6 +122,12 @@ export function DigitalCardEditor({ cardId }: Props) {
         impactText: listToLines(card.impact),
         metaTitle: card.metaTitle || '',
         metaDescription: card.metaDescription || '',
+        focusKeyword: card.focusKeyword || '',
+        canonicalPath: card.canonicalPath || '',
+        ogImageUrl: card.ogImageUrl || '',
+        twitterImageUrl: card.twitterImageUrl || '',
+        robotsIndex: card.robotsIndex !== false,
+        schemaType: card.schemaType || 'Service',
         previewToken: card.previewToken || '',
       })
       if (card.slug && card.previewToken) {
@@ -160,6 +172,12 @@ export function DigitalCardEditor({ cardId }: Props) {
       impact: linesToList(form.impactText),
       metaTitle: form.metaTitle,
       metaDescription: form.metaDescription,
+      focusKeyword: form.focusKeyword,
+      canonicalPath: form.canonicalPath || `/digital-experiences/${slug}`,
+      ogImageUrl: form.ogImageUrl,
+      twitterImageUrl: form.twitterImageUrl,
+      robotsIndex: form.robotsIndex,
+      schemaType: form.schemaType,
     }
   }
 
@@ -534,7 +552,7 @@ export function DigitalCardEditor({ cardId }: Props) {
       <section className="space-y-4">
         <h3 className="text-sm font-semibold uppercase tracking-[0.14em] text-[#6b7280]">SEO</h3>
         <label className="block text-sm font-medium">
-          Meta title
+          SEO title
           <input
             value={form.metaTitle}
             onChange={(e) => setForm((prev) => ({ ...prev, metaTitle: e.target.value }))}
@@ -550,6 +568,65 @@ export function DigitalCardEditor({ cardId }: Props) {
             className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
           />
         </label>
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="block text-sm font-medium">
+            Focus keyword
+            <input
+              value={form.focusKeyword}
+              onChange={(e) => setForm((prev) => ({ ...prev, focusKeyword: e.target.value }))}
+              className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Canonical path
+            <input
+              value={form.canonicalPath}
+              onChange={(e) => setForm((prev) => ({ ...prev, canonicalPath: e.target.value }))}
+              className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
+              placeholder="/digital-experiences/your-slug"
+            />
+          </label>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="block text-sm font-medium">
+            Open Graph image URL
+            <input
+              value={form.ogImageUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, ogImageUrl: e.target.value }))}
+              className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
+            />
+          </label>
+          <label className="block text-sm font-medium">
+            Twitter image URL
+            <input
+              value={form.twitterImageUrl}
+              onChange={(e) => setForm((prev) => ({ ...prev, twitterImageUrl: e.target.value }))}
+              className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
+            />
+          </label>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <label className="block text-sm font-medium">
+            Schema type
+            <select
+              value={form.schemaType}
+              onChange={(e) => setForm((prev) => ({ ...prev, schemaType: e.target.value }))}
+              className="mt-2 w-full rounded-xl border border-black/10 px-3 py-2.5"
+            >
+              <option value="Service">Service</option>
+              <option value="CreativeWork">CreativeWork</option>
+              <option value="WebPage">WebPage</option>
+            </select>
+          </label>
+          <label className="mt-8 inline-flex items-center gap-2 text-sm font-medium">
+            <input
+              type="checkbox"
+              checked={form.robotsIndex}
+              onChange={(e) => setForm((prev) => ({ ...prev, robotsIndex: e.target.checked }))}
+            />
+            Allow search indexing
+          </label>
+        </div>
       </section>
 
       <button

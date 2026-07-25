@@ -23,6 +23,7 @@ import {
   serviceDetails,
   technologyDetails,
 } from '@/lib/detail-content'
+import { parseBlogDate } from '@/lib/seo'
 
 export function getProjectBySlug(slug: string) {
   const project = projects.find((item) => item.slug === slug)
@@ -45,6 +46,7 @@ function getStaticBlogPostBySlug(slug: string) {
   if (!post) return null
   const details = blogDetails[slug]
   if (!details) return null
+  const datePublished = parseBlogDate(post.date)
   return {
     ...post,
     ...details,
@@ -52,6 +54,16 @@ function getStaticBlogPostBySlug(slug: string) {
     metaTitle: post.title,
     metaDescription: post.excerpt,
     bodyHtml: '',
+    datePublished,
+    dateModified: datePublished,
+    tags: [] as string[],
+    focusKeyword: '',
+    canonicalPath: `/insights/${post.slug}`,
+    ogImageUrl: details.image ?? '',
+    twitterImageUrl: details.image ?? '',
+    robotsIndex: true,
+    authorName: 'Nebuloid Tech Studio',
+    schemaType: 'BlogPosting',
   }
 }
 
@@ -114,6 +126,7 @@ export function getAllBlogSlugsSync() {
 export async function getBlogPostsForListing() {
   const staticList = blogPosts.map((post) => {
     const details = blogDetails[post.slug]
+    const datePublished = parseBlogDate(post.date)
     return {
       ...post,
       image: details?.image ?? '',
@@ -122,6 +135,16 @@ export async function getBlogPostsForListing() {
       metaDescription: post.excerpt,
       body: details?.body ?? [],
       bodyHtml: '',
+      datePublished,
+      dateModified: datePublished,
+      tags: [] as string[],
+      focusKeyword: '',
+      canonicalPath: `/insights/${post.slug}`,
+      ogImageUrl: details?.image ?? '',
+      twitterImageUrl: details?.image ?? '',
+      robotsIndex: true,
+      authorName: 'Nebuloid Tech Studio',
+      schemaType: 'BlogPosting',
     }
   })
 
@@ -139,6 +162,19 @@ export async function getBlogPostsForListing() {
   }
 
   return staticList
+}
+
+export async function getRelatedBlogPosts(slug: string, limit = 3) {
+  const posts = await getBlogPostsForListing()
+  const current = posts.find((post) => post.slug === slug)
+  if (!current) return posts.filter((post) => post.slug !== slug).slice(0, limit)
+  const sameCategory = posts.filter(
+    (post) => post.slug !== slug && post.category === current.category,
+  )
+  const rest = posts.filter(
+    (post) => post.slug !== slug && post.category !== current.category,
+  )
+  return [...sameCategory, ...rest].slice(0, limit)
 }
 
 export function getAllIndustrySlugs() {

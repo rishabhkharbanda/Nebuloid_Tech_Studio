@@ -41,6 +41,9 @@ export async function POST(request: Request) {
       focusKeyword: post.focusKeyword,
       featuredImageUrl: post.featuredImageUrl,
       featuredImageAlt: post.featuredImageAlt,
+      canonicalPath: post.canonicalPath,
+      ogImageUrl: post.ogImageUrl || post.featuredImageUrl,
+      robotsIndex: post.robotsIndex,
     })
     return NextResponse.json({ post, seo })
   } catch (error) {

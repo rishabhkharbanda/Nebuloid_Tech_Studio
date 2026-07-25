@@ -6,7 +6,9 @@ import {
   getAllProjectSlugs,
   getAllServiceSlugs,
   getAllTechnologySlugs,
+  getBlogPostsForListing,
 } from '@/lib/content'
+import { getAllLocationLandingSlugs, resolveAllLocationLandingSlugs } from '@/lib/location-landings'
 import { absoluteUrl } from '@/lib/seo'
 
 const staticRoutes: MetadataRoute.Sitemap = [
@@ -24,51 +26,66 @@ const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/contact'), changeFrequency: 'monthly', priority: 0.9 },
   { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.3 },
   { url: absoluteUrl('/terms'), changeFrequency: 'yearly', priority: 0.3 },
+  { url: absoluteUrl('/feed.xml'), changeFrequency: 'daily', priority: 0.4 },
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const lastModified = new Date()
-  const [blogSlugs, digitalSlugs] = await Promise.all([
+  const fallbackDate = new Date()
+  const [blogSlugs, digitalSlugs, blogPosts, locationSlugs] = await Promise.all([
     getAllBlogSlugs(),
     getAllDigitalProjectSlugs(),
+    getBlogPostsForListing(),
+    resolveAllLocationLandingSlugs(),
   ])
+  const blogDates = new Map(
+    blogPosts.map((post) => [
+      post.slug,
+      new Date(post.dateModified || post.datePublished || fallbackDate),
+    ]),
+  )
 
   const dynamicRoutes: MetadataRoute.Sitemap = [
     ...getAllProjectSlugs().map((slug) => ({
       url: absoluteUrl(`/experiences/${slug}`),
-      lastModified,
+      lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.8,
     })),
     ...digitalSlugs.map((slug) => ({
       url: absoluteUrl(`/digital-experiences/${slug}`),
-      lastModified,
+      lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     })),
     ...getAllServiceSlugs().map((slug) => ({
       url: absoluteUrl(`/solutions/${slug}`),
-      lastModified,
+      lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     })),
     ...blogSlugs.map((slug) => ({
       url: absoluteUrl(`/insights/${slug}`),
-      lastModified,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
+      lastModified: blogDates.get(slug) || fallbackDate,
+      changeFrequency: 'weekly' as const,
+      priority: 0.75,
     })),
     ...getAllIndustrySlugs().map((slug) => ({
       url: absoluteUrl(`/industries/${slug}`),
-      lastModified,
+      lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.75,
     })),
     ...getAllTechnologySlugs().map((slug) => ({
       url: absoluteUrl(`/technology/${slug}`),
-      lastModified,
+      lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.75,
+    })),
+    ...locationSlugs.map((slug) => ({
+      url: absoluteUrl(`/${slug}`),
+      lastModified: fallbackDate,
+      changeFrequency: 'monthly' as const,
+      priority: 0.9,
     })),
   ]
 

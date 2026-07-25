@@ -21,12 +21,16 @@ export const siteConfig = {
     'corporate event technology',
     'interactive event installations',
     'AI event experiences',
+    'AI photo booth India',
+    'AI photo booth for events',
+    'digital experiences',
+    'interactive kiosks',
+    'experiential marketing',
+    'brand activations',
     'conference branding',
     'event registration systems',
-    'experiential marketing agency',
   ],
-  defaultOgImage:
-    'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1200&h=630&q=80',
+  defaultOgImage: '/assets/nebuloid-logo-mark.png',
   email: 'NebuloidTechStudio@gmail.com',
   phone: '+917303922260',
   address: {
@@ -52,6 +56,10 @@ type PageMetadataOptions = {
   image?: string
   type?: 'website' | 'article'
   noIndex?: boolean
+  canonicalPath?: string
+  publishedTime?: string
+  modifiedTime?: string
+  authors?: string[]
 }
 
 export function absoluteUrl(path: string) {
@@ -66,9 +74,17 @@ export function createPageMetadata({
   image,
   type = 'website',
   noIndex = false,
+  canonicalPath,
+  publishedTime,
+  modifiedTime,
+  authors,
 }: PageMetadataOptions): Metadata {
-  const url = absoluteUrl(path)
-  const ogImage = image ?? siteConfig.defaultOgImage
+  const url = absoluteUrl(canonicalPath || path)
+  const ogImage = image
+    ? image.startsWith('http')
+      ? image
+      : absoluteUrl(image)
+    : absoluteUrl(siteConfig.defaultOgImage)
   const mergedKeywords = [...new Set([...siteConfig.defaultKeywords, ...keywords])]
 
   return {
@@ -77,6 +93,9 @@ export function createPageMetadata({
     keywords: mergedKeywords,
     alternates: {
       canonical: url,
+      types: {
+        'application/rss+xml': absoluteUrl('/feed.xml'),
+      },
     },
     openGraph: {
       title: `${title} | ${siteConfig.shortName}`,
@@ -93,6 +112,13 @@ export function createPageMetadata({
           alt: title,
         },
       ],
+      ...(type === 'article'
+        ? {
+            publishedTime,
+            modifiedTime,
+            authors: authors?.length ? authors : [siteConfig.name],
+          }
+        : {}),
     },
     twitter: {
       card: 'summary_large_image',
@@ -110,6 +136,7 @@ export function createPageMetadata({
             follow: true,
             'max-image-preview': 'large',
             'max-snippet': -1,
+            'max-video-preview': -1,
           },
         },
   }
@@ -119,9 +146,16 @@ export function getOrganizationSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'Organization',
+    '@id': absoluteUrl('/#organization'),
     name: siteConfig.name,
     url: siteConfig.url,
-    logo: absoluteUrl('/assets/nebuloid-logo-mark.png'),
+    logo: {
+      '@type': 'ImageObject',
+      url: absoluteUrl('/assets/nebuloid-logo-mark.png'),
+      width: 512,
+      height: 512,
+    },
+    image: absoluteUrl('/assets/nebuloid-logo-mark.png'),
     description: siteConfig.defaultDescription,
     email: siteConfig.email,
     telephone: siteConfig.phone,
@@ -129,14 +163,51 @@ export function getOrganizationSchema() {
       '@type': 'PostalAddress',
       ...siteConfig.address,
     },
+    sameAs: Object.values(siteConfig.social),
     areaServed: ['IN', 'Worldwide'],
     knowsAbout: [
-      'Event Branding',
-      'Creative Technology',
-      'Interactive Installations',
-      'AI Event Experiences',
-      'Corporate Events',
+      'AI Photo Booth',
+      'AI Photo Booth India',
+      'Digital Experiences',
+      'Interactive Kiosks',
+      'Event Technology',
+      'Experiential Marketing',
+      'Brand Activations',
+      'Corporate Event Technology',
     ],
+  }
+}
+
+export function getLocalBusinessSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ProfessionalService',
+    '@id': absoluteUrl('/#localbusiness'),
+    name: siteConfig.name,
+    url: siteConfig.url,
+    image: absoluteUrl('/assets/nebuloid-logo-mark.png'),
+    description: siteConfig.defaultDescription,
+    email: siteConfig.email,
+    telephone: siteConfig.phone,
+    priceRange: '$$',
+    address: {
+      '@type': 'PostalAddress',
+      ...siteConfig.address,
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: 28.4595,
+      longitude: 77.0266,
+    },
+    areaServed: [
+      { '@type': 'City', name: 'Gurugram' },
+      { '@type': 'City', name: 'Delhi' },
+      { '@type': 'City', name: 'Mumbai' },
+      { '@type': 'City', name: 'Bengaluru' },
+      { '@type': 'Country', name: 'India' },
+    ],
+    sameAs: Object.values(siteConfig.social),
+    parentOrganization: { '@id': absoluteUrl('/#organization') },
   }
 }
 
@@ -144,19 +215,21 @@ export function getWebsiteSchema() {
   return {
     '@context': 'https://schema.org',
     '@type': 'WebSite',
+    '@id': absoluteUrl('/#website'),
     name: siteConfig.name,
     url: siteConfig.url,
     description: siteConfig.defaultDescription,
-    publisher: {
-      '@type': 'Organization',
-      name: siteConfig.name,
+    inLanguage: 'en-IN',
+    publisher: { '@id': absoluteUrl('/#organization') },
+    potentialAction: {
+      '@type': 'SearchAction',
+      target: `${absoluteUrl('/insights')}?q={search_term_string}`,
+      'query-input': 'required name=search_term_string',
     },
   }
 }
 
-export function getBreadcrumbSchema(
-  items: { name: string; path: string }[],
-) {
+export function getBreadcrumbSchema(items: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
@@ -186,13 +259,14 @@ export function getServiceSchema({
     name,
     description,
     url: absoluteUrl(path),
-    image,
-    provider: {
-      '@type': 'Organization',
-      name: siteConfig.name,
-      url: siteConfig.url,
-    },
-    areaServed: 'Worldwide',
+    image: image
+      ? image.startsWith('http')
+        ? image
+        : absoluteUrl(image)
+      : undefined,
+    provider: { '@id': absoluteUrl('/#organization') },
+    areaServed: ['IN', 'Worldwide'],
+    serviceType: name,
   }
 }
 
@@ -202,26 +276,40 @@ export function getArticleSchema({
   path,
   image,
   datePublished,
+  dateModified,
   category,
+  authorName,
 }: {
   title: string
   description: string
   path: string
   image: string
   datePublished: string
+  dateModified?: string
   category: string
+  authorName?: string
 }) {
+  const imageUrl = image.startsWith('http') ? image : absoluteUrl(image)
   return {
     '@context': 'https://schema.org',
-    '@type': 'Article',
+    '@type': 'BlogPosting',
     headline: title,
     description,
     url: absoluteUrl(path),
-    image,
+    mainEntityOfPage: {
+      '@type': 'WebPage',
+      '@id': absoluteUrl(path),
+    },
+    image: {
+      '@type': 'ImageObject',
+      url: imageUrl,
+    },
     datePublished,
+    dateModified: dateModified || datePublished,
     author: {
-      '@type': 'Organization',
-      name: siteConfig.name,
+      '@type': authorName ? 'Person' : 'Organization',
+      name: authorName || siteConfig.name,
+      ...(authorName ? {} : { url: siteConfig.url }),
     },
     publisher: {
       '@type': 'Organization',
@@ -232,12 +320,11 @@ export function getArticleSchema({
       },
     },
     articleSection: category,
+    inLanguage: 'en-IN',
   }
 }
 
-export function getFaqSchema(
-  faqs: { question: string; answer: string }[],
-) {
+export function getFaqSchema(faqs: { question: string; answer: string }[]) {
   return {
     '@context': 'https://schema.org',
     '@type': 'FAQPage',
@@ -249,6 +336,58 @@ export function getFaqSchema(
         text: faq.answer,
       },
     })),
+  }
+}
+
+export function getContactPageSchema() {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ContactPage',
+    name: 'Contact Nebuloid Tech Studio',
+    url: absoluteUrl('/contact'),
+    description:
+      'Contact Nebuloid Tech Studio for AI photo booths, digital experiences, interactive kiosks, and corporate event technology across India.',
+    mainEntity: { '@id': absoluteUrl('/#localbusiness') },
+  }
+}
+
+export function getItemListSchema({
+  name,
+  description,
+  path,
+  items,
+}: {
+  name: string
+  description: string
+  path: string
+  items: { name: string; path: string; description?: string }[]
+}) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'CollectionPage',
+    name,
+    description,
+    url: absoluteUrl(path),
+    mainEntity: {
+      '@type': 'ItemList',
+      itemListElement: items.map((item, index) => ({
+        '@type': 'ListItem',
+        position: index + 1,
+        name: item.name,
+        url: absoluteUrl(item.path),
+        description: item.description,
+      })),
+    },
+  }
+}
+
+export function getPersonSchema(name: string, jobTitle = 'Editor') {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Person',
+    name,
+    jobTitle,
+    worksFor: { '@id': absoluteUrl('/#organization') },
   }
 }
 

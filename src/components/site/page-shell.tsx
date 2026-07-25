@@ -9,9 +9,17 @@ type PageShellProps = {
 export function PageShell({ children, withTopPadding = true }: PageShellProps) {
   return (
     <div className="relative overflow-clip bg-[#090909] text-[#F1E9DB]">
-      <div className="grain-overlay" />
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#F1E9DB] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-[#090909]"
+      >
+        Skip to main content
+      </a>
+      <div className="grain-overlay" aria-hidden />
       <Navbar />
-      <main className={withTopPadding ? 'pt-28' : undefined}>{children}</main>
+      <main id="main-content" className={withTopPadding ? 'pt-28' : undefined}>
+        {children}
+      </main>
       <Footer />
     </div>
   )

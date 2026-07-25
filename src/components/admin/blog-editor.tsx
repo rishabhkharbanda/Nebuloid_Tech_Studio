@@ -23,6 +23,12 @@ const empty = {
   metaTitle: '',
   metaDescription: '',
   focusKeyword: '',
+  canonicalPath: '',
+  ogImageUrl: '',
+  twitterImageUrl: '',
+  robotsIndex: true,
+  authorName: 'Nebuloid Tech Studio',
+  schemaType: 'BlogPosting',
   displayDate: '',
 }
 
@@ -62,6 +68,12 @@ export function BlogEditor({ postId }: BlogFormProps) {
         metaTitle: data.post.metaTitle,
         metaDescription: data.post.metaDescription,
         focusKeyword: data.post.focusKeyword,
+        canonicalPath: data.post.canonicalPath || '',
+        ogImageUrl: data.post.ogImageUrl || '',
+        twitterImageUrl: data.post.twitterImageUrl || '',
+        robotsIndex: data.post.robotsIndex ?? true,
+        authorName: data.post.authorName || 'Nebuloid Tech Studio',
+        schemaType: data.post.schemaType || 'BlogPosting',
         displayDate: data.post.displayDate,
       })
       if (data.post.slug && data.post.previewToken) {
@@ -87,6 +99,9 @@ export function BlogEditor({ postId }: BlogFormProps) {
         focusKeyword: form.focusKeyword,
         featuredImageUrl: form.featuredImageUrl,
         featuredImageAlt: form.featuredImageAlt,
+        canonicalPath: form.canonicalPath || `/insights/${form.slug || slugify(form.title)}`,
+        ogImageUrl: form.ogImageUrl || form.featuredImageUrl,
+        robotsIndex: form.robotsIndex,
       }),
     [form],
   )
@@ -317,31 +332,90 @@ export function BlogEditor({ postId }: BlogFormProps) {
           <TagInput value={form.tags} onChange={(tags) => setForm((prev) => ({ ...prev, tags }))} />
         </Field>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Meta title">
-            <input
-              value={form.metaTitle}
-              onChange={(e) => setForm((prev) => ({ ...prev, metaTitle: e.target.value }))}
-              className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+        <div className="rounded-2xl border border-black/10 bg-[#fafafa] p-4">
+          <p className="text-sm font-semibold">SEO panel</p>
+          <p className="mt-1 text-xs text-[#6b7280]">
+            Title, description, canonical, social images, robots, and schema controls.
+          </p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <Field label="SEO title">
+              <input
+                value={form.metaTitle}
+                onChange={(e) => setForm((prev) => ({ ...prev, metaTitle: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              />
+            </Field>
+            <Field label="Focus keyword">
+              <input
+                value={form.focusKeyword}
+                onChange={(e) => setForm((prev) => ({ ...prev, focusKeyword: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              />
+            </Field>
+          </div>
+          <Field label="Meta description">
+            <textarea
+              rows={3}
+              value={form.metaDescription}
+              onChange={(e) => setForm((prev) => ({ ...prev, metaDescription: e.target.value }))}
+              className="mt-4 w-full rounded-xl border border-black/10 px-3 py-2.5"
             />
           </Field>
-          <Field label="Focus keyword">
-            <input
-              value={form.focusKeyword}
-              onChange={(e) => setForm((prev) => ({ ...prev, focusKeyword: e.target.value }))}
-              className="w-full rounded-xl border border-black/10 px-3 py-2.5"
-            />
-          </Field>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <Field label="Canonical path">
+              <input
+                value={form.canonicalPath}
+                onChange={(e) => setForm((prev) => ({ ...prev, canonicalPath: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+                placeholder="/insights/your-slug"
+              />
+            </Field>
+            <Field label="Author">
+              <input
+                value={form.authorName}
+                onChange={(e) => setForm((prev) => ({ ...prev, authorName: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              />
+            </Field>
+          </div>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <Field label="Open Graph image URL">
+              <input
+                value={form.ogImageUrl}
+                onChange={(e) => setForm((prev) => ({ ...prev, ogImageUrl: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              />
+            </Field>
+            <Field label="Twitter image URL">
+              <input
+                value={form.twitterImageUrl}
+                onChange={(e) => setForm((prev) => ({ ...prev, twitterImageUrl: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              />
+            </Field>
+          </div>
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
+            <Field label="Schema type">
+              <select
+                value={form.schemaType}
+                onChange={(e) => setForm((prev) => ({ ...prev, schemaType: e.target.value }))}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+              >
+                <option value="BlogPosting">BlogPosting</option>
+                <option value="Article">Article</option>
+                <option value="NewsArticle">NewsArticle</option>
+              </select>
+            </Field>
+            <label className="mt-8 inline-flex items-center gap-2 text-sm font-medium">
+              <input
+                type="checkbox"
+                checked={form.robotsIndex}
+                onChange={(e) => setForm((prev) => ({ ...prev, robotsIndex: e.target.checked }))}
+              />
+              Allow search indexing
+            </label>
+          </div>
         </div>
-
-        <Field label="Meta description">
-          <textarea
-            rows={3}
-            value={form.metaDescription}
-            onChange={(e) => setForm((prev) => ({ ...prev, metaDescription: e.target.value }))}
-            className="w-full rounded-xl border border-black/10 px-3 py-2.5"
-          />
-        </Field>
 
         <div className="grid gap-4 md:grid-cols-2">
           <Field label="Display date">
@@ -379,7 +453,15 @@ export function BlogEditor({ postId }: BlogFormProps) {
         </button>
       </div>
 
-      <SeoScorePanel analysis={seo || liveSeo} />
+      <SeoScorePanel
+        analysis={seo || liveSeo}
+        preview={{
+          title: form.metaTitle || form.title,
+          description: form.metaDescription || form.excerpt,
+          slug: form.slug || slugify(form.title),
+          imageUrl: form.ogImageUrl || form.featuredImageUrl,
+        }}
+      />
     </form>
   )
 }

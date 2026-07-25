@@ -27,6 +27,9 @@ export async function GET(_request: Request, context: Ctx) {
       focusKeyword: post.focusKeyword,
       featuredImageUrl: post.featuredImageUrl,
       featuredImageAlt: post.featuredImageAlt,
+      canonicalPath: post.canonicalPath,
+      ogImageUrl: post.ogImageUrl || post.featuredImageUrl,
+      robotsIndex: post.robotsIndex,
     })
     return NextResponse.json({ post, seo })
   } catch (error) {
@@ -55,6 +58,9 @@ export async function PUT(request: Request, context: Ctx) {
       focusKeyword: post.focusKeyword,
       featuredImageUrl: post.featuredImageUrl,
       featuredImageAlt: post.featuredImageAlt,
+      canonicalPath: post.canonicalPath,
+      ogImageUrl: post.ogImageUrl || post.featuredImageUrl,
+      robotsIndex: post.robotsIndex,
     })
     return NextResponse.json({ post, seo })
   } catch (error) {

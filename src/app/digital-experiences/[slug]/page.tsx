@@ -5,7 +5,7 @@ import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import type { PublicDigitalProject } from '@/lib/cms/types'
 import { getAllDigitalProjectSlugs, getDigitalProjectBySlug } from '@/lib/content'
-import { createPageMetadata, getBreadcrumbSchema } from '@/lib/seo'
+import { createPageMetadata, getBreadcrumbSchema, getServiceSchema } from '@/lib/seo'
 
 type PageProps = {
   params: Promise<{ slug: string }>
@@ -70,15 +70,19 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   if (!project) return { title: 'Digital Experience Not Found' }
 
   return createPageMetadata({
-    title: project.title,
-    description: project.overview,
+    title: project.metaTitle || project.title,
+    description: project.metaDescription || project.overview,
     path: `/digital-experiences/${slug}`,
-    image: project.image,
+    canonicalPath: project.canonicalPath || `/digital-experiences/${slug}`,
+    image: project.ogImageUrl || project.image,
+    noIndex: project.robotsIndex === false,
     keywords: [
+      project.focusKeyword,
       project.client.toLowerCase(),
       ...project.category.split(' · ').map((item) => item.toLowerCase()),
       'digital experience case study',
-    ],
+      'experiential marketing',
+    ].filter((value): value is string => Boolean(value)),
   })
 }
 
@@ -90,11 +94,19 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
   return (
     <PageShell>
       <JsonLd
-        data={getBreadcrumbSchema([
-          { name: 'Home', path: '/' },
-          { name: 'Digital Experiences', path: '/digital-experiences' },
-          { name: project.title, path: `/digital-experiences/${slug}` },
-        ])}
+        data={[
+          getBreadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Digital Experiences', path: '/digital-experiences' },
+            { name: project.title, path: `/digital-experiences/${slug}` },
+          ]),
+          getServiceSchema({
+            name: project.title,
+            description: project.metaDescription || project.overview,
+            path: project.canonicalPath || `/digital-experiences/${slug}`,
+            image: project.ogImageUrl || project.image,
+          }),
+        ]}
       />
       <DetailLayout
         backHref="/digital-experiences"
@@ -102,6 +114,7 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
         category={project.category}
         title={project.title}
         image={project.image}
+        imageAlt={project.title}
         intro={project.overview}
         sections={buildSections(project)}
         highlights={buildHighlights(project)}
