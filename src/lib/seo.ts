@@ -1,7 +1,10 @@
 import type { Metadata } from 'next'
 
-export const SITE_URL =
-  process.env.NEXT_PUBLIC_SITE_URL ?? 'https://nebuloid.tech'
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
+
+export const SITE_URL = (
+  configuredSiteUrl || 'https://www.nebuloidtechstudio.com'
+).replace(/\/+$/, '')
 
 export const siteConfig = {
   name: 'Nebuloid Tech Studio LLP',
