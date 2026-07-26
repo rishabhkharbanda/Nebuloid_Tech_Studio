@@ -244,10 +244,18 @@ export function ScrollExploreSequence() {
     }
 
     const loadVideoSource = async () => {
-      // Faststart MP4 seeks well over HTTP range requests — no need to blob the full file.
-      video.preload = 'auto'
-      video.src = VIDEO_SRC
-      setLoadProgress(55)
+      // Blob URL keeps the full file seekable so the scrub doesn't freeze near the end.
+      const response = await fetch(VIDEO_SRC, { priority: 'high' } as RequestInit)
+      if (!response.ok) throw new Error('Failed to fetch scroll explore video')
+
+      setLoadProgress(35)
+      const blob = await response.blob()
+      if (cancelled) return
+
+      setLoadProgress(90)
+      const url = URL.createObjectURL(blob)
+      objectUrlRef.current = url
+      video.src = url
     }
 
     const waitForDecode = () =>
@@ -305,6 +313,7 @@ export function ScrollExploreSequence() {
       try {
         video.muted = true
         video.playsInline = true
+        video.preload = 'auto'
         await loadVideoSource()
         if (cancelled) return
         await waitForDecode()
@@ -339,8 +348,7 @@ export function ScrollExploreSequence() {
           void startSequence()
         }
       },
-      // Start loading shortly before the section enters view — not while still on the hero.
-      { rootMargin: '35% 0px', threshold: 0.01 },
+      { rootMargin: '180% 0px', threshold: 0.01 },
     )
     intersectionObserver.observe(section)
 
@@ -356,8 +364,6 @@ export function ScrollExploreSequence() {
         URL.revokeObjectURL(objectUrlRef.current)
         objectUrlRef.current = null
       }
-      video.removeAttribute('src')
-      video.load()
       startedRef.current = false
       hintVisibleRef.current = false
     }
@@ -385,10 +391,10 @@ export function ScrollExploreSequence() {
             src={POSTER_SRC}
             alt=""
             aria-hidden
-            width={1280}
-            height={720}
+            width={1920}
+            height={1080}
+            fetchPriority="high"
             decoding="async"
-            loading="lazy"
             className="absolute inset-0 h-full w-full object-cover"
           />
         )}
@@ -402,7 +408,7 @@ export function ScrollExploreSequence() {
           poster={POSTER_SRC}
           muted
           playsInline
-          preload="none"
+          preload="auto"
           aria-hidden={status !== 'ready'}
         />
 
