@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { BlogBulkUpload } from '@/components/admin/blog-bulk-upload'
 import { listBlogPostsCms } from '@/lib/cms/queries'
 
 export default async function AdminBlogsPage() {
@@ -20,6 +21,8 @@ export default async function AdminBlogsPage() {
           New post
         </Link>
       </div>
+
+      <BlogBulkUpload />
 
       <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
         <table className="min-w-full text-left text-sm">

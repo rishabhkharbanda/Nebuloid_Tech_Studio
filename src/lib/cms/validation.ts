@@ -39,6 +39,12 @@ export const blogInputSchema = z.object({
   displayDate: z.string().max(64).optional(),
 })
 
+export const blogBulkInputSchema = z.object({
+  status: z.enum(['draft', 'published', 'unpublished']).optional(),
+  category: z.string().max(128).optional(),
+  posts: z.array(blogInputSchema).min(1, 'Add at least one post').max(50, 'Max 50 posts per upload'),
+})
+
 export const digitalCardInputSchema = z.object({
   title: z.string().trim().min(1, 'Title is required').max(512),
   slug: z.string().trim().max(255).optional(),
