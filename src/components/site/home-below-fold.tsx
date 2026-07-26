@@ -17,6 +17,8 @@ export async function HomeBelowFold() {
         date: post.date,
         category: post.category,
         readTime: post.readTime,
+        image: post.image || post.ogImageUrl || undefined,
+        imageAlt: post.imageAlt || post.title,
       }))}
     />
   )

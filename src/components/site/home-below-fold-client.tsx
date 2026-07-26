@@ -50,6 +50,8 @@ type BlogCard = {
   date: string
   category: string
   readTime: string
+  image?: string
+  imageAlt?: string
 }
 
 /** Split below-fold client chunks so the hero JS payload stays smaller. */
