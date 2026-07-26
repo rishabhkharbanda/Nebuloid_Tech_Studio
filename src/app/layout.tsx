@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { AnalyticsTags, GtmNoscript } from '@/components/site/analytics-tags'
+import { AnalyticsTags, GoogleAnalyticsTag, GtmNoscript } from '@/components/site/analytics-tags'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { DeferredCustomCursor } from '@/components/site/deferred-custom-cursor'
@@ -116,8 +116,6 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim()
-
   return (
     <html
       lang="en-IN"
@@ -125,14 +123,7 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
-        {gtmId ? (
-          <script
-            id="gtm-datalayer"
-            dangerouslySetInnerHTML={{
-              __html: `window.dataLayer=window.dataLayer||[];`,
-            }}
-          />
-        ) : null}
+        <GoogleAnalyticsTag />
         <JsonLd
           data={[getOrganizationSchema(), getWebsiteSchema(), getLocalBusinessSchema()]}
         />
