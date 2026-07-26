@@ -58,9 +58,19 @@ export const heroStates = [
 
 export const scrollExploreSections = [
   {
-    title: 'AI Experiences.',
+    title: 'VR Experience.',
     description:
-      'Intelligent activations that feel personal — photo moments, generative storytelling, and AI layers woven into the live event journey.',
+      'Immersive virtual worlds built for live venues — branded simulations that transport guests beyond the floor in minutes.',
+  },
+  {
+    title: 'AI Selfie Booth.',
+    description:
+      'Instant branded portraits powered by custom AI themes — high-throughput activations guests love to share.',
+  },
+  {
+    title: 'Interactive Gaming.',
+    description:
+      'Playable experiences that pull crowds in — from skill challenges to brand quizzes engineered for footfall and fun.',
   },
   {
     title: 'Interactive Kiosks.',

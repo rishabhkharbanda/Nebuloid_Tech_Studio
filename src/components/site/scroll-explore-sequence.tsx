@@ -20,26 +20,36 @@ const SCRUB_SMOOTHING = 1.2
 const VIDEO_LERP = 0.16
 const VIDEO_SRC = SCROLL_EXPLORE_VIDEO_SRC
 const POSTER_SRC = SCROLL_EXPLORE_POSTER_SRC
-/** Show 5 beats per visit, drawn from the full 9-capability pool. */
+/** Show 5 beats per visit — first 3 stay fixed, remaining drawn from the rest. */
 const ACTIVE_SECTION_COUNT = 5
+const PINNED_SECTION_COUNT = 3
 
 type ExploreSection = (typeof scrollExploreSections)[number]
 
 function pickExploreSections(
   pool: readonly ExploreSection[],
   count: number,
+  pinnedCount = PINNED_SECTION_COUNT,
 ): ExploreSection[] {
-  const indices = pool.map((_, index) => index)
+  const pinned = pool.slice(0, Math.min(pinnedCount, pool.length))
+  const remainingSlots = Math.max(0, count - pinned.length)
+  if (remainingSlots === 0) return [...pinned]
+
+  const rest = pool.slice(pinned.length)
+  const indices = rest.map((_, index) => index)
   for (let i = indices.length - 1; i > 0; i -= 1) {
     const j = Math.floor(Math.random() * (i + 1))
     const swap = indices[i]
     indices[i] = indices[j]
     indices[j] = swap
   }
-  return indices
-    .slice(0, Math.min(count, pool.length))
+
+  const selectedRest = indices
+    .slice(0, Math.min(remainingSlots, rest.length))
     .sort((a, b) => a - b)
-    .map((index) => pool[index])
+    .map((index) => rest[index])
+
+  return [...pinned, ...selectedRest]
 }
 
 function prefersStaticMode() {
