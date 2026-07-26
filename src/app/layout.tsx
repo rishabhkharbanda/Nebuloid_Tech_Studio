@@ -116,6 +116,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const gtmId = process.env.NEXT_PUBLIC_GTM_ID?.trim()
+
   return (
     <html
       lang="en-IN"
@@ -123,19 +125,27 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        {gtmId ? (
+          <script
+            id="gtm-datalayer"
+            dangerouslySetInnerHTML={{
+              __html: `window.dataLayer=window.dataLayer||[];`,
+            }}
+          />
+        ) : null}
         <JsonLd
           data={[getOrganizationSchema(), getWebsiteSchema(), getLocalBusinessSchema()]}
         />
       </head>
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
         <GtmNoscript />
+        <AnalyticsTags />
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
         <BackToTopButton />
         <SecretDaylightToggle />
         <DeferredCustomCursor />
         <Analytics />
         <SpeedInsights />
-        <AnalyticsTags />
       </body>
     </html>
   )

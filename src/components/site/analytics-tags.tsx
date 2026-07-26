@@ -1,19 +1,20 @@
-'use client'
-
 import Script from 'next/script'
 
-const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID
-const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID
-const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID
-const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID
+const GA_ID = process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim()
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID?.trim()
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID?.trim()
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
+const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID?.trim()
 
-/** Optional marketing tags. Prefer configuring GA4 inside GTM to avoid double counting. */
+/**
+ * Marketing tags. Prefer GA4 inside GTM to avoid double counting.
+ * afterInteractive (not lazyOnload) so Tag Assistant / GTM Preview can detect containers.
+ */
 export function AnalyticsTags() {
   return (
     <>
       {GTM_ID ? (
-        <Script id="gtm" strategy="lazyOnload">
+        <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -24,8 +25,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 
       {GA_ID && !GTM_ID ? (
         <>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`} strategy="lazyOnload" />
-          <Script id="ga4" strategy="lazyOnload">
+          <Script
+            src={`https://www.googletagmanager.com/gtag/js?id=${GA_ID}`}
+            strategy="afterInteractive"
+          />
+          <Script id="ga4" strategy="afterInteractive">
             {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());gtag('config','${GA_ID}');`}
           </Script>
