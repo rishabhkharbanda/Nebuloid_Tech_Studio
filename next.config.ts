@@ -61,10 +61,50 @@ const nextConfig: NextConfig = {
     ]
   },
   async headers() {
+    const securityHeaders = [
+      { key: 'X-Content-Type-Options', value: 'nosniff' },
+      { key: 'X-Frame-Options', value: 'DENY' },
+      { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+      {
+        key: 'Permissions-Policy',
+        value: 'camera=(), microphone=(), geolocation=(), payment=()',
+      },
+      {
+        key: 'Strict-Transport-Security',
+        value: 'max-age=63072000; includeSubDomains; preload',
+      },
+      {
+        key: 'Content-Security-Policy',
+        value: [
+          "default-src 'self'",
+          "base-uri 'self'",
+          "object-src 'none'",
+          "frame-ancestors 'none'",
+          "form-action 'self'",
+          // Next.js + optional analytics; block unexpected third-party script hosts.
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://connect.facebook.net https://snap.licdn.com",
+          "style-src 'self' 'unsafe-inline'",
+          "img-src 'self' data: blob: https:",
+          "font-src 'self' data:",
+          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
+          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com",
+          "media-src 'self' blob:",
+          "worker-src 'self' blob:",
+        ].join('; '),
+      },
+    ]
+
     return [
       {
+        source: '/:path*',
+        headers: securityHeaders,
+      },
+      {
         source: '/gone',
-        headers: [{ key: 'X-Robots-Tag', value: 'noindex, nofollow' }],
+        headers: [
+          { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
+          ...securityHeaders,
+        ],
       },
     ]
   },

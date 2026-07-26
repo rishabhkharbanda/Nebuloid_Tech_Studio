@@ -26,7 +26,9 @@ export default function AdminLoginPage() {
         setError(data.error || 'Unable to sign in.')
         return
       }
-      const next = searchParams.get('next') || '/admin'
+      const rawNext = searchParams.get('next') || '/admin'
+      const next =
+        rawNext.startsWith('/') && !rawNext.startsWith('//') ? rawNext : '/admin'
       router.replace(next)
       router.refresh()
     } catch {
