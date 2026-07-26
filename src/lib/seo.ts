@@ -1,10 +1,32 @@
 import type { Metadata } from 'next'
 
+const CANONICAL_SITE_URL = 'https://www.nebuloidtechstudio.com'
+
+/** Normalize env / legacy domains so sitemap + canonicals never drift off the live host. */
+function resolveSiteUrl(raw?: string) {
+  const fallback = CANONICAL_SITE_URL
+  if (!raw) return fallback
+
+  try {
+    const parsed = new URL(raw.trim())
+    const host = parsed.hostname.replace(/^www\./, '').toLowerCase()
+
+    // Legacy / wrong hosts must never ship in production metadata.
+    if (host === 'nebuloid.tech' || host === 'nebuloidtechstudio.com') {
+      return CANONICAL_SITE_URL
+    }
+
+    parsed.hash = ''
+    parsed.search = ''
+    return parsed.toString().replace(/\/+$/, '')
+  } catch {
+    return fallback
+  }
+}
+
 const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
 
-export const SITE_URL = (
-  configuredSiteUrl || 'https://www.nebuloidtechstudio.com'
-).replace(/\/+$/, '')
+export const SITE_URL = resolveSiteUrl(configuredSiteUrl)
 
 export const siteConfig = {
   name: 'Nebuloid Tech Studio LLP',
