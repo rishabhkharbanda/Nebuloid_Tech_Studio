@@ -111,6 +111,8 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
                         fill
                         className="object-cover grayscale transition-[transform,filter] duration-700 ease-out will-change-transform group-hover:scale-105 group-hover:grayscale-0"
                         sizes="(max-width: 768px) 100vw, 50vw"
+                        quality={65}
+                        loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-35" />
                     </div>

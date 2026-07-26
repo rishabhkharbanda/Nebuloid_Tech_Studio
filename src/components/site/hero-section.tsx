@@ -86,7 +86,7 @@ export function HeroSection() {
                 priority={activeIndex === 0}
                 className="object-cover"
                 sizes="100vw"
-                quality={70}
+                quality={65}
               />
               <div
                 className={`before:absolute before:inset-0 before:content-[''] absolute inset-0 bg-gradient-to-br ${active.classes}`}

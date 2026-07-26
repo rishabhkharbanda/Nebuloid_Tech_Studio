@@ -89,6 +89,8 @@ export function WorkSection({ limit }: { limit?: number }) {
                       fill
                       className="object-cover"
                       sizes="100vw"
+                      quality={65}
+                      loading="lazy"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   </div>
@@ -117,7 +119,7 @@ export function WorkSection({ limit }: { limit?: number }) {
                         fill
                         className="object-cover"
                         sizes="40vw"
-                        quality={70}
+                        quality={65}
                         loading="lazy"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
