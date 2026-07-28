@@ -21,7 +21,7 @@ type ChatMessage = {
 }
 
 const WELCOME =
-  "Hi! I'm the Nebuloid assistant. Ask about our experiences, digital work, or how we can help with your next event — I'll answer from what's on this site."
+  "Hi! I'm the Nebuloid assistant. Ask about our experiences, digital work, or how we can help with your next event."
 
 /** Floating AI chat grounded on Nebuloid website content via Gemini. */
 export function FloatingChatbot() {

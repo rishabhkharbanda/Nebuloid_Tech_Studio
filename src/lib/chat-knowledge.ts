@@ -260,7 +260,7 @@ export function retrieveChatKnowledge(
   return { matches: selected, hasStrongMatch }
 }
 
-export function pickChatLinks(chunks: KnowledgeChunk[], limit = 8) {
+export function pickChatLinks(chunks: KnowledgeChunk[], limit = 2) {
   const seen = new Set<string>()
   const links: Array<{ title: string; url: string; category: string }> = []
 

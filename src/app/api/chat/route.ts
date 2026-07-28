@@ -24,7 +24,7 @@ Do not paste raw URLs in the reply — page links are shown separately in the ch
 Tone: professional, clear, and helpful.`
 
 const GREETING_REPLY =
-  "Hi! Ask me about Nebuloid's experiences, digital work, AI activations, or event technology — I'll pull answers from this website."
+  "Hi! Ask me about Nebuloid's experiences, digital work, AI activations, or event technology — happy to help."
 
 function getApiKey() {
   return (
@@ -88,7 +88,7 @@ export async function POST(request: Request) {
     const knowledge = await buildChatKnowledge()
     const { matches, hasStrongMatch } = retrieveChatKnowledge(knowledge, latestUser.text, 12)
     const context = formatKnowledgeForPrompt(matches)
-    const links = hasStrongMatch ? pickChatLinks(matches, 8) : []
+    const links = hasStrongMatch ? pickChatLinks(matches, 2) : []
 
     const history = messages
       .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.text}`)
