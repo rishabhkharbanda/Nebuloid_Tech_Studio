@@ -127,7 +127,7 @@ export function DetailGalleryCarousel({
             >
               <Image
                 src={item.src}
-                alt=""
+                alt={item.alt || item.label || `Gallery thumbnail ${i + 1}`}
                 fill
                 className="object-cover"
                 sizes="128px"

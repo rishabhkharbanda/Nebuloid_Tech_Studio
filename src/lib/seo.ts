@@ -39,7 +39,7 @@ export const siteConfig = {
   url: homepageUrl(),
   locale: 'en_IN',
   defaultDescription:
-    'Nebuloid Tech Studio designs, builds, and delivers complete event ecosystems — event branding, interactive installations, AI experiences, registration systems, and digital engagement for corporate events in India.',
+    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, government digital platforms, and immersive digital storytelling for organisations worldwide.',
   defaultKeywords: [
     'Nebuloid Tech Studio',
     'event experience company India',

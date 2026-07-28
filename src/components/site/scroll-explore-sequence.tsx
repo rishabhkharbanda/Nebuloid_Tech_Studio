@@ -388,8 +388,7 @@ export function ScrollExploreSequence() {
           // eslint-disable-next-line @next/next/no-img-element
           <img
             src={POSTER_SRC}
-            alt=""
-            aria-hidden
+            alt="Nebuloid scroll-to-explore immersive experience preview"
             width={1920}
             height={1080}
             fetchPriority="high"

@@ -101,6 +101,11 @@ export function HeroSection() {
         <h1 ref={titleRef} className="mt-2 flex flex-wrap items-baseline gap-x-[0.15em] md:mt-4">
           <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
           <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
+          <span className="sr-only">
+            {' '}
+            interactive visitor experiences, AI-powered event activations, and immersive digital
+            storytelling
+          </span>
         </h1>
 
         <div className="relative min-h-[4.8em] overflow-hidden sm:min-h-[3.4em]">

@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowUpRight, Check } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { digitalProjects } from '@/lib/digital-data'
 import { cn } from '@/lib/utils'
 
@@ -89,43 +90,42 @@ export function DigitalExperiencesSection({
           <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {projects.map((project, index) => (
               <SectionReveal key={project.slug} delay={index * 0.06}>
-                <Link
-                  href={project.ctaHref || `/digital-experiences/${project.slug}`}
-                  className="group block h-full"
-                >
-                  <article className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:border-[#d4af37]/25 hover:bg-white/[0.05]">
-                    <div className="relative aspect-[16/10] overflow-hidden">
-                      <Image
-                        src={project.image}
-                        alt={project.imageAlt || project.client}
-                        fill
-                        className="object-cover transition-transform duration-700 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 33vw"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute inset-x-0 bottom-0 p-5">
-                        <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#d4af37]">
-                          {project.client}
-                        </p>
-                      </div>
-                    </div>
-                    <div className="flex flex-1 flex-col p-6">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
-                        {project.category.split(' · ')[0]}
+                <article className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-all duration-500 hover:border-[#d4af37]/25 hover:bg-white/[0.05]">
+                  <StretchLink
+                    href={project.ctaHref || `/digital-experiences/${project.slug}`}
+                    label={`View ${project.client} case study`}
+                  />
+                  <div className="relative aspect-[16/10] overflow-hidden">
+                    <Image
+                      src={project.image}
+                      alt={`${project.client} digital experience by Nebuloid Tech Studio`}
+                      fill
+                      className="object-cover transition-transform duration-700 group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                    <div className="absolute inset-x-0 bottom-0 p-5">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#d4af37]">
+                        {project.client}
                       </p>
-                      <h3 className="mt-3 line-clamp-2 text-xl font-semibold leading-snug tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
-                        {project.title}
-                      </h3>
-                      <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/60">
-                        {project.overview}
-                      </p>
-                      <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-                        {project.ctaText || 'View Case Study'}
-                        <ArrowUpRight size={16} />
-                      </span>
                     </div>
-                  </article>
-                </Link>
+                  </div>
+                  <div className="flex flex-1 flex-col p-6">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
+                      {project.category.split(' · ')[0]}
+                    </p>
+                    <h3 className="mt-3 line-clamp-2 text-xl font-semibold leading-snug tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
+                      {project.title}
+                    </h3>
+                    <p className="mt-3 line-clamp-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/60">
+                      {project.overview}
+                    </p>
+                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+                      {project.ctaText || 'View Case Study'}
+                      <ArrowUpRight size={16} />
+                    </span>
+                  </div>
+                </article>
               </SectionReveal>
             ))}
           </div>
@@ -152,7 +152,7 @@ export function DigitalExperiencesSection({
                   >
                     <Image
                       src={project.image}
-                      alt={project.client}
+                      alt={`${project.client} project showcase by Nebuloid Tech Studio`}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes="(max-width: 1024px) 100vw, 40vw"

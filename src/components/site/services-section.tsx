@@ -4,6 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { services } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
@@ -39,17 +40,17 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
 
             return (
               <SectionReveal key={service.id} delay={index * 0.06}>
-                <Link
-                  href={`/experiences/${service.slug}`}
-                  className="group block outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
+                <article
+                  className={cn(
+                    'group relative grid gap-8 py-10 transition-transform duration-500 ease-[cubic-bezier(0.2,0.65,0.3,0.9)] md:grid-cols-12 md:items-center md:gap-10 md:py-12 lg:py-14',
+                    'motion-safe:hover:translate-x-1',
+                    isEven && 'motion-safe:hover:-translate-x-1',
+                  )}
                 >
-                  <article
-                    className={cn(
-                      'grid gap-8 py-10 transition-transform duration-500 ease-[cubic-bezier(0.2,0.65,0.3,0.9)] md:grid-cols-12 md:items-center md:gap-10 md:py-12 lg:py-14',
-                      'motion-safe:group-hover:translate-x-1',
-                      isEven && 'motion-safe:group-hover:-translate-x-1',
-                    )}
-                  >
+                  <StretchLink
+                    href={`/experiences/${service.slug}`}
+                    label={`Explore ${service.title}`}
+                  />
                     <span
                       className={cn(
                         'text-display-filled text-[clamp(3rem,8vw,6rem)] leading-none text-[#F1E9DB]/15 transition-colors duration-500 group-hover:text-[#d4af37] md:col-span-2',
@@ -107,7 +108,7 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
                     >
                       <Image
                         src={service.image}
-                        alt={service.title}
+                        alt={`${service.title} — event experience by Nebuloid Tech Studio`}
                         fill
                         className="object-cover grayscale transition-[transform,filter] duration-700 ease-out will-change-transform group-hover:scale-105 group-hover:grayscale-0"
                         sizes="(max-width: 768px) 100vw, 50vw"
@@ -117,7 +118,6 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-80 transition-opacity duration-500 group-hover:opacity-35" />
                     </div>
                   </article>
-                </Link>
               </SectionReveal>
             )
           })}

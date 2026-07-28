@@ -37,8 +37,7 @@ export function BrandLogo({
       />
       <Image
         src={DAY_LOGO}
-        alt=""
-        aria-hidden
+        alt="Nebuloid Tech Studio"
         width={56}
         height={56}
         priority={priority}

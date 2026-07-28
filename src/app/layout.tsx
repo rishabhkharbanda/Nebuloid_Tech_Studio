@@ -71,7 +71,7 @@ export const metadata: Metadata = {
         url: absoluteUrl(siteConfig.defaultOgImage),
         width: 1200,
         height: 630,
-        alt: siteConfig.name,
+        alt: `${siteConfig.name} — interactive visitor experiences and event technology`,
       },
     ],
   },

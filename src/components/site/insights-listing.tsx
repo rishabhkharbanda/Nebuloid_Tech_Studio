@@ -1,9 +1,9 @@
 'use client'
 
 import Image from 'next/image'
-import Link from 'next/link'
 import { useDeferredValue, useMemo, useState } from 'react'
 import { ArrowUpRight, Search, X } from 'lucide-react'
+import { StretchLink } from '@/components/site/stretch-link'
 
 export type InsightsListItem = {
   slug: string
@@ -127,13 +127,19 @@ export function InsightsListing({
 
         {featured ? (
           <div className="mt-10 border-y border-white/10">
-            <Link href={`/insights/${featured.slug}`} className="group block">
-              <article className="grid gap-8 py-10 md:grid-cols-12 md:items-center md:gap-12 md:py-14">
+            <article className="group relative grid gap-8 py-10 md:grid-cols-12 md:items-center md:gap-12 md:py-14">
+              <StretchLink
+                href={`/insights/${featured.slug}`}
+                label={`Read featured article: ${featured.category}`}
+              />
                 {featured.image ? (
                   <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 md:col-span-6 lg:col-span-5">
                     <Image
                       src={featured.image}
-                      alt={featured.imageAlt || featured.title}
+                      alt={
+                        featured.imageAlt ||
+                        `${featured.title} — Nebuloid Tech Studio blog`
+                      }
                       fill
                       priority
                       quality={70}
@@ -176,20 +182,22 @@ export function InsightsListing({
                   </span>
                 </div>
               </article>
-            </Link>
 
             <div className="divide-y divide-white/10">
               {rest.map((post) => (
-                <Link
+                <article
                   key={post.slug}
-                  href={`/insights/${post.slug}`}
-                  className="group grid gap-6 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
+                  className="group relative grid gap-6 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
                 >
+                  <StretchLink
+                    href={`/insights/${post.slug}`}
+                    label={`Read ${post.category} article`}
+                  />
                   {post.image ? (
                     <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 md:col-span-3 md:aspect-[4/3]">
                       <Image
                         src={post.image}
-                        alt={post.imageAlt || post.title}
+                        alt={post.imageAlt || `${post.title} — Nebuloid Tech Studio blog`}
                         fill
                         loading="lazy"
                         quality={65}
@@ -222,7 +230,7 @@ export function InsightsListing({
                       <ArrowUpRight size={18} />
                     </span>
                   </div>
-                </Link>
+                </article>
               ))}
             </div>
           </div>

@@ -5,6 +5,7 @@ import Link from 'next/link'
 import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { industryDetails } from '@/lib/detail-content'
 import { industries } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
@@ -66,18 +67,21 @@ export function IndustriesSection({ limit, showViewAll = true }: IndustriesSecti
                   useBento && index === 2 && 'lg:col-span-5',
                 )}
               >
-                <Link href={`/industries/${industry.slug}`} className="group block h-full">
-                  <motion.article
-                    whileHover={{ y: -6 }}
-                    transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
-                    className={cn(
-                      'relative h-full min-h-[280px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0c0c0c]',
-                      isFeatured && 'min-h-[360px] lg:min-h-[520px]',
-                    )}
-                  >
+                <motion.article
+                  whileHover={{ y: -6 }}
+                  transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
+                  className={cn(
+                    'group relative h-full min-h-[280px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0c0c0c]',
+                    isFeatured && 'min-h-[360px] lg:min-h-[520px]',
+                  )}
+                >
+                  <StretchLink
+                    href={`/industries/${industry.slug}`}
+                    label={`Explore ${industry.title} industry work`}
+                  />
                     <Image
                       src={industry.image}
-                      alt={industry.title}
+                      alt={`${industry.title} industry experiences by Nebuloid Tech Studio`}
                       fill
                       className="object-cover transition-transform duration-700 group-hover:scale-105"
                       sizes={
@@ -129,7 +133,6 @@ export function IndustriesSection({ limit, showViewAll = true }: IndustriesSecti
                       </div>
                     </div>
                   </motion.article>
-                </Link>
               </SectionReveal>
             )
           })}

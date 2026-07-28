@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { useState } from 'react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { projects } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
@@ -37,16 +38,19 @@ export function WorkSection({ limit }: { limit?: number }) {
           <div className="divide-y divide-white/10 border-y border-white/10 lg:col-span-7">
             {visibleProjects.map((project, index) => (
               <SectionReveal key={project.title} delay={index * 0.04}>
-                <Link href={`/experiences/${project.slug}`} className="block">
                 <article
                   onMouseEnter={() => setActiveIndex(index)}
                   onFocus={() => setActiveIndex(index)}
                   onClick={() => setActiveIndex(index)}
                   className={cn(
-                    'group cursor-pointer py-8 transition-colors duration-300 md:py-10 lg:py-12',
+                    'group relative cursor-pointer py-8 transition-colors duration-300 md:py-10 lg:py-12',
                     activeIndex === index && 'bg-white/[0.02]',
                   )}
                 >
+                  <StretchLink
+                    href={`/experiences/${project.slug}`}
+                    label={`View ${project.category} experience`}
+                  />
                   <div className="flex items-start justify-between gap-6">
                     <div className="min-w-0">
                       <p
@@ -85,7 +89,7 @@ export function WorkSection({ limit }: { limit?: number }) {
                   <div className="relative mt-6 aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 lg:hidden">
                     <Image
                       src={project.image}
-                      alt={project.title}
+                      alt={`${project.title} case study by Nebuloid Tech Studio`}
                       fill
                       className="object-cover"
                       sizes="100vw"
@@ -95,7 +99,6 @@ export function WorkSection({ limit }: { limit?: number }) {
                     <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                   </div>
                 </article>
-                </Link>
               </SectionReveal>
             ))}
           </div>
@@ -115,7 +118,7 @@ export function WorkSection({ limit }: { limit?: number }) {
                     >
                       <Image
                         src={activeProject.image}
-                        alt={activeProject.title}
+                        alt={`${activeProject.title} case study by Nebuloid Tech Studio`}
                         fill
                         className="object-cover"
                         sizes="40vw"

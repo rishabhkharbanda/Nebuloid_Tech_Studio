@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { ArrowUpRight, Cpu, Radar, Sparkles } from 'lucide-react'
 import { useMemo, useState } from 'react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { technologies, technologyCategories } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
@@ -103,46 +104,48 @@ export function TechnologySection({ limit, showViewAll = true }: TechnologySecti
         <div className="mt-12 grid gap-5 sm:grid-cols-2 xl:grid-cols-3">
           {filteredItems.map((tech, index) => (
             <SectionReveal key={tech.slug} delay={index * 0.05}>
-              <Link href={`/technology/${tech.slug}`} className="group block h-full">
-                <motion.article
-                  layout
-                  className="flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-[#d4af37]/25"
-                >
-                  <div className="relative aspect-[16/10] overflow-hidden">
-                    <Image
-                      src={tech.image}
-                      alt={tech.title}
-                      fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes="(max-width: 768px) 100vw, 33vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
-                    <div className="absolute left-5 top-5">
-                      <span
-                        className={cn(
-                          'rounded-full border bg-black/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] backdrop-blur-md',
-                          categoryAccent[tech.category],
-                        )}
-                      >
-                        {tech.category}
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="flex flex-1 flex-col p-6">
-                    <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
-                      {tech.title}
-                    </h3>
-                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/60">
-                      {tech.tagline}
-                    </p>
-                    <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/45 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-                      Explore technology
-                      <ArrowUpRight size={16} />
+              <motion.article
+                layout
+                className="group relative flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-white/10 bg-white/[0.03] backdrop-blur-xl transition-colors duration-300 hover:border-[#d4af37]/25"
+              >
+                <StretchLink
+                  href={`/technology/${tech.slug}`}
+                  label={`Explore ${tech.title}`}
+                />
+                <div className="relative aspect-[16/10] overflow-hidden">
+                  <Image
+                    src={tech.image}
+                    alt={`${tech.title} technology by Nebuloid Tech Studio`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-105"
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+                  <div className="absolute left-5 top-5">
+                    <span
+                      className={cn(
+                        'rounded-full border bg-black/40 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.14em] backdrop-blur-md',
+                        categoryAccent[tech.category],
+                      )}
+                    >
+                      {tech.category}
                     </span>
                   </div>
-                </motion.article>
-              </Link>
+                </div>
+
+                <div className="flex flex-1 flex-col p-6">
+                  <h3 className="text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
+                    {tech.title}
+                  </h3>
+                  <p className="mt-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/60">
+                    {tech.tagline}
+                  </p>
+                  <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/45 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+                    Explore technology
+                    <ArrowUpRight size={16} />
+                  </span>
+                </div>
+              </motion.article>
             </SectionReveal>
           ))}
         </div>

@@ -16,6 +16,7 @@ import {
 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
+import { StretchLink } from '@/components/site/stretch-link'
 import { digitalCapabilities } from '@/lib/digital-data'
 import { cn } from '@/lib/utils'
 
@@ -52,52 +53,54 @@ function CapabilityCard({
 
   return (
     <SectionReveal delay={index * 0.05}>
-      <Link href={capability.href} className="group block h-full">
-        <motion.article
-          whileHover={{ y: -6 }}
-          transition={{ duration: 0.4, ease: [0.2, 0.65, 0.3, 0.9] }}
+      <motion.article
+        whileHover={{ y: -6 }}
+        transition={{ duration: 0.4, ease: [0.2, 0.65, 0.3, 0.9] }}
+        className={cn(
+          'group relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white/[0.04] p-6 backdrop-blur-xl transition-colors duration-500 md:p-8',
+          featured
+            ? 'border-[#d4af37]/20 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.08),transparent_55%)] hover:border-[#d4af37]/35 hover:bg-white/[0.06]'
+            : 'border-white/10 hover:border-[#d4af37]/25 hover:bg-white/[0.07]',
+        )}
+      >
+        <StretchLink
+          href={capability.href}
+          label={`Learn about ${capability.title}`}
+        />
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/10 text-[#d4af37] transition-colors group-hover:border-[#d4af37]/40 group-hover:bg-[#d4af37]/15">
+            <Icon size={22} />
+          </div>
+          <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F1E9DB]/35">
+            {capability.id}
+          </span>
+        </div>
+
+        <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[#d4af37]/80">
+          {capability.category}
+        </p>
+        <h3
           className={cn(
-            'relative flex h-full flex-col overflow-hidden rounded-2xl border bg-white/[0.04] p-6 backdrop-blur-xl transition-colors duration-500 md:p-8',
-            featured
-              ? 'border-[#d4af37]/20 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.08),transparent_55%)] hover:border-[#d4af37]/35 hover:bg-white/[0.06]'
-              : 'border-white/10 hover:border-[#d4af37]/25 hover:bg-white/[0.07]',
+            'mt-3 font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]',
+            featured ? 'text-xl md:text-2xl' : 'text-lg',
           )}
         >
-          <div className="flex items-start justify-between gap-4">
-            <div className="flex h-12 w-12 items-center justify-center rounded-xl border border-[#d4af37]/20 bg-[#d4af37]/10 text-[#d4af37] transition-colors group-hover:border-[#d4af37]/40 group-hover:bg-[#d4af37]/15">
-              <Icon size={22} />
-            </div>
-            <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F1E9DB]/35">
-              {capability.id}
-            </span>
-          </div>
+          {capability.title}
+        </h3>
+        <p
+          className={cn(
+            'mt-3 flex-1 leading-relaxed text-[#F1E9DB]/60',
+            featured ? 'text-sm md:text-base' : 'text-sm',
+          )}
+        >
+          {capability.description}
+        </p>
 
-          <p className="mt-6 font-mono text-[10px] uppercase tracking-[0.16em] text-[#d4af37]/80">
-            {capability.category}
-          </p>
-          <h3
-            className={cn(
-              'mt-3 font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]',
-              featured ? 'text-xl md:text-2xl' : 'text-lg',
-            )}
-          >
-            {capability.title}
-          </h3>
-          <p
-            className={cn(
-              'mt-3 flex-1 leading-relaxed text-[#F1E9DB]/60',
-              featured ? 'text-sm md:text-base' : 'text-sm',
-            )}
-          >
-            {capability.description}
-          </p>
-
-          <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/45 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-            Learn more
-            <ArrowUpRight size={16} />
-          </span>
-        </motion.article>
-      </Link>
+        <span className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/45 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+          Learn more
+          <ArrowUpRight size={16} />
+        </span>
+      </motion.article>
     </SectionReveal>
   )
 }
