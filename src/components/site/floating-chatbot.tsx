@@ -1,13 +1,22 @@
 'use client'
 
+import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { MessageCircle, Send, Sparkles, X } from 'lucide-react'
+import { ArrowUpRight, MessageCircle, Send, Sparkles, X } from 'lucide-react'
 import { cn } from '@/lib/utils'
+
+type ChatLink = {
+  title: string
+  url: string
+  category: string
+}
 
 type ChatMessage = {
   id: string
   role: 'assistant' | 'user'
   text: string
+  links?: ChatLink[]
+  showContact?: boolean
 }
 
 const WELCOME =
@@ -19,7 +28,7 @@ export function FloatingChatbot() {
   const [input, setInput] = useState('')
   const [pending, setPending] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 'welcome', role: 'assistant', text: WELCOME },
+    { id: 'welcome', role: 'assistant', text: WELCOME, showContact: true },
   ])
   const panelRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
@@ -62,7 +71,12 @@ export function FloatingChatbot() {
             .map((message) => ({ role: message.role, text: message.text })),
         }),
       })
-      const data = (await res.json()) as { reply?: string; error?: string }
+      const data = (await res.json()) as {
+        reply?: string
+        error?: string
+        links?: ChatLink[]
+        showContact?: boolean
+      }
       if (!res.ok) {
         throw new Error(data.error || 'Chat request failed')
       }
@@ -73,7 +87,9 @@ export function FloatingChatbot() {
           role: 'assistant',
           text:
             data.reply?.trim() ||
-            'I could not find that on the site. Reach us via Contact or WhatsApp and our team will help.',
+            'I could not find that on the site. Reach us via Contact and our team will help.',
+          links: data.links ?? [],
+          showContact: Boolean(data.showContact) || !(data.links?.length),
         },
       ])
     } catch (error) {
@@ -84,8 +100,10 @@ export function FloatingChatbot() {
           role: 'assistant',
           text:
             error instanceof Error
-              ? `${error.message} You can also reach us via Contact or WhatsApp.`
-              : 'Something went wrong. Please try Contact or WhatsApp.',
+              ? `${error.message} You can also reach us via Contact.`
+              : 'Something went wrong. Please try Contact Us.',
+          showContact: true,
+          links: [],
         },
       ])
     } finally {
@@ -135,7 +153,42 @@ export function FloatingChatbot() {
                     : 'ml-8 bg-[#d4af37]/15 text-[#F1E9DB]',
                 )}
               >
-                {message.text}
+                <p className="whitespace-pre-wrap">{message.text}</p>
+
+                {message.role === 'assistant' && message.links && message.links.length > 0 ? (
+                  <div className="mt-3 space-y-2">
+                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/40">
+                      Related pages
+                    </p>
+                    {message.links.map((link) => (
+                      <Link
+                        key={link.url}
+                        href={link.url}
+                        onClick={() => setOpen(false)}
+                        className="flex items-start justify-between gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:border-[#d4af37]/40 hover:bg-white/[0.06]"
+                      >
+                        <span>
+                          <span className="block font-mono text-[10px] uppercase tracking-[0.12em] text-[#d4af37]">
+                            {link.category}
+                          </span>
+                          <span className="mt-0.5 block text-sm text-[#F1E9DB]">{link.title}</span>
+                        </span>
+                        <ArrowUpRight size={14} className="mt-1 shrink-0 text-[#F1E9DB]/45" />
+                      </Link>
+                    ))}
+                  </div>
+                ) : null}
+
+                {message.role === 'assistant' && message.showContact ? (
+                  <Link
+                    href="/contact"
+                    onClick={() => setOpen(false)}
+                    className="mt-3 inline-flex items-center gap-2 rounded-full border border-[#d4af37]/40 bg-[#d4af37]/15 px-3.5 py-2 text-sm font-medium text-[#d4af37] transition hover:bg-[#d4af37]/25"
+                  >
+                    Contact Us
+                    <ArrowUpRight size={14} />
+                  </Link>
+                ) : null}
               </div>
             ))}
             {pending ? (

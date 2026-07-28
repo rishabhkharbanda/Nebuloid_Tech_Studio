@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import {
   buildChatKnowledge,
   formatKnowledgeForPrompt,
+  pickChatLinks,
   retrieveChatKnowledge,
 } from '@/lib/chat-knowledge'
 
@@ -15,10 +16,10 @@ type IncomingMessage = { role: ChatRole; text: string }
 
 const SYSTEM_RULES = `You are the Nebuloid Tech Studio website assistant.
 Answer using ONLY the SITE CONTEXT provided below.
-If the answer is not clearly supported by the context, say you do not have that detail on the site and suggest the Contact page (/contact) or WhatsApp.
+If the answer is not clearly supported by the context, say you do not have that detail on the site and recommend contacting the team.
 Keep replies concise (2–5 short sentences).
-When relevant, mention page paths from the context (e.g. /experiences, /digital-experiences, /insights, /faq, /contact).
 Do not invent pricing, timelines, client names, or capabilities that are not in the context.
+Do not paste raw URLs in the reply — page links are shown separately in the chat UI.
 Tone: professional, clear, and helpful.`
 
 function getApiKey() {
@@ -32,6 +33,12 @@ function getApiKey() {
 /** gemini-2.0-flash is shut down; override with GEMINI_MODEL if needed. */
 function getChatModelId() {
   return process.env.GEMINI_MODEL?.trim() || 'gemini-2.5-flash'
+}
+
+function looksUncertain(reply: string) {
+  return /do not have|don't have|could not find|couldn't find|not (clearly )?on (the )?site|no matching|i'?m not (sure|able)|outside (of )?what/i.test(
+    reply,
+  )
 }
 
 export async function POST(request: Request) {
@@ -54,7 +61,10 @@ export async function POST(request: Request) {
   }
 
   const messages = (body.messages ?? [])
-    .filter((message) => message?.text?.trim() && (message.role === 'user' || message.role === 'assistant'))
+    .filter(
+      (message) =>
+        message?.text?.trim() && (message.role === 'user' || message.role === 'assistant'),
+    )
     .slice(-12)
 
   const latestUser = [...messages].reverse().find((message) => message.role === 'user')
@@ -64,8 +74,9 @@ export async function POST(request: Request) {
 
   try {
     const knowledge = await buildChatKnowledge()
-    const retrieved = retrieveChatKnowledge(knowledge, latestUser.text, 8)
-    const context = formatKnowledgeForPrompt(retrieved)
+    const { matches, hasStrongMatch } = retrieveChatKnowledge(knowledge, latestUser.text, 8)
+    const context = formatKnowledgeForPrompt(matches)
+    const links = hasStrongMatch ? pickChatLinks(matches, 3) : []
 
     const history = messages
       .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.text}`)
@@ -85,13 +96,16 @@ ${history}
 Assistant:`,
     })
 
+    const reply =
+      text.trim() ||
+      'I could not find that on the site. Use Contact Us and our team will help.'
+    const uncertain = looksUncertain(reply)
+    const showContact = !hasStrongMatch || links.length === 0 || uncertain
+
     return NextResponse.json({
-      reply: text.trim() || 'I could not find that on the site. Try Contact or WhatsApp and our team can help.',
-      sources: retrieved.map((chunk) => ({
-        title: chunk.title,
-        url: chunk.url,
-        category: chunk.category,
-      })),
+      reply,
+      links,
+      showContact,
     })
   } catch (error) {
     console.error('[chat]', error)
@@ -101,6 +115,8 @@ Assistant:`,
           error instanceof Error
             ? error.message
             : 'Failed to generate a reply. Please try again.',
+        showContact: true,
+        links: [],
       },
       { status: 500 },
     )

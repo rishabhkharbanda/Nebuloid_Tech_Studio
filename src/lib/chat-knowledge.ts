@@ -145,7 +145,7 @@ export function retrieveChatKnowledge(
   chunks: KnowledgeChunk[],
   query: string,
   limit = 8,
-): KnowledgeChunk[] {
+): { matches: KnowledgeChunk[]; hasStrongMatch: boolean } {
   const terms = query
     .toLowerCase()
     .split(/[^a-z0-9]+/i)
@@ -153,15 +153,43 @@ export function retrieveChatKnowledge(
     .filter((term) => term.length > 2)
 
   if (!terms.length) {
-    return chunks.filter((chunk) => ['company', 'contact', 'page-experiences'].includes(chunk.id))
+    return {
+      matches: chunks.filter((chunk) =>
+        ['company', 'contact', 'page-experiences'].includes(chunk.id),
+      ),
+      hasStrongMatch: false,
+    }
   }
 
-  return [...chunks]
+  const scored = [...chunks]
     .map((chunk) => ({ chunk, score: scoreChunk(chunk, terms) }))
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
-    .slice(0, limit)
-    .map((entry) => entry.chunk)
+
+  const strong = scored.filter((entry) => entry.score >= 4)
+  const hasStrongMatch = strong.length > 0
+  const selected = (hasStrongMatch ? strong : scored).slice(0, limit).map((entry) => entry.chunk)
+
+  return { matches: selected, hasStrongMatch }
+}
+
+export function pickChatLinks(chunks: KnowledgeChunk[], limit = 3) {
+  const seen = new Set<string>()
+  const links: Array<{ title: string; url: string; category: string }> = []
+
+  for (const chunk of chunks) {
+    if (!chunk.url || chunk.url === '/contact') continue
+    if (seen.has(chunk.url)) continue
+    seen.add(chunk.url)
+    links.push({
+      title: chunk.title,
+      url: chunk.url,
+      category: chunk.category,
+    })
+    if (links.length >= limit) break
+  }
+
+  return links
 }
 
 export function formatKnowledgeForPrompt(chunks: KnowledgeChunk[]) {
