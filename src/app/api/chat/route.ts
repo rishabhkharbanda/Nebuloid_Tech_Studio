@@ -74,9 +74,9 @@ export async function POST(request: Request) {
 
   try {
     const knowledge = await buildChatKnowledge()
-    const { matches, hasStrongMatch } = retrieveChatKnowledge(knowledge, latestUser.text, 8)
+    const { matches, hasStrongMatch } = retrieveChatKnowledge(knowledge, latestUser.text, 12)
     const context = formatKnowledgeForPrompt(matches)
-    const links = hasStrongMatch ? pickChatLinks(matches, 3) : []
+    const links = hasStrongMatch ? pickChatLinks(matches, 8) : []
 
     const history = messages
       .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.text}`)
@@ -100,7 +100,8 @@ Assistant:`,
       text.trim() ||
       'I could not find that on the site. Use Contact Us and our team will help.'
     const uncertain = looksUncertain(reply)
-    const showContact = !hasStrongMatch || links.length === 0 || uncertain
+    // Prefer related page links; only push Contact when nothing useful matched.
+    const showContact = links.length === 0 || (!hasStrongMatch && uncertain)
 
     return NextResponse.json({
       reply,

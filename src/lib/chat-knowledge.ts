@@ -13,15 +13,73 @@ export type KnowledgeChunk = {
   content: string
 }
 
+/** Expand short / topical queries so “AI” also matches related site pages. */
+const TOPIC_EXPANSIONS: Record<string, string[]> = {
+  ai: [
+    'ai',
+    'artificial intelligence',
+    'selfie',
+    'photo booth',
+    'photobooth',
+    'vision',
+    'personalisation',
+    'personalization',
+    'smart engagement',
+    'generative',
+  ],
+  booth: ['booth', 'selfie', 'photo booth', 'ai booth', 'photobooth'],
+  kiosk: ['kiosk', 'touchscreen', 'interactive', 'self-serve', 'registration'],
+  led: ['led', 'stage', 'display', 'screen', 'media wall'],
+  vr: ['vr', 'virtual reality', 'immersive', 'headset'],
+  event: ['event', 'activation', 'conference', 'exhibition', 'brand'],
+  digital: ['digital', 'website', 'platform', 'app', 'interactive'],
+  analytics: ['analytics', 'dashboard', 'lead capture', 'reporting', 'intelligence'],
+  branding: ['branding', 'creative', 'motion', 'graphics', 'identity'],
+  registration: ['registration', 'check-in', 'badge', 'guest journey', 'qr'],
+  government: ['government', 'public', 'civic', 'platform'],
+  gaming: ['gaming', 'game', 'interactive', 'playable', 'quiz'],
+}
+
+function expandQueryTerms(query: string): string[] {
+  const raw = query
+    .toLowerCase()
+    .split(/[^a-z0-9]+/i)
+    .map((term) => term.trim())
+    .filter((term) => term.length >= 2)
+
+  const expanded = new Set<string>()
+  for (const term of raw) {
+    expanded.add(term)
+    const synonyms = TOPIC_EXPANSIONS[term]
+    if (synonyms) {
+      for (const synonym of synonyms) expanded.add(synonym)
+    }
+  }
+
+  // Also keep multi-word expansions as phrase matches in scoring.
+  return [...expanded]
+}
+
 function scoreChunk(chunk: KnowledgeChunk, terms: string[]) {
-  const haystack = `${chunk.title} ${chunk.category} ${chunk.content}`.toLowerCase()
+  const title = chunk.title.toLowerCase()
+  const category = chunk.category.toLowerCase()
+  const haystack = `${title} ${category} ${chunk.content}`.toLowerCase()
   let score = 0
+
   for (const term of terms) {
     if (!term) continue
-    if (chunk.title.toLowerCase().includes(term)) score += 6
-    if (chunk.category.toLowerCase().includes(term)) score += 3
-    if (haystack.includes(term)) score += 2
+    if (title.includes(term)) score += term.length <= 2 ? 8 : 6
+    if (category.includes(term)) score += 3
+    if (haystack.includes(term)) score += term.length <= 2 ? 4 : 2
+
+    // Soft relatedness: match tokens from multi-word expansions.
+    if (term.includes(' ')) {
+      const parts = term.split(/\s+/).filter((part) => part.length >= 2)
+      const partHits = parts.filter((part) => haystack.includes(part)).length
+      if (partHits >= Math.min(2, parts.length)) score += 2
+    }
   }
+
   return score
 }
 
@@ -136,6 +194,14 @@ export async function buildChatKnowledge(): Promise<KnowledgeChunk[]> {
       category: 'Page',
       content: 'Articles and insights from Nebuloid about event technology and creative production.',
     },
+    {
+      id: 'page-technology',
+      title: 'Technology',
+      url: '/technology',
+      category: 'Page',
+      content:
+        'Nebuloid technology stack for AI photo booths, interactive kiosks, LED experiences, and event systems.',
+    },
   )
 
   return chunks
@@ -144,13 +210,9 @@ export async function buildChatKnowledge(): Promise<KnowledgeChunk[]> {
 export function retrieveChatKnowledge(
   chunks: KnowledgeChunk[],
   query: string,
-  limit = 8,
+  limit = 12,
 ): { matches: KnowledgeChunk[]; hasStrongMatch: boolean } {
-  const terms = query
-    .toLowerCase()
-    .split(/[^a-z0-9]+/i)
-    .map((term) => term.trim())
-    .filter((term) => term.length > 2)
+  const terms = expandQueryTerms(query)
 
   if (!terms.length) {
     return {
@@ -166,14 +228,14 @@ export function retrieveChatKnowledge(
     .filter((entry) => entry.score > 0)
     .sort((a, b) => b.score - a.score)
 
-  const strong = scored.filter((entry) => entry.score >= 4)
-  const hasStrongMatch = strong.length > 0
-  const selected = (hasStrongMatch ? strong : scored).slice(0, limit).map((entry) => entry.chunk)
+  // Any positive score counts as a usable related match for link suggestions.
+  const hasStrongMatch = scored.some((entry) => entry.score >= 2)
+  const selected = scored.slice(0, limit).map((entry) => entry.chunk)
 
   return { matches: selected, hasStrongMatch }
 }
 
-export function pickChatLinks(chunks: KnowledgeChunk[], limit = 3) {
+export function pickChatLinks(chunks: KnowledgeChunk[], limit = 8) {
   const seen = new Set<string>()
   const links: Array<{ title: string; url: string; category: string }> = []
 

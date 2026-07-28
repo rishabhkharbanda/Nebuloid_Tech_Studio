@@ -28,7 +28,7 @@ export function FloatingChatbot() {
   const [input, setInput] = useState('')
   const [pending, setPending] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { id: 'welcome', role: 'assistant', text: WELCOME, showContact: true },
+    { id: 'welcome', role: 'assistant', text: WELCOME },
   ])
   const panelRef = useRef<HTMLDivElement>(null)
   const listRef = useRef<HTMLDivElement>(null)
@@ -48,7 +48,9 @@ export function FloatingChatbot() {
   }, [open])
 
   useEffect(() => {
-    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
+    const list = listRef.current
+    if (!list) return
+    list.scrollTop = list.scrollHeight
   }, [messages, pending])
 
   async function send() {
@@ -80,6 +82,7 @@ export function FloatingChatbot() {
       if (!res.ok) {
         throw new Error(data.error || 'Chat request failed')
       }
+      const links = data.links ?? []
       setMessages((prev) => [
         ...prev,
         {
@@ -88,8 +91,8 @@ export function FloatingChatbot() {
           text:
             data.reply?.trim() ||
             'I could not find that on the site. Reach us via Contact and our team will help.',
-          links: data.links ?? [],
-          showContact: Boolean(data.showContact) || !(data.links?.length),
+          links,
+          showContact: links.length === 0 ? true : Boolean(data.showContact),
         },
       ])
     } catch (error) {
@@ -116,11 +119,11 @@ export function FloatingChatbot() {
       {open ? (
         <div
           ref={panelRef}
-          className="theme-preserve-dark fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
+          className="theme-preserve-dark fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex h-[min(70vh,36rem)] w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
           role="dialog"
           aria-label="AI assistant chat"
         >
-          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3">
             <div className="flex items-center gap-2">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#d4af37]">
                 <Sparkles size={16} />
@@ -142,7 +145,10 @@ export function FloatingChatbot() {
             </button>
           </div>
 
-          <div ref={listRef} className="max-h-72 space-y-3 overflow-y-auto px-4 py-4">
+          <div
+            ref={listRef}
+            className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 [-webkit-overflow-scrolling:touch]"
+          >
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -198,7 +204,7 @@ export function FloatingChatbot() {
             ) : null}
           </div>
 
-          <div className="border-t border-white/10 p-3">
+          <div className="shrink-0 border-t border-white/10 p-3">
             <div className="flex items-end gap-2">
               <textarea
                 rows={2}
