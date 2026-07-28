@@ -3,6 +3,7 @@
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
 import { ArrowUpRight, MessageCircle, Send, Sparkles, X } from 'lucide-react'
+import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 
 type ChatLink = {
@@ -24,6 +25,8 @@ const WELCOME =
 
 /** Floating AI chat grounded on Nebuloid website content via Gemini. */
 export function FloatingChatbot() {
+  const theme = useTheme()
+  const isDay = theme === 'day'
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
   const [pending, setPending] = useState(false)
@@ -119,18 +122,35 @@ export function FloatingChatbot() {
       {open ? (
         <div
           ref={panelRef}
-          className="theme-preserve-dark fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex h-[min(70vh,36rem)] w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
+          className={cn(
+            'fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex h-[min(70vh,36rem)] w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl sm:right-6',
+            isDay
+              ? 'border-black/10 bg-[#f4f0e7]/96 text-[#181712]'
+              : 'border-white/12 bg-[#111111]/95 text-[#F1E9DB]',
+          )}
           role="dialog"
           aria-label="AI assistant chat"
         >
-          <div className="flex shrink-0 items-center justify-between border-b border-white/10 px-4 py-3">
+          <div
+            className={cn(
+              'flex shrink-0 items-center justify-between border-b px-4 py-3',
+              isDay ? 'border-black/10' : 'border-white/10',
+            )}
+          >
             <div className="flex items-center gap-2">
               <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#d4af37]">
                 <Sparkles size={16} />
               </span>
               <div>
-                <p className="text-sm font-semibold text-[#F1E9DB]">Nebuloid Assistant</p>
-                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
+                <p className={cn('text-sm font-semibold', isDay ? 'text-[#181712]' : 'text-[#F1E9DB]')}>
+                  Nebuloid Assistant
+                </p>
+                <p
+                  className={cn(
+                    'font-mono text-[10px] uppercase tracking-[0.14em]',
+                    isDay ? 'text-[#181712]/45' : 'text-[#F1E9DB]/45',
+                  )}
+                >
                   Site knowledge
                 </p>
               </div>
@@ -138,7 +158,10 @@ export function FloatingChatbot() {
             <button
               type="button"
               onClick={() => setOpen(false)}
-              className="rounded-full p-1.5 text-[#F1E9DB]/50 hover:text-[#d4af37]"
+              className={cn(
+                'rounded-full p-1.5 transition hover:text-[#d4af37]',
+                isDay ? 'text-[#181712]/50' : 'text-[#F1E9DB]/50',
+              )}
               aria-label="Close chat"
             >
               <X size={16} />
@@ -155,15 +178,22 @@ export function FloatingChatbot() {
                 className={cn(
                   'rounded-2xl px-3 py-2.5 text-sm leading-relaxed',
                   message.role === 'assistant'
-                    ? 'bg-white/[0.05] text-[#F1E9DB]/80'
-                    : 'ml-8 bg-[#d4af37]/15 text-[#F1E9DB]',
+                    ? isDay
+                      ? 'bg-black/[0.04] text-[#181712]/85'
+                      : 'bg-white/[0.05] text-[#F1E9DB]/80'
+                    : 'ml-8 bg-[#d4af37]/15 text-inherit',
                 )}
               >
                 <p className="whitespace-pre-wrap">{message.text}</p>
 
                 {message.role === 'assistant' && message.links && message.links.length > 0 ? (
                   <div className="mt-3 space-y-2">
-                    <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/40">
+                    <p
+                      className={cn(
+                        'font-mono text-[10px] uppercase tracking-[0.14em]',
+                        isDay ? 'text-[#181712]/40' : 'text-[#F1E9DB]/40',
+                      )}
+                    >
                       Related pages
                     </p>
                     {message.links.map((link) => (
@@ -171,15 +201,33 @@ export function FloatingChatbot() {
                         key={link.url}
                         href={link.url}
                         onClick={() => setOpen(false)}
-                        className="flex items-start justify-between gap-2 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 transition hover:border-[#d4af37]/40 hover:bg-white/[0.06]"
+                        className={cn(
+                          'flex items-start justify-between gap-2 rounded-xl border px-3 py-2 transition hover:border-[#d4af37]/40',
+                          isDay
+                            ? 'border-black/10 bg-black/[0.03] hover:bg-black/[0.06]'
+                            : 'border-white/10 bg-white/[0.03] hover:bg-white/[0.06]',
+                        )}
                       >
                         <span>
                           <span className="block font-mono text-[10px] uppercase tracking-[0.12em] text-[#d4af37]">
                             {link.category}
                           </span>
-                          <span className="mt-0.5 block text-sm text-[#F1E9DB]">{link.title}</span>
+                          <span
+                            className={cn(
+                              'mt-0.5 block text-sm',
+                              isDay ? 'text-[#181712]' : 'text-[#F1E9DB]',
+                            )}
+                          >
+                            {link.title}
+                          </span>
                         </span>
-                        <ArrowUpRight size={14} className="mt-1 shrink-0 text-[#F1E9DB]/45" />
+                        <ArrowUpRight
+                          size={14}
+                          className={cn(
+                            'mt-1 shrink-0',
+                            isDay ? 'text-[#181712]/45' : 'text-[#F1E9DB]/45',
+                          )}
+                        />
                       </Link>
                     ))}
                   </div>
@@ -198,13 +246,20 @@ export function FloatingChatbot() {
               </div>
             ))}
             {pending ? (
-              <div className="rounded-2xl bg-white/[0.05] px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/45">
+              <div
+                className={cn(
+                  'rounded-2xl px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em]',
+                  isDay
+                    ? 'bg-black/[0.04] text-[#181712]/45'
+                    : 'bg-white/[0.05] text-[#F1E9DB]/45',
+                )}
+              >
                 Thinking…
               </div>
             ) : null}
           </div>
 
-          <div className="shrink-0 border-t border-white/10 p-3">
+          <div className={cn('shrink-0 border-t p-3', isDay ? 'border-black/10' : 'border-white/10')}>
             <div className="flex items-end gap-2">
               <textarea
                 rows={2}
@@ -218,7 +273,12 @@ export function FloatingChatbot() {
                   }
                 }}
                 placeholder="Ask about our work…"
-                className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-white/12 bg-white/[0.03] px-3 py-2 text-sm text-[#F1E9DB] outline-none placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45 disabled:opacity-60"
+                className={cn(
+                  'min-h-[2.75rem] flex-1 resize-none rounded-xl border px-3 py-2 text-sm outline-none transition focus:border-[#d4af37]/45 disabled:opacity-60',
+                  isDay
+                    ? 'border-black/12 bg-black/[0.03] text-[#181712] placeholder:text-[#181712]/35'
+                    : 'border-white/12 bg-white/[0.03] text-[#F1E9DB] placeholder:text-[#F1E9DB]/35',
+                )}
               />
               <button
                 type="button"
@@ -237,7 +297,10 @@ export function FloatingChatbot() {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="theme-preserve-dark fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-[80] inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#d4af37]/35 bg-[#111111]/90 text-[#d4af37] shadow-lg backdrop-blur-md transition hover:scale-105 hover:border-[#d4af37]/60 sm:right-6"
+        className={cn(
+          'fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-[80] inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#d4af37]/35 text-[#d4af37] shadow-lg backdrop-blur-md transition hover:scale-105 hover:border-[#d4af37]/60 sm:right-6',
+          isDay ? 'bg-[#f4f0e7]/95' : 'bg-[#111111]/90',
+        )}
         aria-label={open ? 'Close AI chat' : 'Open AI chat'}
         aria-expanded={open}
       >
