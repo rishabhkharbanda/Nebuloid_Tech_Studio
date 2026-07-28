@@ -15,7 +15,7 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            What We Create
+            Experiences We Offer
           </p>
           <h2 className="mt-4 max-w-5xl text-[clamp(2rem,5.5vw,5.8rem)] font-bold leading-[0.95] tracking-[-0.03em] text-[#F1E9DB]">
             One event ecosystem. Every layer connected.
@@ -25,10 +25,10 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
             experience that attendees feel from invitation to encore.
           </p>
           <Link
-            href="/solutions"
+            href="/experiences"
             className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
           >
-            View all solutions
+            View all experiences
             <ArrowUpRight size={16} />
           </Link>
         </SectionReveal>
@@ -40,7 +40,7 @@ export function ServicesSection({ limit, compact }: { limit?: number; compact?: 
             return (
               <SectionReveal key={service.id} delay={index * 0.06}>
                 <Link
-                  href={`/solutions/${service.slug}`}
+                  href={`/experiences/${service.slug}`}
                   className="group block outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#090909]"
                 >
                   <article

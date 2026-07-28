@@ -15,16 +15,21 @@ html,
 body {
   margin: 0;
   min-height: 100%;
-  background: #090909;
+  background: #f4f0e7;
+  color: #181712;
   overflow-x: clip;
 }
 
 body {
   font-family: var(--font-space-grotesk), sans-serif;
-  color: #f1e9db;
+  color: #181712;
   transition:
     background-color 500ms ease,
     color 500ms ease;
+}
+
+html:not(.day-theme) body {
+  color: #f1e9db;
 }
 
 a,
@@ -269,6 +274,28 @@ html.day-theme .theme-preserve-dark [data-slot='button'][class*='border-[#F1E9DB
 html.day-theme ::selection {
   background: rgba(164, 126, 8, 0.22);
   color: #181712;
+}
+
+html:not(.day-theme),
+html:not(.day-theme) body {
+  background: #090909 !important;
+  color: #f1e9db !important;
+}
+
+.trusted-edge-fade-left {
+  background: linear-gradient(to right, #090909, transparent);
+}
+
+.trusted-edge-fade-right {
+  background: linear-gradient(to left, #090909, transparent);
+}
+
+html.day-theme .trusted-edge-fade-left {
+  background: linear-gradient(to right, #f4f0e7, transparent);
+}
+
+html.day-theme .trusted-edge-fade-right {
+  background: linear-gradient(to left, #f4f0e7, transparent);
 }
 
 @media (prefers-reduced-motion: reduce) {

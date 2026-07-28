@@ -5,6 +5,7 @@ import { HomeBelowFold } from '@/components/site/home-below-fold'
 import { HomeScrollExplore } from '@/components/site/home-scroll-explore'
 import { JsonLd } from '@/components/site/json-ld'
 import { Navbar } from '@/components/site/navbar'
+import { SiteFloatingActions } from '@/components/site/site-floating-actions'
 import { createPageMetadata, getFaqSchema } from '@/lib/seo'
 import { faqs } from '@/lib/site-data'
 
@@ -38,6 +39,7 @@ export default function Home() {
         <HomeBelowFold />
       </main>
       <Footer />
+      <SiteFloatingActions />
     </div>
   )
 }

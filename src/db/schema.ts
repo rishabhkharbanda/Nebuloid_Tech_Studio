@@ -158,8 +158,19 @@ export const locationLandingsCms = pgTable('location_landings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+export const siteSettings = pgTable('site_settings', {
+  id: text('id').primaryKey(),
+  whatsappEnabled: boolean('whatsapp_enabled').notNull().default(false),
+  whatsappPhone: varchar('whatsapp_phone', { length: 32 }).notNull().default(''),
+  whatsappMessage: text('whatsapp_message')
+    .notNull()
+    .default('Hello! I would like to know more about Nebuloid Tech Studio.'),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 export type AdminUser = typeof adminUsers.$inferSelect
 export type MediaAsset = typeof mediaAssets.$inferSelect
 export type BlogPostCms = typeof blogPostsCms.$inferSelect
 export type DigitalExperienceCard = typeof digitalExperienceCards.$inferSelect
 export type LocationLandingCms = typeof locationLandingsCms.$inferSelect
+export type SiteSettings = typeof siteSettings.$inferSelect

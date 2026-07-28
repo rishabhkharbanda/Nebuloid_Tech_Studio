@@ -1,43 +1,57 @@
 import Script from 'next/script'
 
-/** Site GA4 measurement ID from Google Analytics. Overridable via env. */
+/** Site GA4 measurement ID. Overridable via env. */
 export const GA_MEASUREMENT_ID =
   process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID?.trim() || 'G-BYJ6D14KLM'
+
+/** Google Ads conversion ID. Overridable via env. */
+export const GOOGLE_ADS_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || 'AW-18308378295'
 
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID?.trim()
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID?.trim()
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
 const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID?.trim()
 
+function googleTagIds() {
+  return [GA_MEASUREMENT_ID, GOOGLE_ADS_ID].filter(Boolean)
+}
+
 /**
- * Official Google tag (gtag.js) — place once, immediately after <head>.
- * Do not also load a separate GTM container on the same page.
+ * Single Google tag (gtag.js) for GA4 + Google Ads.
+ * Load the library once, then gtag('config') for each ID — do not paste two full snippets.
+ * Place once, immediately after <head>.
  */
 export function GoogleAnalyticsTag() {
-  const id = GA_MEASUREMENT_ID
-  if (!id) return null
+  const ids = googleTagIds()
+  if (ids.length === 0) return null
+
+  const primaryId = ids[0]
+  const configCalls = ids.map((id) => `gtag('config', '${id}');`).join('\n')
 
   return (
     <>
       <Script
-        src={`https://www.googletagmanager.com/gtag/js?id=${id}`}
+        src={`https://www.googletagmanager.com/gtag/js?id=${primaryId}`}
         strategy="afterInteractive"
       />
-      <Script id="google-analytics" strategy="afterInteractive">
+      <Script id="google-tag" strategy="afterInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-gtag('config', '${id}');`}
+${configCalls}`}
       </Script>
     </>
   )
 }
 
-/** Non-Google marketing tags only. GTM is skipped when GA4 gtag is installed. */
+/** Non-Google marketing tags only. GTM is skipped when gtag is installed. */
 export function AnalyticsTags() {
+  const hasGoogleTag = googleTagIds().length > 0
+
   return (
     <>
-      {GTM_ID && !GA_MEASUREMENT_ID ? (
+      {GTM_ID && !hasGoogleTag ? (
         <Script id="gtm" strategy="afterInteractive">
           {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
@@ -82,8 +96,7 @@ s.parentNode.insertBefore(b,s);})(window.lintrk);`}
 }
 
 export function GtmNoscript() {
-  // Avoid a second Google tag when GA4 gtag is already installed.
-  if (!GTM_ID || GA_MEASUREMENT_ID) return null
+  if (!GTM_ID || googleTagIds().length > 0) return null
   return (
     <noscript>
       <iframe

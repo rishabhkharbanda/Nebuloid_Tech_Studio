@@ -6,20 +6,14 @@ import { AnimatePresence, motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { ArrowUpRight } from 'lucide-react'
 import { BrandLogo } from '@/components/site/brand-logo'
+import { HeaderSearch } from '@/components/site/header-search'
 import { MagneticButton } from '@/components/site/magnetic-button'
 import { ThemeToggle } from '@/components/site/theme-toggle'
+import { primaryNavLinks } from '@/lib/nav'
 import { contactDetails } from '@/lib/site-data'
 import { cn } from '@/lib/utils'
 
-const navLinks = [
-  { label: 'Home', href: '/' },
-  { label: 'Solutions', href: '/solutions' },
-  { label: 'Experiences', href: '/experiences' },
-  { label: 'Digital', href: '/digital-experiences' },
-  { label: 'Blogs', href: '/insights' },
-  { label: 'About', href: '/about' },
-  { label: 'Contact', href: '/contact' },
-]
+const navLinks = primaryNavLinks
 
 function AnimatedLabel({ text }: { text: string }) {
   return (
@@ -136,6 +130,7 @@ export function Navbar() {
           </nav>
 
           <div className="relative z-10 flex shrink-0 items-center gap-2 sm:gap-3">
+            <HeaderSearch className="hidden md:block" />
             <ThemeToggle />
             <MagneticButton
               size="default"
@@ -177,7 +172,7 @@ export function Navbar() {
             <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,rgba(212,175,55,0.12),transparent_45%),radial-gradient(ellipse_at_bottom_left,rgba(241,233,219,0.05),transparent_40%)]" />
 
             <div className="relative flex h-full flex-col px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 md:px-10">
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex items-center justify-between gap-3">
                 <p className="font-mono text-[10px] uppercase tracking-[0.24em] text-[#d4af37]">
                   Navigate
                 </p>
@@ -185,6 +180,8 @@ export function Navbar() {
                   {String(navLinks.length).padStart(2, '0')} pages
                 </p>
               </div>
+
+              <HeaderSearch className="mb-4 md:hidden" />
 
               <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                 <ul className="divide-y divide-white/10 border-y border-white/10">

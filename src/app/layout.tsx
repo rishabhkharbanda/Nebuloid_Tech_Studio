@@ -8,6 +8,7 @@ import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { DeferredCustomCursor } from '@/components/site/deferred-custom-cursor'
 import { BackToTopButton } from '@/components/site/back-to-top-button'
 import { SecretDaylightToggle } from '@/components/site/secret-daylight-toggle'
+import { themeInitScript } from '@/lib/theme'
 import {
   absoluteUrl,
   getLocalBusinessSchema,
@@ -120,10 +121,11 @@ export default function RootLayout({
   return (
     <html
       lang="en-IN"
-      className={`${spaceGrotesk.variable} ${bebasNeue.variable} ${jetBrainsMono.variable}`}
+      className={`day-theme ${spaceGrotesk.variable} ${bebasNeue.variable} ${jetBrainsMono.variable}`}
       suppressHydrationWarning
     >
       <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <GoogleAnalyticsTag />
         <JsonLd
           data={[getOrganizationSchema(), getWebsiteSchema(), getLocalBusinessSchema()]}

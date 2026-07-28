@@ -583,9 +583,8 @@ export const contactDetails = {
 
 export const footerLinks = [
   { label: 'Home', href: '/' },
-  { label: 'Solutions', href: '/solutions' },
-  { label: 'Experiences', href: '/experiences' },
-  { label: 'Digital Experiences', href: '/digital-experiences' },
+  { label: 'Experiences We Offer', href: '/experiences' },
+  { label: 'Our Work', href: '/digital-experiences' },
   { label: 'Blogs', href: '/insights' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },

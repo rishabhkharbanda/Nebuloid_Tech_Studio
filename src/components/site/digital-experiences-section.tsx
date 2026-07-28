@@ -64,10 +64,10 @@ export function DigitalExperiencesSection({
       <div className="content-grid">
         <SectionReveal>
           <p className="font-mono text-xs uppercase tracking-[0.22em] text-[#d4af37]">
-            Digital Experiences
+            Our Work
           </p>
           <h2 className="mt-4 max-w-5xl text-[clamp(2rem,5.5vw,5.5rem)] font-bold leading-[0.95] tracking-[-0.03em]">
-            Digital Experiences We&apos;ve Delivered
+            Portfolio projects we&apos;ve designed, built, and delivered.
           </h2>
           <p className="mt-6 max-w-3xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
             From AI-powered event activations and interactive visitor engagement to
@@ -79,7 +79,7 @@ export function DigitalExperiencesSection({
               href="/digital-experiences"
               className="mt-6 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/50 transition-colors hover:text-[#d4af37]"
             >
-              View all digital experiences
+              View all work
               <ArrowUpRight size={16} />
             </Link>
           )}

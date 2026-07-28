@@ -5,9 +5,9 @@ import { getDigitalExperienceCards } from '@/lib/content'
 import { createPageMetadata } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
-  title: 'Digital Experiences We\'ve Delivered',
+  title: 'Our Work — Digital & Event Portfolio',
   description:
-    'Explore Nebuloid digital projects — BharatTex, FILBo, and Paras Dham — interactive platforms, AI activations, and immersive visitor experiences.',
+    'Explore Nebuloid portfolio work — BharatTex, FILBo, and Paras Dham — interactive platforms, AI activations, and immersive visitor experiences.',
   path: '/digital-experiences',
   keywords: [
     'digital experience studio India',
@@ -32,8 +32,8 @@ export default async function DigitalExperiencesIndexPage() {
   return (
     <PageShell>
       <ListingPage
-        label="Digital Experiences"
-        title="Digital experiences we've delivered."
+        label="Our Work"
+        title="Portfolio projects we've designed, built, and delivered."
         description="BharatTex, FILBo, and Paras Dham — real deployments where Nebuloid technology shaped visitor journeys on the ground."
         items={items}
       />

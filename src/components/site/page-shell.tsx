@@ -1,5 +1,6 @@
 import { Footer } from '@/components/site/footer'
 import { Navbar } from '@/components/site/navbar'
+import { SiteFloatingActions } from '@/components/site/site-floating-actions'
 
 type PageShellProps = {
   children: React.ReactNode
@@ -21,6 +22,7 @@ export function PageShell({ children, withTopPadding = true }: PageShellProps) {
         {children}
       </main>
       <Footer />
+      <SiteFloatingActions />
     </div>
   )
 }

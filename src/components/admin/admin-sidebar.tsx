@@ -9,6 +9,7 @@ import {
   LogOut,
   MapPin,
   MonitorPlay,
+  Settings,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
 import type { SessionUser } from '@/lib/auth/session'
@@ -18,6 +19,7 @@ const links = [
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/digital-experiences', label: 'Digital Experiences', icon: MonitorPlay },
   { href: '/admin/location-landings', label: 'Location Landings', icon: MapPin },
+  { href: '/admin/settings', label: 'Site Settings', icon: Settings },
   { href: '/admin/media', label: 'Media Library', icon: Images },
 ]
 

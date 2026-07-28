@@ -10,7 +10,7 @@ import {
 } from '@/lib/theme'
 
 export function useTheme() {
-  const [theme, setTheme] = useState<Theme>('dark')
+  const [theme, setTheme] = useState<Theme>('day')
 
   useEffect(() => {
     const initial = getStoredTheme()

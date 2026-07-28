@@ -11,10 +11,6 @@ const ServicesSection = dynamic(
   () => import('@/components/site/services-section').then((m) => m.ServicesSection),
   { ssr: true },
 )
-const WorkSection = dynamic(
-  () => import('@/components/site/work-section').then((m) => m.WorkSection),
-  { ssr: true },
-)
 const DigitalExperiencesSection = dynamic(
   () =>
     import('@/components/site/digital-experiences-section').then(
@@ -66,7 +62,6 @@ export function HomeBelowFoldClient({
     <div className="relative z-10 bg-[#090909]">
       <TrustedBySection />
       <ServicesSection limit={3} compact />
-      <WorkSection limit={4} />
       <DigitalExperiencesSection variant="preview" cards={digitalCards} />
       <AboutSection />
       <TestimonialsSection />

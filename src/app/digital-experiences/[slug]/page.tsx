@@ -97,7 +97,7 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
         data={[
           getBreadcrumbSchema([
             { name: 'Home', path: '/' },
-            { name: 'Digital Experiences', path: '/digital-experiences' },
+            { name: 'Our Work', path: '/digital-experiences' },
             { name: project.title, path: `/digital-experiences/${slug}` },
           ]),
           getServiceSchema({
@@ -110,7 +110,7 @@ export default async function DigitalExperiencePage({ params }: PageProps) {
       />
       <DetailLayout
         backHref="/digital-experiences"
-        backLabel="All Digital Experiences"
+        backLabel="All Our Work"
         category={project.category}
         title={project.title}
         image={project.image}

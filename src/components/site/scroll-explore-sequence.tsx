@@ -105,6 +105,7 @@ export function ScrollExploreSequence() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
   const [loadProgress, setLoadProgress] = useState(0)
   const [displaySectionIndex, setDisplaySectionIndex] = useState(0)
+  const [scrollProgress, setScrollProgress] = useState(0)
   const [showHint, setShowHint] = useState(false)
   const [showPoster, setShowPoster] = useState(true)
 
@@ -204,6 +205,7 @@ export function ScrollExploreSequence() {
           const progress = self.progress
           queueScrub(progress)
           setSectionFromProgress(progress)
+          setScrollProgress(progress)
           setHintVisible(progress < 0.04)
           setPinnedLayer(progress > 0 && progress < 1)
         },
@@ -231,6 +233,7 @@ export function ScrollExploreSequence() {
       setPinnedLayer(progress > 0 && progress < 1)
       queueScrub(progress, true)
       setSectionFromProgress(progress)
+      setScrollProgress(progress)
       setHintVisible(progress < 0.04)
     }
 
@@ -524,21 +527,19 @@ export function ScrollExploreSequence() {
           </div>
         )}
 
-        {status === 'ready' && (
-          <div className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center gap-1.5 px-6 sm:bottom-6">
-            {sections.map((item, index) => (
-              <span
-                key={item.title}
-                className={cn(
-                  'h-1 rounded-full transition-all duration-500 ease-out',
-                  index === displaySectionIndex
-                    ? 'w-6 bg-[#d4af37] sm:w-8'
-                    : 'w-1.5 bg-[#F1E9DB]/25 sm:w-2',
-                )}
+        {status === 'ready' && !showHint ? (
+          <div
+            className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center px-6 sm:bottom-6"
+            aria-hidden
+          >
+            <div className="h-[2px] w-28 overflow-hidden rounded-full bg-[#F1E9DB]/20 sm:w-36">
+              <div
+                className="h-full rounded-full bg-[#d4af37] transition-[width] duration-150 ease-out"
+                style={{ width: `${Math.max(4, Math.min(100, scrollProgress * 100))}%` }}
               />
-            ))}
+            </div>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   )

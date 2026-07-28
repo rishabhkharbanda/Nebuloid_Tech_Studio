@@ -210,12 +210,12 @@ export default async function InsightPage({ params }: PageProps) {
                     </li>
                     <li>
                       <Link href="/digital-experiences" className="hover:text-[#d4af37]">
-                        Digital Experiences
+                        Our Work
                       </Link>
                     </li>
                     <li>
-                      <Link href="/solutions" className="hover:text-[#d4af37]">
-                        Event Solutions
+                      <Link href="/experiences" className="hover:text-[#d4af37]">
+                        Experiences We Offer
                       </Link>
                     </li>
                     <li>

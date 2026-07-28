@@ -1,0 +1,135 @@
+'use client'
+
+import { useEffect, useRef, useState } from 'react'
+import { MessageCircle, Send, Sparkles, X } from 'lucide-react'
+import { cn } from '@/lib/utils'
+
+type ChatMessage = {
+  id: string
+  role: 'assistant' | 'user'
+  text: string
+}
+
+const WELCOME =
+  'Hi! I\'m the Nebuloid assistant. Ask about our experiences, digital work, or how we can help with your next event.'
+
+/** Floating AI chat shell — wire `onSend` to your provider when ready. */
+export function FloatingChatbot() {
+  const [open, setOpen] = useState(false)
+  const [input, setInput] = useState('')
+  const [messages, setMessages] = useState<ChatMessage[]>([
+    { id: 'welcome', role: 'assistant', text: WELCOME },
+  ])
+  const panelRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!open) return
+    panelRef.current?.querySelector('textarea')?.focus()
+  }, [open])
+
+  function send() {
+    const text = input.trim()
+    if (!text) return
+    const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: 'user', text }
+    setMessages((prev) => [...prev, userMsg])
+    setInput('')
+    window.setTimeout(() => {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `a-${Date.now()}`,
+          role: 'assistant',
+          text:
+            'Thanks for your message. Live AI replies will connect here soon — for now, reach us via Contact or WhatsApp and our team will respond quickly.',
+        },
+      ])
+    }, 500)
+  }
+
+  return (
+    <>
+      {open ? (
+        <div
+          ref={panelRef}
+          className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
+          role="dialog"
+          aria-label="AI assistant chat"
+        >
+          <div className="flex items-center justify-between border-b border-white/10 px-4 py-3">
+            <div className="flex items-center gap-2">
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#d4af37]">
+                <Sparkles size={16} />
+              </span>
+              <div>
+                <p className="text-sm font-semibold text-[#F1E9DB]">Nebuloid Assistant</p>
+                <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
+                  AI chat
+                </p>
+              </div>
+            </div>
+            <button
+              type="button"
+              onClick={() => setOpen(false)}
+              className="rounded-full p-1.5 text-[#F1E9DB]/50 hover:text-[#d4af37]"
+              aria-label="Close chat"
+            >
+              <X size={16} />
+            </button>
+          </div>
+
+          <div className="max-h-72 space-y-3 overflow-y-auto px-4 py-4">
+            {messages.map((message) => (
+              <div
+                key={message.id}
+                className={cn(
+                  'rounded-2xl px-3 py-2.5 text-sm leading-relaxed',
+                  message.role === 'assistant'
+                    ? 'bg-white/[0.05] text-[#F1E9DB]/80'
+                    : 'ml-8 bg-[#d4af37]/15 text-[#F1E9DB]',
+                )}
+              >
+                {message.text}
+              </div>
+            ))}
+          </div>
+
+          <div className="border-t border-white/10 p-3">
+            <div className="flex items-end gap-2">
+              <textarea
+                rows={2}
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                onKeyDown={(event) => {
+                  if (event.key === 'Enter' && !event.shiftKey) {
+                    event.preventDefault()
+                    send()
+                  }
+                }}
+                placeholder="Ask about our work…"
+                className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-white/12 bg-white/[0.03] px-3 py-2 text-sm text-[#F1E9DB] outline-none placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45"
+              />
+              <button
+                type="button"
+                onClick={send}
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d4af37] text-[#111111] transition hover:bg-[#e8c65a]"
+                aria-label="Send message"
+              >
+                <Send size={16} />
+              </button>
+            </div>
+          </div>
+        </div>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={() => setOpen((prev) => !prev)}
+        className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-[80] inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#d4af37]/35 bg-[#111111]/90 text-[#d4af37] shadow-lg backdrop-blur-md transition hover:scale-105 hover:border-[#d4af37]/60 sm:right-6"
+        aria-label={open ? 'Close AI chat' : 'Open AI chat'}
+        aria-expanded={open}
+      >
+        {open ? <X size={22} /> : <MessageCircle size={22} />}
+      </button>
+    </>
+  )
+}
