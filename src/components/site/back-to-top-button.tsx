@@ -54,10 +54,10 @@ export function BackToTopButton() {
           onClick={scrollToTop}
           aria-label="Back to top"
           className={cn(
-            'fixed bottom-[5.5rem] right-4 z-[90] inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#F1E9DB]/20 bg-[#090909]/85 text-[#F1E9DB] shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-md transition-colors',
+            'back-to-top-btn fixed bottom-[calc(6.5rem+env(safe-area-inset-bottom))] right-4 z-[90] inline-flex h-12 w-12 items-center justify-center rounded-full border border-[#F1E9DB]/20 bg-[#090909]/85 text-[#F1E9DB] shadow-[0_12px_40px_rgba(0,0,0,0.35)] backdrop-blur-md transition-colors',
             'hover:border-[#d4af37]/55 hover:bg-[#111111] hover:text-[#d4af37]',
             'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#d4af37]/60',
-            'md:bottom-8 md:right-6 md:h-14 md:w-14',
+            'sm:right-6 md:h-14 md:w-14',
           )}
         >
           <ArrowUp size={18} strokeWidth={1.8} />

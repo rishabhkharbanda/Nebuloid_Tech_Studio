@@ -105,7 +105,6 @@ export function ScrollExploreSequence() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'ready' | 'static' | 'error'>('idle')
   const [loadProgress, setLoadProgress] = useState(0)
   const [displaySectionIndex, setDisplaySectionIndex] = useState(0)
-  const [scrollProgress, setScrollProgress] = useState(0)
   const [showHint, setShowHint] = useState(false)
   const [showPoster, setShowPoster] = useState(true)
 
@@ -205,8 +204,6 @@ export function ScrollExploreSequence() {
           const progress = self.progress
           queueScrub(progress)
           setSectionFromProgress(progress)
-          setScrollProgress(progress)
-          setHintVisible(progress < 0.04)
           setPinnedLayer(progress > 0 && progress < 1)
         },
         onEnter: () => {
@@ -215,7 +212,7 @@ export function ScrollExploreSequence() {
         },
         onEnterBack: () => {
           setPinnedLayer(true)
-          setHintVisible(false)
+          setHintVisible(true)
         },
         onLeave: () => {
           setPinnedLayer(false)
@@ -224,7 +221,7 @@ export function ScrollExploreSequence() {
         },
         onLeaveBack: () => {
           setPinnedLayer(false)
-          setHintVisible(true)
+          setHintVisible(false)
           queueScrub(0, true)
         },
       })
@@ -233,8 +230,7 @@ export function ScrollExploreSequence() {
       setPinnedLayer(progress > 0 && progress < 1)
       queueScrub(progress, true)
       setSectionFromProgress(progress)
-      setScrollProgress(progress)
-      setHintVisible(progress < 0.04)
+      setHintVisible(progress >= 0 && progress < 1)
     }
 
     const enableStaticMode = () => {
@@ -527,19 +523,6 @@ export function ScrollExploreSequence() {
           </div>
         )}
 
-        {status === 'ready' && !showHint ? (
-          <div
-            className="pointer-events-none absolute inset-x-0 bottom-5 z-10 flex justify-center px-6 sm:bottom-6"
-            aria-hidden
-          >
-            <div className="h-[2px] w-28 overflow-hidden rounded-full bg-[#F1E9DB]/20 sm:w-36">
-              <div
-                className="h-full rounded-full bg-[#d4af37] transition-[width] duration-150 ease-out"
-                style={{ width: `${Math.max(4, Math.min(100, scrollProgress * 100))}%` }}
-              />
-            </div>
-          </div>
-        ) : null}
       </div>
     </section>
   )

@@ -27,6 +27,15 @@ export function FloatingChatbot() {
     panelRef.current?.querySelector('textarea')?.focus()
   }, [open])
 
+  useEffect(() => {
+    if (open) {
+      document.documentElement.setAttribute('data-chat-open', '')
+    } else {
+      document.documentElement.removeAttribute('data-chat-open')
+    }
+    return () => document.documentElement.removeAttribute('data-chat-open')
+  }, [open])
+
   function send() {
     const text = input.trim()
     if (!text) return
@@ -51,7 +60,7 @@ export function FloatingChatbot() {
       {open ? (
         <div
           ref={panelRef}
-          className="fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
+          className="theme-preserve-dark fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl sm:right-6"
           role="dialog"
           aria-label="AI assistant chat"
         >
@@ -124,7 +133,7 @@ export function FloatingChatbot() {
       <button
         type="button"
         onClick={() => setOpen((prev) => !prev)}
-        className="fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-[80] inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#d4af37]/35 bg-[#111111]/90 text-[#d4af37] shadow-lg backdrop-blur-md transition hover:scale-105 hover:border-[#d4af37]/60 sm:right-6"
+        className="theme-preserve-dark fixed bottom-[calc(1.25rem+env(safe-area-inset-bottom))] right-4 z-[80] inline-flex h-14 w-14 items-center justify-center rounded-full border border-[#d4af37]/35 bg-[#111111]/90 text-[#d4af37] shadow-lg backdrop-blur-md transition hover:scale-105 hover:border-[#d4af37]/60 sm:right-6"
         aria-label={open ? 'Close AI chat' : 'Open AI chat'}
         aria-expanded={open}
       >

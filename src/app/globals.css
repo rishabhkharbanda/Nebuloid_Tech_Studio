@@ -298,6 +298,11 @@ html.day-theme .trusted-edge-fade-right {
   background: linear-gradient(to left, #f4f0e7, transparent);
 }
 
+html[data-chat-open] .back-to-top-btn {
+  opacity: 0;
+  pointer-events: none;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body {
     transition: none;
