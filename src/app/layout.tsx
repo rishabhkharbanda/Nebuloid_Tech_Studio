@@ -13,6 +13,7 @@ import {
   getLocalBusinessSchema,
   getOrganizationSchema,
   getWebsiteSchema,
+  homepageUrl,
   siteConfig,
 } from '@/lib/seo'
 import './globals.css'
@@ -52,7 +53,7 @@ export const metadata: Metadata = {
   publisher: siteConfig.name,
   category: 'Event Experience & Creative Technology',
   alternates: {
-    canonical: siteConfig.url,
+    canonical: homepageUrl(),
     types: {
       'application/rss+xml': absoluteUrl('/feed.xml'),
     },
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `${siteConfig.shortName} | Event Experience & Creative Technology`,
     description: siteConfig.defaultDescription,
-    url: siteConfig.url,
+    url: homepageUrl(),
     siteName: siteConfig.name,
     locale: siteConfig.locale,
     type: 'website',

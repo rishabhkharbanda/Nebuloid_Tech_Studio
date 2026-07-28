@@ -28,10 +28,15 @@ const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim()
 
 export const SITE_URL = resolveSiteUrl(configuredSiteUrl)
 
+/** Preferred homepage URL (always trailing slash — matches sitemap + redirects). */
+export function homepageUrl() {
+  return `${SITE_URL}/`
+}
+
 export const siteConfig = {
   name: 'Nebuloid Tech Studio LLP',
   shortName: 'Nebuloid Tech Studio',
-  url: SITE_URL,
+  url: homepageUrl(),
   locale: 'en_IN',
   defaultDescription:
     'Nebuloid Tech Studio designs, builds, and delivers complete event ecosystems — event branding, interactive installations, AI experiences, registration systems, and digital engagement for corporate events in India.',
@@ -85,7 +90,9 @@ type PageMetadataOptions = {
 }
 
 export function absoluteUrl(path: string) {
-  return `${siteConfig.url}${path.startsWith('/') ? path : `/${path}`}`
+  const normalized = path.startsWith('/') ? path : `/${path}`
+  if (normalized === '/') return homepageUrl()
+  return `${SITE_URL}${normalized}`
 }
 
 export function createPageMetadata({
