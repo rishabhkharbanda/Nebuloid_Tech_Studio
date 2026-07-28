@@ -98,30 +98,26 @@ export function HeroSection() {
       </div>
 
       <div className="content-grid relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-center px-6 pb-16 pt-8 md:min-h-[calc(100svh-8rem)] md:px-10 md:pb-24 lg:px-16">
-        <h1 ref={titleRef} className="mt-2 flex flex-wrap items-baseline gap-x-[0.15em] md:mt-4">
-          <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
-          <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
-          <span className="sr-only">
-            {' '}
-            interactive visitor experiences, AI-powered event activations, and immersive digital
-            storytelling
+        <h1 ref={titleRef} className="mt-2 md:mt-4">
+          <span className="flex flex-wrap items-baseline gap-x-[0.15em]">
+            <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
+            <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
+          </span>
+          <span className="relative mt-0 block min-h-[4.8em] overflow-hidden sm:min-h-[3.4em]">
+            <AnimatePresence mode="wait">
+              <motion.span
+                key={active.title}
+                initial={{ y: 60, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                exit={{ y: -60, opacity: 0 }}
+                transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+                className="absolute inset-x-0 top-0 text-[clamp(1.75rem,7vw,5.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB]"
+              >
+                {active.title}
+              </motion.span>
+            </AnimatePresence>
           </span>
         </h1>
-
-        <div className="relative min-h-[4.8em] overflow-hidden sm:min-h-[3.4em]">
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={active.title}
-              initial={{ y: 60, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              exit={{ y: -60, opacity: 0 }}
-              transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-              className="text-[clamp(1.75rem,7vw,5.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB]"
-            >
-              {active.title}
-            </motion.p>
-          </AnimatePresence>
-        </div>
 
         <p
           ref={descriptionRef}

@@ -12,7 +12,7 @@ import { faqs } from '@/lib/site-data'
 export const metadata: Metadata = createPageMetadata({
   title: 'Digital Experience & Event Technology Studio in India',
   description:
-    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, government digital platforms, and immersive digital storytelling for organisations worldwide.',
+    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, and digital platforms worldwide.',
   path: '/',
   keywords: [
     'digital experience studio India',

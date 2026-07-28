@@ -39,7 +39,7 @@ export const siteConfig = {
   url: homepageUrl(),
   locale: 'en_IN',
   defaultDescription:
-    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, government digital platforms, and immersive digital storytelling for organisations worldwide.',
+    'Nebuloid Tech Studio builds interactive visitor experiences, AI-powered event activations, touchscreen kiosks, and digital platforms worldwide.',
   defaultKeywords: [
     'Nebuloid Tech Studio',
     'event experience company India',
