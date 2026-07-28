@@ -27,11 +27,13 @@ export async function PUT(request: Request) {
     }
     const body = (await request.json()) as {
       whatsappEnabled?: boolean
+      whatsappLink?: string
       whatsappPhone?: string
       whatsappMessage?: string
     }
     const settings = await upsertSiteSettings({
       whatsappEnabled: Boolean(body.whatsappEnabled),
+      whatsappLink: body.whatsappLink ?? '',
       whatsappPhone: body.whatsappPhone ?? '',
       whatsappMessage: body.whatsappMessage ?? '',
     })

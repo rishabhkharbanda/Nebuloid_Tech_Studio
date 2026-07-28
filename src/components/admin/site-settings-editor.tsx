@@ -6,6 +6,7 @@ import type { PublicSiteSettings } from '@/lib/cms/site-settings'
 export function SiteSettingsEditor() {
   const [form, setForm] = useState({
     whatsappEnabled: false,
+    whatsappLink: '',
     whatsappPhone: '',
     whatsappMessage: 'Hello! I would like to know more about Nebuloid Tech Studio.',
   })
@@ -20,6 +21,7 @@ export function SiteSettingsEditor() {
       .then((data) => {
         setForm({
           whatsappEnabled: Boolean(data.whatsappEnabled),
+          whatsappLink: data.whatsappLink ?? '',
           whatsappPhone: data.whatsappPhone ?? '',
           whatsappMessage:
             data.whatsappMessage ??
@@ -78,32 +80,59 @@ export function SiteSettingsEditor() {
 
       <div>
         <label className="mb-2 block text-sm font-medium text-[#111827]">
-          WhatsApp phone number
+          WhatsApp link (recommended)
         </label>
         <input
-          type="text"
-          value={form.whatsappPhone}
+          type="url"
+          value={form.whatsappLink}
           onChange={(event) =>
-            setForm((prev) => ({ ...prev, whatsappPhone: event.target.value }))
+            setForm((prev) => ({ ...prev, whatsappLink: event.target.value }))
           }
-          placeholder="917303922260"
+          placeholder="https://wa.me/message/L72JRPHENDZIJ1"
           className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#b45309]"
         />
         <p className="mt-2 text-xs text-[#6b7280]">
-          Country code + number, digits only (no + or spaces required).
+          Paste your WhatsApp Business click-to-chat link (e.g.{' '}
+          <code className="rounded bg-black/5 px-1">https://wa.me/message/…</code>). This is used
+          first when set.
         </p>
       </div>
 
-      <div>
-        <label className="mb-2 block text-sm font-medium text-[#111827]">Default message</label>
-        <textarea
-          rows={3}
-          value={form.whatsappMessage}
-          onChange={(event) =>
-            setForm((prev) => ({ ...prev, whatsappMessage: event.target.value }))
-          }
-          className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#b45309]"
-        />
+      <div className="rounded-xl border border-dashed border-black/15 px-4 py-4">
+        <p className="mb-3 text-xs font-semibold uppercase tracking-[0.14em] text-[#6b7280]">
+          Fallback (only if link is empty)
+        </p>
+        <div className="space-y-4">
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#111827]">
+              WhatsApp phone number
+            </label>
+            <input
+              type="text"
+              value={form.whatsappPhone}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, whatsappPhone: event.target.value }))
+              }
+              placeholder="917303922260"
+              className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#b45309]"
+            />
+            <p className="mt-2 text-xs text-[#6b7280]">
+              Country code + number, digits only (no + or spaces required).
+            </p>
+          </div>
+
+          <div>
+            <label className="mb-2 block text-sm font-medium text-[#111827]">Default message</label>
+            <textarea
+              rows={3}
+              value={form.whatsappMessage}
+              onChange={(event) =>
+                setForm((prev) => ({ ...prev, whatsappMessage: event.target.value }))
+              }
+              className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#b45309]"
+            />
+          </div>
+        </div>
       </div>
 
       {preview?.whatsappHref ? (

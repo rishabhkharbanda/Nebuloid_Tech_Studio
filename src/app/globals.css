@@ -303,6 +303,49 @@ html[data-chat-open] .back-to-top-btn {
   pointer-events: none;
 }
 
+/* Header search — keep readable dropdown/input in day theme */
+html.day-theme .header-search-input {
+  color: #181712 !important;
+  border-color: rgba(24, 23, 18, 0.16) !important;
+  background-color: rgba(24, 23, 18, 0.04) !important;
+}
+
+html.day-theme .header-search-input::placeholder {
+  color: rgba(24, 23, 18, 0.4) !important;
+}
+
+html.day-theme .header-search-input:focus {
+  border-color: rgba(164, 126, 8, 0.55) !important;
+  background-color: rgba(24, 23, 18, 0.06) !important;
+}
+
+html.day-theme .header-search-icon,
+html.day-theme .header-search-clear {
+  color: rgba(24, 23, 18, 0.45) !important;
+}
+
+html.day-theme .header-search-clear:hover {
+  color: #a47e08 !important;
+}
+
+html.day-theme .header-search-results {
+  background-color: #f4f0e7 !important;
+  border-color: rgba(24, 23, 18, 0.12) !important;
+  box-shadow: 0 18px 50px rgba(24, 23, 18, 0.12);
+}
+
+html.day-theme .header-search-results [class*='text-[#F1E9DB]'] {
+  color: #181712 !important;
+}
+
+html.day-theme .header-search-results [class*='text-[#F1E9DB]/'] {
+  color: rgba(24, 23, 18, 0.55) !important;
+}
+
+html.day-theme .header-search-result:hover {
+  background-color: rgba(24, 23, 18, 0.05) !important;
+}
+
 @media (prefers-reduced-motion: reduce) {
   body {
     transition: none;

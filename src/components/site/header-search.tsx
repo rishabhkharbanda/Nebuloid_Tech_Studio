@@ -54,13 +54,13 @@ export function HeaderSearch({ className }: { className?: string }) {
   }, [])
 
   return (
-    <div ref={rootRef} className={cn('relative', className)}>
+    <div ref={rootRef} className={cn('header-search relative', className)}>
       <label className="sr-only" htmlFor={`${listId}-search`}>
         Search site
       </label>
       <Search
         size={15}
-        className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#F1E9DB]/40"
+        className="header-search-icon pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-[#F1E9DB]/40"
         aria-hidden
       />
       <input
@@ -78,7 +78,7 @@ export function HeaderSearch({ className }: { className?: string }) {
         aria-expanded={open && query.trim().length > 0}
         aria-controls={`${listId}-results`}
         aria-autocomplete="list"
-        className="h-10 w-full rounded-full border border-white/15 bg-white/[0.04] pl-9 pr-9 text-sm text-[#F1E9DB] outline-none transition placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45 focus:bg-white/[0.07] md:w-44 lg:w-52 xl:w-60"
+        className="header-search-input h-10 w-full rounded-full border border-white/15 bg-white/[0.04] pl-9 pr-9 text-sm text-[#F1E9DB] outline-none transition placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45 focus:bg-white/[0.07] md:w-44 lg:w-52 xl:w-60"
       />
       {query ? (
         <button
@@ -88,7 +88,7 @@ export function HeaderSearch({ className }: { className?: string }) {
             setResults([])
             inputRef.current?.focus()
           }}
-          className="absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#F1E9DB]/45 hover:text-[#d4af37]"
+          className="header-search-clear absolute right-2 top-1/2 -translate-y-1/2 rounded-full p-1 text-[#F1E9DB]/45 hover:text-[#d4af37]"
           aria-label="Clear search"
         >
           <X size={14} />
@@ -99,7 +99,7 @@ export function HeaderSearch({ className }: { className?: string }) {
         <div
           id={`${listId}-results`}
           role="listbox"
-          className="absolute right-0 top-[calc(100%+0.5rem)] z-[60] w-[min(100vw-2rem,22rem)] overflow-hidden rounded-2xl border border-white/12 bg-[#111111]/95 shadow-2xl backdrop-blur-xl"
+          className="header-search-results absolute right-0 top-[calc(100%+0.5rem)] z-[60] w-[min(100vw-2rem,22rem)] overflow-hidden rounded-2xl border border-white/12 bg-[#090909]/95 shadow-2xl backdrop-blur-xl"
         >
           {loading ? (
             <p className="px-4 py-3 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/45">
@@ -115,7 +115,7 @@ export function HeaderSearch({ className }: { className?: string }) {
                       setOpen(false)
                       setQuery('')
                     }}
-                    className="block px-4 py-3 transition hover:bg-white/[0.05]"
+                    className="header-search-result block px-4 py-3 transition hover:bg-white/[0.05]"
                   >
                     <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#d4af37]">
                       {item.category}

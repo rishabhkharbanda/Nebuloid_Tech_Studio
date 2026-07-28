@@ -13,11 +13,13 @@
     "cms:seed": "tsx scripts/seed-admin.ts"
   },
   "dependencies": {
+    "@ai-sdk/google": "^4.0.26",
     "@neondatabase/serverless": "^1.1.0",
     "@react-three/fiber": "^9.6.1",
     "@vercel/analytics": "^2.0.1",
     "@vercel/blob": "^2.6.1",
     "@vercel/speed-insights": "^2.0.0",
+    "ai": "^7.0.40",
     "bcryptjs": "^3.0.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",

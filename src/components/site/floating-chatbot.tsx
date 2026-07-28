@@ -11,16 +11,18 @@ type ChatMessage = {
 }
 
 const WELCOME =
-  'Hi! I\'m the Nebuloid assistant. Ask about our experiences, digital work, or how we can help with your next event.'
+  "Hi! I'm the Nebuloid assistant. Ask about our experiences, digital work, or how we can help with your next event — I'll answer from what's on this site."
 
-/** Floating AI chat shell — wire `onSend` to your provider when ready. */
+/** Floating AI chat grounded on Nebuloid website content via Gemini. */
 export function FloatingChatbot() {
   const [open, setOpen] = useState(false)
   const [input, setInput] = useState('')
+  const [pending, setPending] = useState(false)
   const [messages, setMessages] = useState<ChatMessage[]>([
     { id: 'welcome', role: 'assistant', text: WELCOME },
   ])
   const panelRef = useRef<HTMLDivElement>(null)
+  const listRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     if (!open) return
@@ -36,23 +38,59 @@ export function FloatingChatbot() {
     return () => document.documentElement.removeAttribute('data-chat-open')
   }, [open])
 
-  function send() {
+  useEffect(() => {
+    listRef.current?.scrollTo({ top: listRef.current.scrollHeight, behavior: 'smooth' })
+  }, [messages, pending])
+
+  async function send() {
     const text = input.trim()
-    if (!text) return
+    if (!text || pending) return
+
     const userMsg: ChatMessage = { id: `u-${Date.now()}`, role: 'user', text }
-    setMessages((prev) => [...prev, userMsg])
+    const nextMessages = [...messages, userMsg]
+    setMessages(nextMessages)
     setInput('')
-    window.setTimeout(() => {
+    setPending(true)
+
+    try {
+      const res = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: nextMessages
+            .filter((message) => message.id !== 'welcome')
+            .map((message) => ({ role: message.role, text: message.text })),
+        }),
+      })
+      const data = (await res.json()) as { reply?: string; error?: string }
+      if (!res.ok) {
+        throw new Error(data.error || 'Chat request failed')
+      }
       setMessages((prev) => [
         ...prev,
         {
           id: `a-${Date.now()}`,
           role: 'assistant',
           text:
-            'Thanks for your message. Live AI replies will connect here soon — for now, reach us via Contact or WhatsApp and our team will respond quickly.',
+            data.reply?.trim() ||
+            'I could not find that on the site. Reach us via Contact or WhatsApp and our team will help.',
         },
       ])
-    }, 500)
+    } catch (error) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          id: `a-${Date.now()}`,
+          role: 'assistant',
+          text:
+            error instanceof Error
+              ? `${error.message} You can also reach us via Contact or WhatsApp.`
+              : 'Something went wrong. Please try Contact or WhatsApp.',
+        },
+      ])
+    } finally {
+      setPending(false)
+    }
   }
 
   return (
@@ -72,7 +110,7 @@ export function FloatingChatbot() {
               <div>
                 <p className="text-sm font-semibold text-[#F1E9DB]">Nebuloid Assistant</p>
                 <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
-                  AI chat
+                  Site knowledge
                 </p>
               </div>
             </div>
@@ -86,7 +124,7 @@ export function FloatingChatbot() {
             </button>
           </div>
 
-          <div className="max-h-72 space-y-3 overflow-y-auto px-4 py-4">
+          <div ref={listRef} className="max-h-72 space-y-3 overflow-y-auto px-4 py-4">
             {messages.map((message) => (
               <div
                 key={message.id}
@@ -100,6 +138,11 @@ export function FloatingChatbot() {
                 {message.text}
               </div>
             ))}
+            {pending ? (
+              <div className="rounded-2xl bg-white/[0.05] px-3 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/45">
+                Thinking…
+              </div>
+            ) : null}
           </div>
 
           <div className="border-t border-white/10 p-3">
@@ -107,20 +150,22 @@ export function FloatingChatbot() {
               <textarea
                 rows={2}
                 value={input}
+                disabled={pending}
                 onChange={(event) => setInput(event.target.value)}
                 onKeyDown={(event) => {
                   if (event.key === 'Enter' && !event.shiftKey) {
                     event.preventDefault()
-                    send()
+                    void send()
                   }
                 }}
                 placeholder="Ask about our work…"
-                className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-white/12 bg-white/[0.03] px-3 py-2 text-sm text-[#F1E9DB] outline-none placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45"
+                className="min-h-[2.75rem] flex-1 resize-none rounded-xl border border-white/12 bg-white/[0.03] px-3 py-2 text-sm text-[#F1E9DB] outline-none placeholder:text-[#F1E9DB]/35 focus:border-[#d4af37]/45 disabled:opacity-60"
               />
               <button
                 type="button"
-                onClick={send}
-                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d4af37] text-[#111111] transition hover:bg-[#e8c65a]"
+                onClick={() => void send()}
+                disabled={pending || !input.trim()}
+                className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-[#d4af37] text-[#111111] transition hover:bg-[#e8c65a] disabled:opacity-50"
                 aria-label="Send message"
               >
                 <Send size={16} />

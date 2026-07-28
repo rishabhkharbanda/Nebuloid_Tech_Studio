@@ -1,0 +1,103 @@
+import { createGoogleGenerativeAI } from '@ai-sdk/google'
+import { generateText } from 'ai'
+import { NextResponse } from 'next/server'
+import {
+  buildChatKnowledge,
+  formatKnowledgeForPrompt,
+  retrieveChatKnowledge,
+} from '@/lib/chat-knowledge'
+
+export const runtime = 'nodejs'
+export const maxDuration = 30
+
+type ChatRole = 'user' | 'assistant'
+type IncomingMessage = { role: ChatRole; text: string }
+
+const SYSTEM_RULES = `You are the Nebuloid Tech Studio website assistant.
+Answer using ONLY the SITE CONTEXT provided below.
+If the answer is not clearly supported by the context, say you do not have that detail on the site and suggest the Contact page (/contact) or WhatsApp.
+Keep replies concise (2–5 short sentences).
+When relevant, mention page paths from the context (e.g. /experiences, /digital-experiences, /insights, /faq, /contact).
+Do not invent pricing, timelines, client names, or capabilities that are not in the context.
+Tone: professional, clear, and helpful.`
+
+function getApiKey() {
+  return (
+    process.env.GOOGLE_GENERATIVE_AI_API_KEY?.trim() ||
+    process.env.GEMINI_API_KEY?.trim() ||
+    ''
+  )
+}
+
+export async function POST(request: Request) {
+  const apiKey = getApiKey()
+  if (!apiKey) {
+    return NextResponse.json(
+      {
+        error:
+          'Gemini is not configured. Add GOOGLE_GENERATIVE_AI_API_KEY to the environment.',
+      },
+      { status: 503 },
+    )
+  }
+
+  let body: { messages?: IncomingMessage[] }
+  try {
+    body = (await request.json()) as { messages?: IncomingMessage[] }
+  } catch {
+    return NextResponse.json({ error: 'Invalid JSON body.' }, { status: 400 })
+  }
+
+  const messages = (body.messages ?? [])
+    .filter((message) => message?.text?.trim() && (message.role === 'user' || message.role === 'assistant'))
+    .slice(-12)
+
+  const latestUser = [...messages].reverse().find((message) => message.role === 'user')
+  if (!latestUser) {
+    return NextResponse.json({ error: 'A user message is required.' }, { status: 400 })
+  }
+
+  try {
+    const knowledge = await buildChatKnowledge()
+    const retrieved = retrieveChatKnowledge(knowledge, latestUser.text, 8)
+    const context = formatKnowledgeForPrompt(retrieved)
+
+    const history = messages
+      .map((message) => `${message.role === 'user' ? 'User' : 'Assistant'}: ${message.text}`)
+      .join('\n')
+
+    const google = createGoogleGenerativeAI({ apiKey })
+    const { text } = await generateText({
+      model: google('gemini-2.0-flash'),
+      prompt: `${SYSTEM_RULES}
+
+SITE CONTEXT:
+${context}
+
+CONVERSATION:
+${history}
+
+Assistant:`,
+    })
+
+    return NextResponse.json({
+      reply: text.trim() || 'I could not find that on the site. Try Contact or WhatsApp and our team can help.',
+      sources: retrieved.map((chunk) => ({
+        title: chunk.title,
+        url: chunk.url,
+        category: chunk.category,
+      })),
+    })
+  } catch (error) {
+    console.error('[chat]', error)
+    return NextResponse.json(
+      {
+        error:
+          error instanceof Error
+            ? error.message
+            : 'Failed to generate a reply. Please try again.',
+      },
+      { status: 500 },
+    )
+  }
+}

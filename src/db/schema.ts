@@ -161,6 +161,8 @@ export const locationLandingsCms = pgTable('location_landings', {
 export const siteSettings = pgTable('site_settings', {
   id: text('id').primaryKey(),
   whatsappEnabled: boolean('whatsapp_enabled').notNull().default(false),
+  /** Full click-to-chat URL, e.g. https://wa.me/message/L72JRPHENDZIJ1 — preferred when set. */
+  whatsappLink: text('whatsapp_link').notNull().default(''),
   whatsappPhone: varchar('whatsapp_phone', { length: 32 }).notNull().default(''),
   whatsappMessage: text('whatsapp_message')
     .notNull()
