@@ -29,6 +29,11 @@ function getApiKey() {
   )
 }
 
+/** gemini-2.0-flash is shut down; override with GEMINI_MODEL if needed. */
+function getChatModelId() {
+  return process.env.GEMINI_MODEL?.trim() || 'gemini-2.5-flash'
+}
+
 export async function POST(request: Request) {
   const apiKey = getApiKey()
   if (!apiKey) {
@@ -68,7 +73,7 @@ export async function POST(request: Request) {
 
     const google = createGoogleGenerativeAI({ apiKey })
     const { text } = await generateText({
-      model: google('gemini-2.0-flash'),
+      model: google(getChatModelId()),
       prompt: `${SYSTEM_RULES}
 
 SITE CONTEXT:
