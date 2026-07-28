@@ -36,6 +36,7 @@ export function SmoothScrollProvider({
       smoothWheel: true,
       touchMultiplier: 1.2,
       wheelMultiplier: 0.95,
+      prevent: (node) => Boolean(node.closest('[data-lenis-prevent]')),
     })
 
     const root = document.documentElement

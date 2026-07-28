@@ -122,6 +122,7 @@ export function FloatingChatbot() {
       {open ? (
         <div
           ref={panelRef}
+          data-lenis-prevent
           className={cn(
             'fixed bottom-[calc(5.5rem+env(safe-area-inset-bottom))] right-4 z-[80] flex h-[min(70vh,36rem)] w-[min(100vw-2rem,24rem)] flex-col overflow-hidden rounded-2xl border shadow-2xl backdrop-blur-xl sm:right-6',
             isDay
@@ -130,6 +131,8 @@ export function FloatingChatbot() {
           )}
           role="dialog"
           aria-label="AI assistant chat"
+          onWheel={(event) => event.stopPropagation()}
+          onTouchMove={(event) => event.stopPropagation()}
         >
           <div
             className={cn(
@@ -170,7 +173,9 @@ export function FloatingChatbot() {
 
           <div
             ref={listRef}
-            className="min-h-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-4 py-4 [-webkit-overflow-scrolling:touch]"
+            data-lenis-prevent
+            className="min-h-0 flex-1 touch-pan-y space-y-3 overflow-y-auto overscroll-contain px-4 py-4 [-webkit-overflow-scrolling:touch]"
+            onWheel={(event) => event.stopPropagation()}
           >
             {messages.map((message) => (
               <div

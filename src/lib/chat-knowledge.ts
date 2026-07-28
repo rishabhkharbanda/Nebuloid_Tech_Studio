@@ -40,15 +40,31 @@ const TOPIC_EXPANSIONS: Record<string, string[]> = {
   gaming: ['gaming', 'game', 'interactive', 'playable', 'quiz'],
 }
 
+const SHORT_TOPIC_TERMS = new Set(Object.keys(TOPIC_EXPANSIONS).filter((term) => term.length <= 2))
+
+const GREETING_PATTERN =
+  /^(hi+|hii+|hello|hey|heyya|howdy|good\s*(morning|afternoon|evening)|yo|sup|thanks|thank\s*you|thx|ok|okay|bye|goodbye)[!.,\s]*$/i
+
+export function isChatGreeting(query: string) {
+  const trimmed = query.trim()
+  if (!trimmed || trimmed.length > 40) return false
+  return GREETING_PATTERN.test(trimmed)
+}
+
 function expandQueryTerms(query: string): string[] {
   const raw = query
     .toLowerCase()
     .split(/[^a-z0-9]+/i)
     .map((term) => term.trim())
-    .filter((term) => term.length >= 2)
+    .filter(Boolean)
 
   const expanded = new Set<string>()
   for (const term of raw) {
+    // Keep short terms only when they are known topics (e.g. ai, vr, led).
+    // Otherwise "hi" matches inside "this/which/high" and floods unrelated links.
+    if (term.length < 2) continue
+    if (term.length === 2 && !SHORT_TOPIC_TERMS.has(term)) continue
+
     expanded.add(term)
     const synonyms = TOPIC_EXPANSIONS[term]
     if (synonyms) {
@@ -56,8 +72,16 @@ function expandQueryTerms(query: string): string[] {
     }
   }
 
-  // Also keep multi-word expansions as phrase matches in scoring.
   return [...expanded]
+}
+
+function termMatches(haystack: string, term: string) {
+  if (term.includes(' ')) return haystack.includes(term)
+  if (term.length <= 2) {
+    const escaped = term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+    return new RegExp(`(?:^|[^a-z0-9])${escaped}(?:$|[^a-z0-9])`, 'i').test(haystack)
+  }
+  return haystack.includes(term)
 }
 
 function scoreChunk(chunk: KnowledgeChunk, terms: string[]) {
@@ -68,14 +92,13 @@ function scoreChunk(chunk: KnowledgeChunk, terms: string[]) {
 
   for (const term of terms) {
     if (!term) continue
-    if (title.includes(term)) score += term.length <= 2 ? 8 : 6
-    if (category.includes(term)) score += 3
-    if (haystack.includes(term)) score += term.length <= 2 ? 4 : 2
+    if (termMatches(title, term)) score += term.length <= 2 ? 8 : 6
+    if (termMatches(category, term)) score += 3
+    if (termMatches(haystack, term)) score += term.length <= 2 ? 4 : 2
 
-    // Soft relatedness: match tokens from multi-word expansions.
     if (term.includes(' ')) {
       const parts = term.split(/\s+/).filter((part) => part.length >= 2)
-      const partHits = parts.filter((part) => haystack.includes(part)).length
+      const partHits = parts.filter((part) => termMatches(haystack, part)).length
       if (partHits >= Math.min(2, parts.length)) score += 2
     }
   }
@@ -212,13 +235,15 @@ export function retrieveChatKnowledge(
   query: string,
   limit = 12,
 ): { matches: KnowledgeChunk[]; hasStrongMatch: boolean } {
+  if (isChatGreeting(query)) {
+    return { matches: [], hasStrongMatch: false }
+  }
+
   const terms = expandQueryTerms(query)
 
   if (!terms.length) {
     return {
-      matches: chunks.filter((chunk) =>
-        ['company', 'contact', 'page-experiences'].includes(chunk.id),
-      ),
+      matches: [],
       hasStrongMatch: false,
     }
   }

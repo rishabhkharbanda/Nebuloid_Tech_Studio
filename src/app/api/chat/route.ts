@@ -4,6 +4,7 @@ import { NextResponse } from 'next/server'
 import {
   buildChatKnowledge,
   formatKnowledgeForPrompt,
+  isChatGreeting,
   pickChatLinks,
   retrieveChatKnowledge,
 } from '@/lib/chat-knowledge'
@@ -21,6 +22,9 @@ Keep replies concise (2–5 short sentences).
 Do not invent pricing, timelines, client names, or capabilities that are not in the context.
 Do not paste raw URLs in the reply — page links are shown separately in the chat UI.
 Tone: professional, clear, and helpful.`
+
+const GREETING_REPLY =
+  "Hi! Ask me about Nebuloid's experiences, digital work, AI activations, or event technology — I'll pull answers from this website."
 
 function getApiKey() {
   return (
@@ -72,6 +76,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ error: 'A user message is required.' }, { status: 400 })
   }
 
+  if (isChatGreeting(latestUser.text)) {
+    return NextResponse.json({
+      reply: GREETING_REPLY,
+      links: [],
+      showContact: false,
+    })
+  }
+
   try {
     const knowledge = await buildChatKnowledge()
     const { matches, hasStrongMatch } = retrieveChatKnowledge(knowledge, latestUser.text, 12)
@@ -100,7 +112,6 @@ Assistant:`,
       text.trim() ||
       'I could not find that on the site. Use Contact Us and our team will help.'
     const uncertain = looksUncertain(reply)
-    // Prefer related page links; only push Contact when nothing useful matched.
     const showContact = links.length === 0 || (!hasStrongMatch && uncertain)
 
     return NextResponse.json({
