@@ -130,7 +130,7 @@ export function Navbar() {
           </nav>
 
           <div className="relative z-10 flex shrink-0 items-center gap-2 sm:gap-3">
-            <HeaderSearch className="hidden md:block" />
+            <HeaderSearch />
             <ThemeToggle />
             <MagneticButton
               size="default"
@@ -180,8 +180,6 @@ export function Navbar() {
                   {String(navLinks.length).padStart(2, '0')} pages
                 </p>
               </div>
-
-              <HeaderSearch className="mb-4 md:hidden" />
 
               <nav className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
                 <ul className="divide-y divide-white/10 border-y border-white/10">
