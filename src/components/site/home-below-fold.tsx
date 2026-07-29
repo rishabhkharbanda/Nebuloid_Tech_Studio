@@ -1,15 +1,17 @@
 import { HomeBelowFoldClient } from '@/components/site/home-below-fold-client'
-import { getBlogPostsForListing, getDigitalExperienceCards } from '@/lib/content'
+import { getBlogPostsForListing, getDigitalExperienceCards, getExperienceServices } from '@/lib/content'
 
 export async function HomeBelowFold() {
-  const [blogPosts, digitalCards] = await Promise.all([
+  const [blogPosts, digitalCards, experienceServices] = await Promise.all([
     getBlogPostsForListing(),
     getDigitalExperienceCards(),
+    getExperienceServices(),
   ])
 
   return (
     <HomeBelowFoldClient
       digitalCards={digitalCards}
+      experienceServices={experienceServices}
       blogPosts={blogPosts.map((post) => ({
         slug: post.slug,
         title: post.title,

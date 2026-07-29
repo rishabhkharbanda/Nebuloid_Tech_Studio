@@ -124,6 +124,40 @@ export const reorderDigitalSchema = z.object({
   orderedIds: z.array(z.string().min(1)).min(1),
 })
 
+const detailSectionSchema = z.object({
+  title: z.string().trim().min(1),
+  content: z.string().trim().min(1),
+})
+
+export const experienceServiceInputSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(512),
+  slug: z.string().trim().max(255).optional(),
+  description: z.string().optional(),
+  detail: z.string().optional(),
+  tags: z.array(z.string().trim().min(1)).optional(),
+  imageUrl: z.string().optional(),
+  imageAlt: z.string().optional(),
+  intro: z.string().optional(),
+  sections: z.array(detailSectionSchema).optional(),
+  highlights: stringList.optional(),
+  displayLabel: z.string().max(8).optional(),
+  displayOrder: z.number().int().min(0).max(9999).optional(),
+  enabled: z.boolean().optional(),
+  status: z.enum(['draft', 'published', 'unpublished']).optional(),
+  metaTitle: z.string().max(255).optional(),
+  metaDescription: z.string().max(4000).optional(),
+  focusKeyword: z.string().max(128).optional(),
+  canonicalPath: z.string().max(512).optional(),
+  ogImageUrl: z.string().optional(),
+  twitterImageUrl: z.string().optional(),
+  robotsIndex: z.boolean().optional(),
+  schemaType: z.string().max(64).optional(),
+})
+
+export const reorderExperienceServicesSchema = z.object({
+  orderedIds: z.array(z.string().min(1)).min(1),
+})
+
 export function parseWithZod<T>(schema: z.ZodType<T>, data: unknown): T {
   const result = schema.safeParse(data)
   if (!result.success) {

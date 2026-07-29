@@ -4,15 +4,17 @@ import { getDb, hasDatabase } from '@/db/client'
 import {
   blogPostsCms,
   digitalExperienceCards,
+  experienceServicesCms,
   locationLandingsCms,
   mediaAssets,
   type BlogPostCms,
   type DigitalExperienceCard,
+  type ExperienceServiceCms,
   type LocationLandingCms,
   type MediaAsset,
 } from '@/db/schema'
 import { bodyToParagraphs, estimateReadTime, slugify } from '@/lib/cms/seo-analyzer'
-import type { PublicDigitalProject } from '@/lib/cms/types'
+import type { PublicDigitalProject, PublicExperienceService } from '@/lib/cms/types'
 
 export function cmsEnabled() {
   return hasDatabase()
@@ -668,4 +670,184 @@ export async function seedLocationLandingsFromStatic(
     results.push(row)
   }
   return results
+}
+
+function formatDisplayLabel(order: number) {
+  return String(order + 1).padStart(2, '0')
+}
+
+export async function listExperienceServicesCms(includeUnpublished = false) {
+  if (!cmsEnabled()) return [] as ExperienceServiceCms[]
+  const db = getDb()
+  const rows = await db
+    .select()
+    .from(experienceServicesCms)
+    .orderBy(asc(experienceServicesCms.displayOrder), asc(experienceServicesCms.updatedAt))
+  if (includeUnpublished) return rows
+  return rows.filter((row) => row.enabled && row.status === 'published')
+}
+
+export async function getExperienceServiceCmsById(id: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(experienceServicesCms)
+    .where(eq(experienceServicesCms.id, id))
+    .limit(1)
+  return row ?? null
+}
+
+export async function getPublishedExperienceBySlug(slug: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(experienceServicesCms)
+    .where(eq(experienceServicesCms.slug, slug))
+    .limit(1)
+  if (!row || !row.enabled || row.status !== 'published') return null
+  return row
+}
+
+export async function getExperienceByPreviewToken(slug: string, token: string) {
+  if (!cmsEnabled() || !token) return null
+  const db = getDb()
+  const [row] = await db
+    .select()
+    .from(experienceServicesCms)
+    .where(eq(experienceServicesCms.slug, slug))
+    .limit(1)
+  if (!row || row.previewToken !== token) return null
+  return row
+}
+
+export type ExperienceServiceInput = {
+  title: string
+  slug?: string
+  description?: string
+  detail?: string
+  tags?: string[]
+  imageUrl?: string
+  imageAlt?: string
+  intro?: string
+  sections?: Array<{ title: string; content: string }>
+  highlights?: string[]
+  displayLabel?: string
+  displayOrder?: number
+  enabled?: boolean
+  status?: 'draft' | 'published' | 'unpublished'
+  metaTitle?: string
+  metaDescription?: string
+  focusKeyword?: string
+  canonicalPath?: string
+  ogImageUrl?: string
+  twitterImageUrl?: string
+  robotsIndex?: boolean
+  schemaType?: string
+}
+
+export function mapCmsExperienceToPublic(
+  row: ExperienceServiceCms,
+  orderIndex?: number,
+): PublicExperienceService {
+  const label =
+    row.displayLabel?.trim() ||
+    (orderIndex !== undefined ? formatDisplayLabel(orderIndex) : '01')
+  return {
+    id: label,
+    slug: row.slug,
+    title: row.title,
+    description: row.description,
+    detail: row.detail,
+    tags: [...(row.tags ?? [])],
+    image: row.imageUrl,
+    imageAlt: row.imageAlt || row.title,
+    intro: row.intro || row.description,
+    sections: [...(row.sections ?? [])],
+    highlights: [...(row.highlights ?? [])],
+    metaTitle: row.metaTitle || row.title,
+    metaDescription: row.metaDescription || row.description,
+    focusKeyword: row.focusKeyword || '',
+    canonicalPath: row.canonicalPath || `/experiences/${row.slug}`,
+    ogImageUrl: row.ogImageUrl || row.imageUrl,
+    twitterImageUrl: row.twitterImageUrl || row.ogImageUrl || row.imageUrl,
+    robotsIndex: row.robotsIndex !== false,
+    schemaType: row.schemaType || 'Service',
+  }
+}
+
+export async function upsertExperienceServiceCms(id: string | null, input: ExperienceServiceInput) {
+  const db = getDb()
+  const now = new Date()
+  const existing = id ? await getExperienceServiceCmsById(id) : null
+  const status = input.status ?? existing?.status ?? 'draft'
+  const slug = slugify(input.slug || input.title)
+  const values = {
+    slug,
+    title: input.title.trim(),
+    description: input.description?.trim() ?? existing?.description ?? '',
+    detail: input.detail?.trim() ?? existing?.detail ?? '',
+    tags: input.tags ?? existing?.tags ?? [],
+    imageUrl: input.imageUrl ?? existing?.imageUrl ?? '',
+    imageAlt: input.imageAlt ?? existing?.imageAlt ?? '',
+    intro: input.intro?.trim() ?? existing?.intro ?? '',
+    sections: input.sections ?? existing?.sections ?? [],
+    highlights: input.highlights ?? existing?.highlights ?? [],
+    displayLabel: input.displayLabel?.trim() ?? existing?.displayLabel ?? '',
+    displayOrder: input.displayOrder ?? existing?.displayOrder ?? 0,
+    enabled: input.enabled ?? existing?.enabled ?? true,
+    status,
+    metaTitle: input.metaTitle?.trim() ?? existing?.metaTitle ?? '',
+    metaDescription: input.metaDescription?.trim() ?? existing?.metaDescription ?? '',
+    focusKeyword: input.focusKeyword?.trim() ?? existing?.focusKeyword ?? '',
+    canonicalPath: input.canonicalPath?.trim() || existing?.canonicalPath || `/experiences/${slug}`,
+    ogImageUrl: input.ogImageUrl?.trim() ?? existing?.ogImageUrl ?? '',
+    twitterImageUrl: input.twitterImageUrl?.trim() ?? existing?.twitterImageUrl ?? '',
+    robotsIndex: input.robotsIndex ?? existing?.robotsIndex ?? true,
+    schemaType: input.schemaType?.trim() || existing?.schemaType || 'Service',
+    previewToken: nextPreviewToken(existing?.previewToken),
+    publishedAt: resolvePublishedAt(
+      status as 'draft' | 'published' | 'unpublished',
+      existing?.publishedAt,
+      now,
+    ),
+    updatedAt: now,
+  }
+
+  if (id) {
+    const [row] = await db
+      .update(experienceServicesCms)
+      .set(values)
+      .where(eq(experienceServicesCms.id, id))
+      .returning()
+    return row
+  }
+
+  const [row] = await db
+    .insert(experienceServicesCms)
+    .values({
+      id: nanoid(),
+      ...values,
+      createdAt: now,
+    })
+    .returning()
+  return row
+}
+
+export async function deleteExperienceServiceCms(id: string) {
+  const db = getDb()
+  await db.delete(experienceServicesCms).where(eq(experienceServicesCms.id, id))
+}
+
+export async function reorderExperienceServicesCms(orderedIds: string[]) {
+  const db = getDb()
+  await Promise.all(
+    orderedIds.map((id, index) =>
+      db
+        .update(experienceServicesCms)
+        .set({ displayOrder: index, updatedAt: new Date() })
+        .where(eq(experienceServicesCms.id, id)),
+    ),
+  )
 }

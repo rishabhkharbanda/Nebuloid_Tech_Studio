@@ -4,7 +4,7 @@ import { DetailLayout } from '@/components/site/detail-layout'
 import { GeoDetailExtras } from '@/components/site/geo-detail-extras'
 import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
-import { getAllServiceSlugs, getServiceBySlug } from '@/lib/content'
+import { getAllServiceSlugs, getExperienceServiceBySlug } from '@/lib/content'
 import { getServiceGeo } from '@/lib/geo-enrichment'
 import {
   createPageMetadata,
@@ -18,17 +18,18 @@ type PageProps = {
 }
 
 export async function generateStaticParams() {
-  return getAllServiceSlugs().map((slug) => ({ slug }))
+  const slugs = await getAllServiceSlugs()
+  return slugs.map((slug) => ({ slug }))
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const service = getServiceBySlug(slug)
+  const service = await getExperienceServiceBySlug(slug)
   if (!service) return { title: 'Solution Not Found' }
 
   return createPageMetadata({
-    title: service.title,
-    description: service.intro,
+    title: service.metaTitle || service.title,
+    description: service.metaDescription || service.intro,
     path: `/solutions/${slug}`,
     image: service.image,
     keywords: [...service.tags.map((tag) => tag.toLowerCase()), 'event solution'],
@@ -37,7 +38,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function SolutionPage({ params }: PageProps) {
   const { slug } = await params
-  const service = getServiceBySlug(slug)
+  const service = await getExperienceServiceBySlug(slug)
   if (!service) notFound()
   const geo = getServiceGeo(slug)
 
@@ -65,7 +66,7 @@ export default async function SolutionPage({ params }: PageProps) {
         category={`Solution ${service.id}`}
         title={service.title}
         image={service.image}
-        imageAlt={`${service.title} — Nebuloid event solution`}
+        imageAlt={service.imageAlt || `${service.title} — Nebuloid event solution`}
         intro={service.intro}
         sections={service.sections}
         highlights={service.highlights}

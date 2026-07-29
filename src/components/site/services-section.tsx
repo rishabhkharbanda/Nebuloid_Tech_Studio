@@ -5,10 +5,18 @@ import Link from 'next/link'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { StretchLink } from '@/components/site/stretch-link'
-import { services } from '@/lib/site-data'
+import type { PublicExperienceService } from '@/lib/cms/types'
 import { cn } from '@/lib/utils'
 
-export function ServicesSection({ limit, compact }: { limit?: number; compact?: boolean }) {
+export function ServicesSection({
+  services,
+  limit,
+  compact,
+}: {
+  services: PublicExperienceService[]
+  limit?: number
+  compact?: boolean
+}) {
   const items = limit ? services.slice(0, limit) : services
 
   return (

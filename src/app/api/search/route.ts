@@ -3,6 +3,7 @@ import {
   getAllBlogSlugs,
   getBlogPostsForListing,
   getDigitalExperienceCards,
+  getExperienceServices,
 } from '@/lib/content'
 import {
   filterSearchResults,
@@ -11,18 +12,9 @@ import {
   type SearchResult,
 } from '@/lib/search-index'
 import { digitalProjects } from '@/lib/digital-data'
-import { projects, services } from '@/lib/site-data'
+import { projects } from '@/lib/site-data'
 
 export const revalidate = 60
-
-function serviceResults(): SearchResult[] {
-  return services.map((service) => ({
-    title: service.title,
-    href: `/experiences/${service.slug}`,
-    category: 'Experience',
-    excerpt: service.description,
-  }))
-}
 
 function projectResults(): SearchResult[] {
   return projects.map((project) => ({
@@ -55,10 +47,18 @@ export async function GET(request: Request) {
   const q = searchParams.get('q') ?? ''
   const limit = Math.min(Number(searchParams.get('limit') ?? 8), 20)
 
-  const [blogs, digitalCards] = await Promise.all([
+  const [blogs, digitalCards, experienceServices] = await Promise.all([
     getBlogPostsForListing(),
     getDigitalExperienceCards(),
+    getExperienceServices(),
   ])
+
+  const serviceResults: SearchResult[] = experienceServices.map((service) => ({
+    title: service.title,
+    href: `/experiences/${service.slug}`,
+    category: 'Experience',
+    excerpt: service.description,
+  }))
 
   const blogResults: SearchResult[] = blogs.map((post) => ({
     title: post.title,
@@ -69,7 +69,7 @@ export async function GET(request: Request) {
 
   const index = mergeSearchResults(
     staticSearchIndex,
-    serviceResults(),
+    serviceResults,
     projectResults(),
     digitalResults(digitalCards),
     blogResults,

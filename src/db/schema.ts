@@ -117,6 +117,11 @@ export const digitalExperienceCards = pgTable('digital_experience_cards', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+export type DetailSectionRow = {
+  title: string
+  content: string
+}
+
 export type FaqItemRow = {
   question: string
   answer: string
@@ -158,6 +163,36 @@ export const locationLandingsCms = pgTable('location_landings', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+export const experienceServicesCms = pgTable('experience_services', {
+  id: text('id').primaryKey(),
+  slug: varchar('slug', { length: 255 }).notNull().unique(),
+  title: varchar('title', { length: 512 }).notNull(),
+  description: text('description').notNull().default(''),
+  detail: text('detail').notNull().default(''),
+  tags: jsonb('tags').$type<string[]>().notNull().default([]),
+  imageUrl: text('image_url').notNull().default(''),
+  imageAlt: text('image_alt').notNull().default(''),
+  intro: text('intro').notNull().default(''),
+  sections: jsonb('sections').$type<DetailSectionRow[]>().notNull().default([]),
+  highlights: jsonb('highlights').$type<string[]>().notNull().default([]),
+  displayLabel: varchar('display_label', { length: 8 }).notNull().default(''),
+  displayOrder: integer('display_order').notNull().default(0),
+  enabled: boolean('enabled').notNull().default(true),
+  status: varchar('status', { length: 32 }).notNull().default('draft'),
+  metaTitle: varchar('meta_title', { length: 255 }).notNull().default(''),
+  metaDescription: text('meta_description').notNull().default(''),
+  focusKeyword: varchar('focus_keyword', { length: 128 }).notNull().default(''),
+  canonicalPath: varchar('canonical_path', { length: 512 }).notNull().default(''),
+  ogImageUrl: text('og_image_url').notNull().default(''),
+  twitterImageUrl: text('twitter_image_url').notNull().default(''),
+  robotsIndex: boolean('robots_index').notNull().default(true),
+  schemaType: varchar('schema_type', { length: 64 }).notNull().default('Service'),
+  previewToken: varchar('preview_token', { length: 64 }).notNull().default(''),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 export const siteSettings = pgTable('site_settings', {
   id: text('id').primaryKey(),
   whatsappEnabled: boolean('whatsapp_enabled').notNull().default(false),
@@ -175,4 +210,5 @@ export type MediaAsset = typeof mediaAssets.$inferSelect
 export type BlogPostCms = typeof blogPostsCms.$inferSelect
 export type DigitalExperienceCard = typeof digitalExperienceCards.$inferSelect
 export type LocationLandingCms = typeof locationLandingsCms.$inferSelect
+export type ExperienceServiceCms = typeof experienceServicesCms.$inferSelect
 export type SiteSettings = typeof siteSettings.$inferSelect

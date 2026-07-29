@@ -4,8 +4,8 @@ import { DigitalSolutionsSection } from '@/components/site/digital-solutions-sec
 import { IndustriesSection } from '@/components/site/industries-section'
 import { ListingPage } from '@/components/site/listing-page'
 import { PageShell } from '@/components/site/page-shell'
-import { getProjectBySlug } from '@/lib/content'
-import { projects, services } from '@/lib/site-data'
+import { getExperienceServices, getProjectBySlug } from '@/lib/content'
+import { projects } from '@/lib/site-data'
 import { createPageMetadata, getBreadcrumbSchema, getItemListSchema } from '@/lib/seo'
 
 export const metadata: Metadata = createPageMetadata({
@@ -23,7 +23,11 @@ export const metadata: Metadata = createPageMetadata({
   ],
 })
 
-export default function ExperiencesIndexPage() {
+export const revalidate = 60
+
+export default async function ExperiencesIndexPage() {
+  const services = await getExperienceServices()
+
   const capabilityItems = services.map((service) => ({
     href: `/experiences/${service.slug}`,
     title: service.title,

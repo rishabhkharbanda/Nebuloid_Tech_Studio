@@ -7,8 +7,8 @@ import { PageShell } from '@/components/site/page-shell'
 import {
   getAllProjectSlugs,
   getAllServiceSlugs,
+  getExperienceServiceBySlug,
   getProjectBySlug,
-  getServiceBySlug,
 } from '@/lib/content'
 import { getServiceGeo } from '@/lib/geo-enrichment'
 import {
@@ -23,19 +23,20 @@ type PageProps = {
 }
 
 export async function generateStaticParams() {
+  const serviceSlugs = await getAllServiceSlugs()
   return [
-    ...getAllServiceSlugs().map((slug) => ({ slug })),
+    ...serviceSlugs.map((slug) => ({ slug })),
     ...getAllProjectSlugs().map((slug) => ({ slug })),
   ]
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params
-  const service = getServiceBySlug(slug)
+  const service = await getExperienceServiceBySlug(slug)
   if (service) {
     return createPageMetadata({
-      title: service.title,
-      description: service.intro,
+      title: service.metaTitle || service.title,
+      description: service.metaDescription || service.intro,
       path: `/experiences/${slug}`,
       image: service.image,
       keywords: [...service.tags.map((tag) => tag.toLowerCase()), 'event experience'],
@@ -60,7 +61,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ExperiencePage({ params }: PageProps) {
   const { slug } = await params
-  const service = getServiceBySlug(slug)
+  const service = await getExperienceServiceBySlug(slug)
 
   if (service) {
     const geo = getServiceGeo(slug)
@@ -88,7 +89,7 @@ export default async function ExperiencePage({ params }: PageProps) {
           category={`Capability ${service.id}`}
           title={service.title}
           image={service.image}
-          imageAlt={`${service.title} — Nebuloid experience`}
+          imageAlt={service.imageAlt || `${service.title} — Nebuloid experience`}
           intro={service.intro}
           sections={service.sections}
           highlights={service.highlights}

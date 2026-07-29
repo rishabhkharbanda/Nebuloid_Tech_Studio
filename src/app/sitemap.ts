@@ -31,11 +31,12 @@ const staticRoutes: MetadataRoute.Sitemap = [
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const fallbackDate = new Date()
-  const [blogSlugs, digitalSlugs, blogPosts, locationSlugs] = await Promise.all([
+  const [blogSlugs, digitalSlugs, blogPosts, locationSlugs, serviceSlugs] = await Promise.all([
     getAllBlogSlugs(),
     getAllDigitalProjectSlugs(),
     getBlogPostsForListing(),
     resolveAllLocationLandingSlugs(),
+    getAllServiceSlugs(),
   ])
   const blogDates = new Map(
     blogPosts.map((post) => [
@@ -57,7 +58,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'monthly' as const,
       priority: 0.85,
     })),
-    ...getAllServiceSlugs().map((slug) => ({
+    ...serviceSlugs.map((slug) => ({
       url: absoluteUrl(`/solutions/${slug}`),
       lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,

@@ -2,6 +2,7 @@
 
 import dynamic from 'next/dynamic'
 import type { PublicDigitalCard } from '@/lib/content'
+import type { PublicExperienceService } from '@/lib/cms/types'
 
 const TrustedBySection = dynamic(
   () => import('@/components/site/trusted-by-section').then((m) => m.TrustedBySection),
@@ -54,14 +55,16 @@ type BlogCard = {
 export function HomeBelowFoldClient({
   blogPosts,
   digitalCards,
+  experienceServices,
 }: {
   blogPosts: BlogCard[]
   digitalCards: PublicDigitalCard[]
+  experienceServices: PublicExperienceService[]
 }) {
   return (
     <div className="relative z-10 bg-[#090909]">
       <TrustedBySection />
-      <ServicesSection limit={3} compact />
+      <ServicesSection limit={3} compact services={experienceServices} />
       <DigitalExperiencesSection variant="preview" cards={digitalCards} />
       <AboutSection />
       <TestimonialsSection />

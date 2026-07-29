@@ -2,12 +2,15 @@ import {
   getPublishedBlogBySlug,
   getPublishedBlogPostsCms,
   getPublishedDigitalBySlug,
+  getPublishedExperienceBySlug,
   listDigitalCardsCms,
+  listExperienceServicesCms,
   mapCmsBlogToPublic,
   mapCmsDigitalToPublic,
+  mapCmsExperienceToPublic,
   cmsEnabled,
 } from '@/lib/cms/queries'
-import type { PublicDigitalProject } from '@/lib/cms/types'
+import type { PublicDigitalProject, PublicExperienceService } from '@/lib/cms/types'
 import { digitalProjects } from '@/lib/digital-data'
 import {
   blogPosts,
@@ -33,12 +36,80 @@ export function getProjectBySlug(slug: string) {
   return { ...project, ...details }
 }
 
-export function getServiceBySlug(slug: string) {
+export function getStaticServiceBySlug(slug: string) {
   const service = services.find((item) => item.slug === slug)
   if (!service) return null
   const details = serviceDetails[slug]
   if (!details) return null
   return { ...service, ...details }
+}
+
+/** @deprecated Use getServiceBySlug — sync fallback only. */
+export function getServiceBySlug(slug: string) {
+  return getStaticServiceBySlug(slug)
+}
+
+export async function getExperienceServiceBySlug(
+  slug: string,
+): Promise<PublicExperienceService | null> {
+  if (cmsEnabled()) {
+    try {
+      const cms = await getPublishedExperienceBySlug(slug)
+      if (cms) {
+        const all = await listExperienceServicesCms(false)
+        const index = all.findIndex((row) => row.slug === slug)
+        return mapCmsExperienceToPublic(cms, index >= 0 ? index : 0)
+      }
+    } catch {
+      // Fall through.
+    }
+  }
+  const staticService = getStaticServiceBySlug(slug)
+  if (!staticService) return null
+  const index = services.findIndex((item) => item.slug === slug)
+  return {
+    id: staticService.id,
+    slug: staticService.slug,
+    title: staticService.title,
+    description: staticService.description,
+    detail: staticService.detail,
+    tags: [...staticService.tags],
+    image: staticService.image,
+    imageAlt: `${staticService.title} — event experience by Nebuloid Tech Studio`,
+    intro: staticService.intro,
+    sections: staticService.sections.map((section) => ({ ...section })),
+    highlights: [...staticService.highlights],
+  }
+}
+
+export async function getExperienceServices(): Promise<PublicExperienceService[]> {
+  if (cmsEnabled()) {
+    try {
+      const rows = await listExperienceServicesCms(false)
+      if (rows.length > 0) {
+        return rows.map((row, index) => mapCmsExperienceToPublic(row, index))
+      }
+    } catch {
+      // Fall through.
+    }
+  }
+
+  return services.map((service, index) => {
+    const details = serviceDetails[service.slug]
+    return {
+      id: service.id,
+      slug: service.slug,
+      title: service.title,
+      description: service.description,
+      detail: service.detail,
+      tags: [...service.tags],
+      image: service.image,
+      imageAlt: `${service.title} — event experience by Nebuloid Tech Studio`,
+      intro: details?.intro ?? service.description,
+      sections: details?.sections.map((section) => ({ ...section })) ?? [],
+      highlights: details?.highlights ? [...details.highlights] : [],
+    }
+  })
 }
 
 function getStaticBlogPostBySlug(slug: string) {
@@ -104,7 +175,18 @@ export function getAllProjectSlugs() {
   return projects.map((project) => project.slug)
 }
 
-export function getAllServiceSlugs() {
+export async function getAllServiceSlugs() {
+  const staticSlugs = services.map((service) => service.slug)
+  if (!cmsEnabled()) return staticSlugs
+  try {
+    const rows = await listExperienceServicesCms(false)
+    return Array.from(new Set([...rows.map((row) => row.slug), ...staticSlugs]))
+  } catch {
+    return staticSlugs
+  }
+}
+
+export function getAllServiceSlugsSync() {
   return services.map((service) => service.slug)
 }
 

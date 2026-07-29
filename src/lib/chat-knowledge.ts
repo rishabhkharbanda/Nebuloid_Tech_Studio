@@ -1,9 +1,10 @@
 import {
   getBlogPostsForListing,
   getDigitalExperienceCards,
+  getExperienceServices,
 } from '@/lib/content'
 import { digitalProjects } from '@/lib/digital-data'
-import { contactDetails, faqs, projects, services } from '@/lib/site-data'
+import { contactDetails, faqs, projects } from '@/lib/site-data'
 
 export type KnowledgeChunk = {
   id: string
@@ -107,9 +108,10 @@ function scoreChunk(chunk: KnowledgeChunk, terms: string[]) {
 }
 
 export async function buildChatKnowledge(): Promise<KnowledgeChunk[]> {
-  const [blogs, digitalCards] = await Promise.all([
+  const [blogs, digitalCards, experienceServices] = await Promise.all([
     getBlogPostsForListing(),
     getDigitalExperienceCards(),
+    getExperienceServices(),
   ])
 
   const chunks: KnowledgeChunk[] = [
@@ -133,7 +135,7 @@ export async function buildChatKnowledge(): Promise<KnowledgeChunk[]> {
         'For project inquiries, use the Contact page or WhatsApp floating button on the site.',
       ].join('\n'),
     },
-    ...services.map((service) => ({
+    ...experienceServices.map((service) => ({
       id: `service-${service.slug}`,
       title: service.title,
       url: `/experiences/${service.slug}`,
