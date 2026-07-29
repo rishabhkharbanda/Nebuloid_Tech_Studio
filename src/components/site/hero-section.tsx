@@ -103,7 +103,7 @@ export function HeroSection() {
             <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
             <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
           </span>
-          <span className="relative mt-0 block min-h-[4.8em] overflow-hidden sm:min-h-[3.4em]">
+          <span className="relative mt-0 block min-h-[5.6em] overflow-hidden sm:min-h-[3.9em]">
             <AnimatePresence mode="wait">
               <motion.span
                 key={active.title}
