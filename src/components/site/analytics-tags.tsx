@@ -20,23 +20,18 @@ function googleTagIds() {
 /**
  * Single Google tag (gtag.js) for GA4 + Google Ads.
  * Load the library once, then gtag('config') for each ID — do not paste two full snippets.
- * Place once, immediately after <head>.
+ *
+ * Ads + DoubleClick remarketing requests are skipped for known crawlers so Googlebot
+ * does not attempt third-party DoubleClick URLs that block crawlers in robots.txt
+ * (those show up as "Googlebot blocked by robots.txt" in DevTools / Search Console).
+ * Real visitors still get full GA4 + Ads behavior.
  */
 export function GoogleAnalyticsTag() {
   const ids = googleTagIds()
   if (ids.length === 0) return null
 
   const primaryId = ids[0]
-  // Explicitly send a GA4 page_view with correct SPA-friendly page_path.
-  // (In case GA defaults or route timing prevents the initial auto page_view.)
-  const configCalls = ids
-    .map((id) => {
-      if (id.startsWith('G-')) {
-        return `gtag('config', '${id}', { send_page_view: true, page_path: window.location.pathname + window.location.search });`
-      }
-      return `gtag('config', '${id}');`
-    })
-    .join('\n')
+  const idsJson = JSON.stringify(ids)
 
   return (
     <>
@@ -48,7 +43,30 @@ export function GoogleAnalyticsTag() {
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
-${configCalls}`}
+(function(){
+  var ids = ${idsJson};
+  var ua = navigator.userAgent || '';
+  var isBot = /Googlebot|Google-InspectionTool|AdsBot-Google|Mediapartners-Google|Bingbot|Slurp|DuckDuckBot|Baiduspider|YandexBot|facebookexternalhit|Twitterbot|LinkedInBot|Applebot|SemrushBot|AhrefsBot|DotBot|PetalBot|bytespider/i.test(ua);
+  for (var i = 0; i < ids.length; i++) {
+    var id = ids[i];
+    if (!id) continue;
+    if (id.indexOf('AW-') === 0) {
+      if (isBot) continue;
+      gtag('config', id);
+      continue;
+    }
+    if (id.indexOf('G-') === 0) {
+      gtag('config', id, {
+        send_page_view: true,
+        page_path: window.location.pathname + window.location.search,
+        allow_google_signals: !isBot,
+        allow_ad_personalization_signals: !isBot
+      });
+      continue;
+    }
+    gtag('config', id);
+  }
+})();`}
       </Script>
     </>
   )
