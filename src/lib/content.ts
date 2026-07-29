@@ -5,15 +5,19 @@ import {
   getPublishedExperienceBySlug,
   listDigitalCardsCms,
   listExperienceServicesCms,
+  listHeroSlidesCms,
   mapCmsBlogToPublic,
   mapCmsDigitalToPublic,
   mapCmsExperienceToPublic,
+  mapCmsHeroSlideToPublic,
   cmsEnabled,
 } from '@/lib/cms/queries'
-import type { PublicDigitalProject, PublicExperienceService } from '@/lib/cms/types'
+import type { PublicDigitalProject, PublicExperienceService, PublicHeroSlide } from '@/lib/cms/types'
 import { digitalProjects } from '@/lib/digital-data'
 import {
   blogPosts,
+  defaultHeroDescription,
+  heroStates,
   industries,
   projects,
   services,
@@ -110,6 +114,34 @@ export async function getExperienceServices(): Promise<PublicExperienceService[]
       highlights: details?.highlights ? [...details.highlights] : [],
     }
   })
+}
+
+export async function getHeroSlides(): Promise<PublicHeroSlide[]> {
+  if (cmsEnabled()) {
+    try {
+      const rows = await listHeroSlidesCms(false)
+      if (rows.length > 0) {
+        return rows.map((row) => {
+          const mapped = mapCmsHeroSlideToPublic(row)
+          return {
+            ...mapped,
+            description: mapped.description || defaultHeroDescription,
+          }
+        })
+      }
+    } catch {
+      // Fall through.
+    }
+  }
+
+  return heroStates.map((slide, index) => ({
+    id: `static-hero-${index}`,
+    title: slide.title,
+    description: defaultHeroDescription,
+    image: slide.image,
+    imageAlt: `${slide.title.replace(/\.$/, '')} — event experience by Nebuloid Tech Studio`,
+    classes: slide.classes,
+  }))
 }
 
 function getStaticBlogPostBySlug(slug: string) {

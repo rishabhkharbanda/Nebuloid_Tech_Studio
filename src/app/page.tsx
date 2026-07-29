@@ -6,6 +6,7 @@ import { HomeScrollExplore } from '@/components/site/home-scroll-explore'
 import { JsonLd } from '@/components/site/json-ld'
 import { Navbar } from '@/components/site/navbar'
 import { SiteFloatingActions } from '@/components/site/site-floating-actions'
+import { getHeroSlides } from '@/lib/content'
 import { createPageMetadata, getFaqSchema } from '@/lib/seo'
 import { faqs } from '@/lib/site-data'
 
@@ -27,14 +28,16 @@ export const metadata: Metadata = createPageMetadata({
 /** Refresh homepage blog/digital CMS sections periodically. */
 export const revalidate = 60
 
-export default function Home() {
+export default async function Home() {
+  const heroSlides = await getHeroSlides()
+
   return (
     <div className="relative overflow-clip bg-[#090909] text-[#F1E9DB]">
       <JsonLd data={getFaqSchema([...faqs])} />
       <div className="grain-overlay" />
       <Navbar />
       <main>
-        <HeroSection />
+        <HeroSection slides={heroSlides} />
         <HomeScrollExplore />
         <HomeBelowFold />
       </main>

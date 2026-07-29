@@ -9,6 +9,7 @@ import {
   LogOut,
   MapPin,
   MonitorPlay,
+  PanelsTopLeft,
   Settings,
 } from 'lucide-react'
 import { Layers } from 'lucide-react'
@@ -17,6 +18,7 @@ import type { SessionUser } from '@/lib/auth/session'
 
 const links = [
   { href: '/admin', label: 'Dashboard', icon: LayoutDashboard },
+  { href: '/admin/hero-slides', label: 'Hero Banners', icon: PanelsTopLeft },
   { href: '/admin/blogs', label: 'Blogs', icon: FileText },
   { href: '/admin/experiences', label: 'Experiences We Offer', icon: Layers },
   { href: '/admin/digital-experiences', label: 'Digital Experiences', icon: MonitorPlay },

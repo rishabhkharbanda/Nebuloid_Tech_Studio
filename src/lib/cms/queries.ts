@@ -5,16 +5,18 @@ import {
   blogPostsCms,
   digitalExperienceCards,
   experienceServicesCms,
+  heroSlidesCms,
   locationLandingsCms,
   mediaAssets,
   type BlogPostCms,
   type DigitalExperienceCard,
   type ExperienceServiceCms,
+  type HeroSlideCms,
   type LocationLandingCms,
   type MediaAsset,
 } from '@/db/schema'
 import { bodyToParagraphs, estimateReadTime, slugify } from '@/lib/cms/seo-analyzer'
-import type { PublicDigitalProject, PublicExperienceService } from '@/lib/cms/types'
+import type { PublicDigitalProject, PublicExperienceService, PublicHeroSlide } from '@/lib/cms/types'
 
 export function cmsEnabled() {
   return hasDatabase()
@@ -848,6 +850,110 @@ export async function reorderExperienceServicesCms(orderedIds: string[]) {
         .update(experienceServicesCms)
         .set({ displayOrder: index, updatedAt: new Date() })
         .where(eq(experienceServicesCms.id, id)),
+    ),
+  )
+}
+
+const DEFAULT_HERO_OVERLAY =
+  'from-[#0f1116]/60 via-[#1f2335]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_32%_30%,rgba(212,175,55,.14),transparent_45%)]'
+
+export async function listHeroSlidesCms(includeUnpublished = false) {
+  if (!cmsEnabled()) return [] as HeroSlideCms[]
+  const db = getDb()
+  const rows = await db
+    .select()
+    .from(heroSlidesCms)
+    .orderBy(asc(heroSlidesCms.displayOrder), asc(heroSlidesCms.updatedAt))
+  if (includeUnpublished) return rows
+  return rows.filter((row) => row.enabled && row.status === 'published')
+}
+
+export async function getHeroSlideCmsById(id: string) {
+  if (!cmsEnabled()) return null
+  const db = getDb()
+  const [row] = await db.select().from(heroSlidesCms).where(eq(heroSlidesCms.id, id)).limit(1)
+  return row ?? null
+}
+
+export type HeroSlideInput = {
+  title: string
+  description?: string
+  imageUrl?: string
+  imageAlt?: string
+  overlayClasses?: string
+  displayOrder?: number
+  enabled?: boolean
+  status?: 'draft' | 'published' | 'unpublished'
+}
+
+export function mapCmsHeroSlideToPublic(row: HeroSlideCms): PublicHeroSlide {
+  return {
+    id: row.id,
+    title: row.title,
+    description: row.description?.trim() || '',
+    image: row.imageUrl,
+    imageAlt:
+      row.imageAlt?.trim() ||
+      `${row.title.replace(/\.$/, '')} — event experience by Nebuloid Tech Studio`,
+    classes: row.overlayClasses?.trim() || DEFAULT_HERO_OVERLAY,
+  }
+}
+
+export async function upsertHeroSlideCms(id: string | null, input: HeroSlideInput) {
+  const db = getDb()
+  const now = new Date()
+  const existing = id ? await getHeroSlideCmsById(id) : null
+  const status = input.status ?? existing?.status ?? 'draft'
+  const values = {
+    title: input.title.trim(),
+    description: input.description?.trim() ?? existing?.description ?? '',
+    imageUrl: input.imageUrl?.trim() ?? existing?.imageUrl ?? '',
+    imageAlt: input.imageAlt?.trim() ?? existing?.imageAlt ?? '',
+    overlayClasses: input.overlayClasses?.trim() ?? existing?.overlayClasses ?? DEFAULT_HERO_OVERLAY,
+    displayOrder: input.displayOrder ?? existing?.displayOrder ?? 0,
+    enabled: input.enabled ?? existing?.enabled ?? true,
+    status,
+    publishedAt: resolvePublishedAt(
+      status as 'draft' | 'published' | 'unpublished',
+      existing?.publishedAt,
+      now,
+    ),
+    updatedAt: now,
+  }
+
+  if (id) {
+    const [row] = await db
+      .update(heroSlidesCms)
+      .set(values)
+      .where(eq(heroSlidesCms.id, id))
+      .returning()
+    return row
+  }
+
+  const [row] = await db
+    .insert(heroSlidesCms)
+    .values({
+      id: nanoid(),
+      ...values,
+      createdAt: now,
+    })
+    .returning()
+  return row
+}
+
+export async function deleteHeroSlideCms(id: string) {
+  const db = getDb()
+  await db.delete(heroSlidesCms).where(eq(heroSlidesCms.id, id))
+}
+
+export async function reorderHeroSlidesCms(orderedIds: string[]) {
+  const db = getDb()
+  await Promise.all(
+    orderedIds.map((slideId, index) =>
+      db
+        .update(heroSlidesCms)
+        .set({ displayOrder: index, updatedAt: new Date() })
+        .where(eq(heroSlidesCms.id, slideId)),
     ),
   )
 }

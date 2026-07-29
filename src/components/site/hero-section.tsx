@@ -5,15 +5,15 @@ import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence, useScroll, useTransform } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { gsap } from 'gsap'
-import { useEffect, useMemo, useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { MagneticButton } from '@/components/site/magnetic-button'
-import { heroStates } from '@/lib/site-data'
+import type { PublicHeroSlide } from '@/lib/cms/types'
 import { cn } from '@/lib/utils'
 
 const SLIDE_INTERVAL = 3900
 
-export function HeroSection() {
+export function HeroSection({ slides }: { slides: PublicHeroSlide[] }) {
   const router = useRouter()
   const [activeIndex, setActiveIndex] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
@@ -23,17 +23,19 @@ export function HeroSection() {
   })
   const y = useTransform(scrollYProgress, [0, 1], [0, -80])
   const titleRef = useRef<HTMLHeadingElement>(null)
-  const descriptionRef = useRef<HTMLParagraphElement>(null)
+  const descriptionRef = useRef<HTMLDivElement>(null)
+  const slideCount = slides.length
 
   useEffect(() => {
+    if (slideCount <= 1) return
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
     if (reduced) return
 
     const timer = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % heroStates.length)
+      setActiveIndex((prev) => (prev + 1) % slideCount)
     }, SLIDE_INTERVAL)
     return () => clearInterval(timer)
-  }, [])
+  }, [slideCount])
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -53,14 +55,26 @@ export function HeroSection() {
     }
   }, [])
 
-  const active = useMemo(() => heroStates[activeIndex], [activeIndex])
-  const nextIndex = (activeIndex + 1) % heroStates.length
+  useEffect(() => {
+    if (slideCount > 0 && activeIndex >= slideCount) {
+      setActiveIndex(0)
+    }
+  }, [activeIndex, slideCount])
+
+  const active = slides[Math.min(activeIndex, Math.max(slideCount - 1, 0))]
+  const nextIndex = slideCount > 0 ? (activeIndex + 1) % slideCount : 0
+  const nextImage = slides[nextIndex]?.image
 
   useEffect(() => {
+    if (!nextImage) return
     const img = new window.Image()
     img.decoding = 'async'
-    img.src = heroStates[nextIndex].image
-  }, [nextIndex])
+    img.src = nextImage
+  }, [nextImage])
+
+  if (!active) {
+    return null
+  }
 
   return (
     <section
@@ -72,7 +86,7 @@ export function HeroSection() {
         <motion.div style={{ y }} className="absolute inset-0 will-change-transform">
           <AnimatePresence initial={false}>
             <motion.div
-              key={active.title}
+              key={active.id}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -81,7 +95,7 @@ export function HeroSection() {
             >
               <Image
                 src={active.image}
-                alt={`${active.title.replace('.', '')} — event experience by Nebuloid Tech Studio`}
+                alt={active.imageAlt}
                 fill
                 priority={activeIndex === 0}
                 className="object-cover"
@@ -106,7 +120,7 @@ export function HeroSection() {
           <span className="relative block min-h-[2.35em] overflow-hidden text-[clamp(1.75rem,7vw,5.4rem)] leading-[1.05] sm:min-h-[1.2em] md:min-h-[1.1em]">
             <AnimatePresence mode="wait">
               <motion.span
-                key={active.title}
+                key={active.id}
                 initial={{ y: 60, opacity: 0 }}
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -60, opacity: 0 }}
@@ -119,14 +133,20 @@ export function HeroSection() {
           </span>
         </h1>
 
-        <p
-          ref={descriptionRef}
-          className="mt-6 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/75 sm:mt-8 sm:text-lg md:text-xl"
-        >
-          Nebuloid designs, builds, and delivers complete event ecosystems — from
-          branding and motion to kiosks, AI experiences, and digital engagement.
-          One partner. One seamless experience.
-        </p>
+        <div ref={descriptionRef} className="mt-6 max-w-2xl sm:mt-8">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={`${active.id}-description`}
+              initial={{ y: 16, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: -12, opacity: 0 }}
+              transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+              className="text-base leading-relaxed text-[#F1E9DB]/75 sm:text-lg md:text-xl"
+            >
+              {active.description}
+            </motion.p>
+          </AnimatePresence>
+        </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
           <MagneticButton size="lg" onClick={() => router.push('/contact')}>
@@ -144,9 +164,9 @@ export function HeroSection() {
         </div>
 
         <div className="mt-10 flex max-w-full flex-wrap items-center gap-2 sm:mt-14 sm:gap-3">
-          {heroStates.map((slide, index) => (
+          {slides.map((slide, index) => (
             <button
-              key={slide.title}
+              key={slide.id}
               type="button"
               onClick={() => setActiveIndex(index)}
               aria-label={`Show slide: ${slide.title}`}

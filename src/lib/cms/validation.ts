@@ -167,6 +167,21 @@ export const reorderExperienceServicesSchema = z.object({
   orderedIds: z.array(z.string().min(1)).min(1),
 })
 
+export const heroSlideInputSchema = z.object({
+  title: z.string().trim().min(1, 'Title is required').max(512),
+  description: z.string().optional(),
+  imageUrl: z.string().trim().min(1, 'Image URL is required'),
+  imageAlt: z.string().optional(),
+  overlayClasses: z.string().optional(),
+  displayOrder: z.number().int().min(0).max(9999).optional(),
+  enabled: z.boolean().optional(),
+  status: z.enum(['draft', 'published', 'unpublished']).optional(),
+})
+
+export const reorderHeroSlidesSchema = z.object({
+  orderedIds: z.array(z.string().min(1)).min(1),
+})
+
 export function parseWithZod<T>(schema: z.ZodType<T>, data: unknown): T {
   const result = schema.safeParse(data)
   if (!result.success) {

@@ -193,6 +193,21 @@ export const experienceServicesCms = pgTable('experience_services', {
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 
+export const heroSlidesCms = pgTable('hero_slides', {
+  id: text('id').primaryKey(),
+  title: varchar('title', { length: 512 }).notNull(),
+  description: text('description').notNull().default(''),
+  imageUrl: text('image_url').notNull().default(''),
+  imageAlt: text('image_alt').notNull().default(''),
+  overlayClasses: text('overlay_classes').notNull().default(''),
+  displayOrder: integer('display_order').notNull().default(0),
+  enabled: boolean('enabled').notNull().default(true),
+  status: varchar('status', { length: 32 }).notNull().default('draft'),
+  publishedAt: timestamp('published_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
+})
+
 export const siteSettings = pgTable('site_settings', {
   id: text('id').primaryKey(),
   whatsappEnabled: boolean('whatsapp_enabled').notNull().default(false),
@@ -211,4 +226,5 @@ export type BlogPostCms = typeof blogPostsCms.$inferSelect
 export type DigitalExperienceCard = typeof digitalExperienceCards.$inferSelect
 export type LocationLandingCms = typeof locationLandingsCms.$inferSelect
 export type ExperienceServiceCms = typeof experienceServicesCms.$inferSelect
+export type HeroSlideCms = typeof heroSlidesCms.$inferSelect
 export type SiteSettings = typeof siteSettings.$inferSelect

@@ -1,3 +1,6 @@
+export const defaultHeroDescription =
+  'Nebuloid designs, builds, and delivers complete event ecosystems — from branding and motion to kiosks, AI experiences, and digital engagement. One partner. One seamless experience.'
+
 export const heroStates = [
   {
     title: 'AI Experiences.',

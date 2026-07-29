@@ -15,6 +15,15 @@ export type DetailSectionCms = {
   content: string
 }
 
+export type PublicHeroSlide = {
+  id: string
+  title: string
+  description: string
+  image: string
+  imageAlt: string
+  classes: string
+}
+
 export type PublicExperienceService = {
   id: string
   slug: string
