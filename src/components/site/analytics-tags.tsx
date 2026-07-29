@@ -27,7 +27,16 @@ export function GoogleAnalyticsTag() {
   if (ids.length === 0) return null
 
   const primaryId = ids[0]
-  const configCalls = ids.map((id) => `gtag('config', '${id}');`).join('\n')
+  // Explicitly send a GA4 page_view with correct SPA-friendly page_path.
+  // (In case GA defaults or route timing prevents the initial auto page_view.)
+  const configCalls = ids
+    .map((id) => {
+      if (id.startsWith('G-')) {
+        return `gtag('config', '${id}', { send_page_view: true, page_path: window.location.pathname + window.location.search });`
+      }
+      return `gtag('config', '${id}');`
+    })
+    .join('\n')
 
   return (
     <>
