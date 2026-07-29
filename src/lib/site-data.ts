@@ -131,28 +131,32 @@ export const industries = [
     title: 'Entertainment',
     description:
       'Concerts, award nights, launches, and live experiences with stage graphics, LED content, and immersive audience engagement.',
-    image: '/assets/hero/creative-production.png',
+    image:
+      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'textile',
     title: 'Textile',
     description:
       'Trade fairs, fashion showcases, and textile exhibitions with interactive booths, digital signage, and lead capture.',
-    image: '/assets/hero/interactive-kiosks.png',
+    image:
+      'https://images.unsplash.com/photo-1558171817-ef7d8f8a9d9e?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'tourism',
     title: 'Tourism',
     description:
       'Destination activations, visitor experiences, and digital platforms that make journeys more engaging and memorable.',
-    image: '/assets/hero/venue-navigation.png',
+    image:
+      'https://images.unsplash.com/photo-1488646953014-85c44e702cc0?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'tech',
     title: 'Tech',
     description:
       'Product launches, demo days, and innovation forums with AI activations, kiosks, and high-impact digital layers.',
-    image: '/assets/hero/ai-experiences.png',
+    image:
+      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'agriculture',
@@ -167,14 +171,16 @@ export const industries = [
     title: 'Religious',
     description:
       'Pilgrimage destinations, cultural gatherings, and sacred spaces enhanced through respectful digital storytelling.',
-    image: '/assets/digital-experiences/filbo/wedding-theme.png',
+    image:
+      'https://images.unsplash.com/photo-1582510001474-0a105357a152?auto=format&fit=crop&w=1200&q=80',
   },
   {
     slug: 'more-sectors',
     title: 'And More',
     description:
       'Corporate, healthcare, education, government, exhibitions, and emerging sectors — tailored to your audience and protocol.',
-    image: '/assets/hero/touchscreen-experiences.png',
+    image:
+      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
   },
 ] as const
 

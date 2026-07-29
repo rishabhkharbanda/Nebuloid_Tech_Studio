@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { LocationLandingBulkUpload } from '@/components/admin/location-landing-bulk-upload'
 import { listLocationLandingsCms } from '@/lib/cms/queries'
 import { SeedLocationLandingsButton } from '@/components/admin/seed-location-landings-button'
 
@@ -24,6 +25,8 @@ export default async function AdminLocationLandingsPage() {
           </Link>
         </div>
       </div>
+
+      <LocationLandingBulkUpload />
 
       <div className="overflow-hidden rounded-2xl border border-black/10 bg-white">
         <table className="min-w-full text-left text-sm">

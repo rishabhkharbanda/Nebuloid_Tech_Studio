@@ -2,13 +2,11 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { motion } from 'framer-motion'
 import { ArrowUpRight } from 'lucide-react'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { StretchLink } from '@/components/site/stretch-link'
 import { industryDetails } from '@/lib/detail-content'
 import { industries } from '@/lib/site-data'
-import { cn } from '@/lib/utils'
 
 type IndustriesSectionProps = {
   limit?: number
@@ -17,7 +15,6 @@ type IndustriesSectionProps = {
 
 export function IndustriesSection({ limit, showViewAll = true }: IndustriesSectionProps) {
   const items = limit ? industries.slice(0, limit) : industries
-  const useBento = limit === 3
 
   return (
     <section id="industries" className="section-padding">
@@ -45,94 +42,60 @@ export function IndustriesSection({ limit, showViewAll = true }: IndustriesSecti
           )}
         </SectionReveal>
 
-        <div
-          className={cn(
-            'mt-14',
-            useBento
-              ? 'grid gap-5 lg:grid-cols-12 lg:grid-rows-2'
-              : 'grid gap-5 md:grid-cols-2 xl:grid-cols-3',
-          )}
-        >
+        <div className="mt-14 grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {items.map((industry, index) => {
             const highlights = industryDetails[industry.slug]?.highlights.slice(0, 3) ?? []
-            const isFeatured = useBento && index === 0
 
             return (
-              <SectionReveal
-                key={industry.slug}
-                delay={index * 0.06}
-                className={cn(
-                  useBento && index === 0 && 'lg:col-span-7 lg:row-span-2',
-                  useBento && index === 1 && 'lg:col-span-5',
-                  useBento && index === 2 && 'lg:col-span-5',
-                )}
-              >
-                <motion.article
-                  whileHover={{ y: -6 }}
-                  transition={{ duration: 0.45, ease: [0.2, 0.65, 0.3, 0.9] }}
-                  className={cn(
-                    'group relative h-full min-h-[280px] overflow-hidden rounded-[1.75rem] border border-white/10 bg-[#0c0c0c]',
-                    isFeatured && 'min-h-[360px] lg:min-h-[520px]',
-                  )}
-                >
+              <SectionReveal key={industry.slug} delay={index * 0.06}>
+                <article className="group relative flex h-full flex-col overflow-hidden rounded-[1.5rem] border border-white/10 bg-[#0c0c0c] transition-colors duration-300 hover:border-[#d4af37]/35">
                   <StretchLink
                     href={`/industries/${industry.slug}`}
                     label={`Explore ${industry.title} industry work`}
                   />
+                  <div className="relative aspect-[16/10] overflow-hidden border-b border-white/10">
                     <Image
                       src={industry.image}
                       alt={`${industry.title} industry experiences by Nebuloid Tech Studio`}
                       fill
-                      className="object-cover transition-transform duration-700 group-hover:scale-105"
-                      sizes={
-                        isFeatured
-                          ? '(max-width: 1024px) 100vw, 55vw'
-                          : '(max-width: 768px) 100vw, 33vw'
-                      }
+                      className="object-cover grayscale transition-[transform,filter] duration-700 group-hover:scale-[1.03] group-hover:grayscale-0"
+                      sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                      quality={70}
+                      loading="lazy"
                     />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/45 to-black/10 transition-opacity duration-500 group-hover:from-black/95" />
-                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(212,175,55,0.12),transparent_45%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                  </div>
 
-                    <div className="absolute inset-0 flex flex-col justify-between p-7 md:p-8">
-                      <div className="flex items-start justify-between gap-4">
-                        <span className="rounded-full border border-white/15 bg-black/30 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]/90 backdrop-blur-md">
-                          {String(index + 1).padStart(2, '0')}
-                        </span>
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-white/15 bg-black/30 text-[#F1E9DB]/50 backdrop-blur-md transition-all duration-300 group-hover:border-[#d4af37]/45 group-hover:text-[#d4af37]">
-                          <ArrowUpRight size={16} />
-                        </span>
-                      </div>
-
-                      <div>
-                        <h3
-                          className={cn(
-                            'font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]',
-                            isFeatured
-                              ? 'text-[clamp(1.75rem,3vw,2.75rem)] leading-tight'
-                              : 'text-2xl md:text-[1.75rem]',
-                          )}
-                        >
-                          {industry.title}
-                        </h3>
-                        <p className="mt-3 max-w-xl text-sm leading-relaxed text-[#F1E9DB]/70 md:text-base">
-                          {industry.description}
-                        </p>
-
-                        {highlights.length > 0 && (
-                          <div className="mt-5 flex flex-wrap gap-2">
-                            {highlights.map((tag) => (
-                              <span
-                                key={tag}
-                                className="rounded-full border border-white/10 bg-white/[0.06] px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#F1E9DB]/55 backdrop-blur-md transition-colors group-hover:border-[#d4af37]/25 group-hover:text-[#F1E9DB]/80"
-                              >
-                                {tag}
-                              </span>
-                            ))}
-                          </div>
-                        )}
-                      </div>
+                  <div className="flex flex-1 flex-col p-6 md:p-7">
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#d4af37]/90">
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-white/10 text-[#F1E9DB]/40 transition-all duration-300 group-hover:border-[#d4af37]/45 group-hover:text-[#d4af37]">
+                        <ArrowUpRight size={15} />
+                      </span>
                     </div>
-                  </motion.article>
+
+                    <h3 className="mt-4 text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37] md:text-2xl">
+                      {industry.title}
+                    </h3>
+                    <p className="mt-3 flex-1 text-sm leading-relaxed text-[#F1E9DB]/65 md:text-base">
+                      {industry.description}
+                    </p>
+
+                    {highlights.length > 0 && (
+                      <div className="mt-5 flex flex-wrap gap-2">
+                        {highlights.map((tag) => (
+                          <span
+                            key={tag}
+                            className="rounded-full border border-white/10 px-3 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-[#F1E9DB]/55 transition-colors group-hover:border-[#d4af37]/25 group-hover:text-[#F1E9DB]/80"
+                          >
+                            {tag}
+                          </span>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </article>
               </SectionReveal>
             )
           })}

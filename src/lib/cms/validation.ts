@@ -120,6 +120,15 @@ export const locationLandingInputSchema = z.object({
   schemaType: z.string().max(64).optional(),
 })
 
+export const locationLandingBulkInputSchema = z.object({
+  status: z.enum(['draft', 'published', 'unpublished']).optional(),
+  upsert: z.boolean().optional(),
+  pages: z
+    .array(locationLandingInputSchema)
+    .min(1, 'Add at least one location landing')
+    .max(25, 'Max 25 location landings per upload'),
+})
+
 export const reorderDigitalSchema = z.object({
   orderedIds: z.array(z.string().min(1)).min(1),
 })
