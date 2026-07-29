@@ -103,7 +103,10 @@ export function HeroSection() {
             <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
             <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
           </span>
-          <span className="relative mt-0 block min-h-[5.6em] overflow-hidden sm:min-h-[3.9em]">
+          <span
+            className="relative mt-0 block overflow-hidden text-[clamp(1.75rem,7vw,5.4rem)] leading-[1.05]"
+            style={{ minHeight: '3.15em' }}
+          >
             <AnimatePresence mode="wait">
               <motion.span
                 key={active.title}
@@ -111,7 +114,7 @@ export function HeroSection() {
                 animate={{ y: 0, opacity: 1 }}
                 exit={{ y: -60, opacity: 0 }}
                 transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-                className="absolute inset-x-0 top-0 text-[clamp(1.75rem,7vw,5.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB]"
+                className="absolute inset-x-0 top-0 font-semibold tracking-[-0.03em] text-[#F1E9DB]"
               >
                 {active.title}
               </motion.span>
