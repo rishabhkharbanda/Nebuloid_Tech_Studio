@@ -1,6 +1,5 @@
 'use client'
 
-import Image from 'next/image'
 import { useDeferredValue, useMemo, useState } from 'react'
 import { ArrowUpRight, Search, X } from 'lucide-react'
 import { StretchLink } from '@/components/site/stretch-link'
@@ -127,89 +126,48 @@ export function InsightsListing({
 
         {featured ? (
           <div className="mt-10 border-y border-white/10">
-            <article className="group relative grid gap-8 py-10 md:grid-cols-12 md:items-center md:gap-12 md:py-14">
+            <article className="group relative py-10 md:py-14">
               <StretchLink
                 href={`/insights/${featured.slug}`}
                 label={`Read featured article: ${featured.category}`}
               />
-                {featured.image ? (
-                  <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 md:col-span-6 lg:col-span-5">
-                    <Image
-                      src={featured.image}
-                      alt={
-                        featured.imageAlt ||
-                        `${featured.title} — Nebuloid Tech Studio blog`
-                      }
-                      fill
-                      priority
-                      quality={70}
-                      className="object-cover transition duration-700 group-hover:scale-[1.03]"
-                      sizes="(max-width: 768px) 100vw, 45vw"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-transparent to-transparent" />
-                  </div>
-                ) : null}
+              <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">
+                <span className="text-[#d4af37]">Featured</span>
+                <span>·</span>
+                <span>{featured.category}</span>
+                <span>·</span>
+                <span>{featured.date}</span>
+                <span>·</span>
+                <span>{featured.readTime}</span>
+              </div>
 
-                <div
-                  className={
-                    featured.image
-                      ? 'md:col-span-6 lg:col-span-7'
-                      : 'md:col-span-12'
-                  }
-                >
-                  <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">
-                    <span className="text-[#d4af37]">Featured</span>
-                    <span>·</span>
-                    <span>{featured.category}</span>
-                    <span>·</span>
-                    <span>{featured.date}</span>
-                    <span>·</span>
-                    <span>{featured.readTime}</span>
-                  </div>
-
-                  <h2 className="mt-5 max-w-3xl text-[clamp(1.85rem,4vw,3.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
-                    {featured.title}
-                  </h2>
-                  <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
-                    {featured.excerpt}
-                  </p>
-                  <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/55 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-                    Read story
-                    <ArrowUpRight
-                      size={16}
-                      className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
-                    />
-                  </span>
-                </div>
-              </article>
+              <h2 className="mt-5 max-w-4xl text-[clamp(1.85rem,4vw,3.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
+                {featured.title}
+              </h2>
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
+                {featured.excerpt}
+              </p>
+              <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/55 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+                Read story
+                <ArrowUpRight
+                  size={16}
+                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                />
+              </span>
+            </article>
 
             <div className="divide-y divide-white/10">
               {rest.map((post) => (
                 <article
                   key={post.slug}
-                  className="group relative grid gap-6 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
+                  className="group relative grid gap-4 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
                 >
                   <StretchLink
                     href={`/insights/${post.slug}`}
                     label={`Read ${post.category} article`}
                   />
-                  {post.image ? (
-                    <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 md:col-span-3 md:aspect-[4/3]">
-                      <Image
-                        src={post.image}
-                        alt={post.imageAlt || `${post.title} — Nebuloid Tech Studio blog`}
-                        fill
-                        loading="lazy"
-                        quality={65}
-                        className="object-cover transition duration-500 group-hover:scale-105"
-                        sizes="(max-width: 768px) 100vw, 22vw"
-                      />
-                    </div>
-                  ) : (
-                    <div className="hidden md:col-span-3 md:block" />
-                  )}
 
-                  <div className="md:col-span-8">
+                  <div className="md:col-span-11">
                     <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
                       <span className="text-[#d4af37]">{post.category}</span>
                       <span>·</span>
