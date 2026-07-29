@@ -92,13 +92,13 @@ const nextConfig: NextConfig = {
           "object-src 'none'",
           "frame-ancestors 'none'",
           "form-action 'self'",
-          // Next.js + optional analytics; block unexpected third-party script hosts.
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://www.clarity.ms https://connect.facebook.net https://snap.licdn.com",
+          // Next.js + analytics (GA4, Google Ads, Clarity, Meta, LinkedIn).
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://connect.facebook.net https://snap.licdn.com",
           "style-src 'self' 'unsafe-inline'",
           "img-src 'self' data: blob: https:",
           "font-src 'self' data:",
-          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://www.googletagmanager.com https://www.clarity.ms https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
-          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com",
+          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.googletagmanager.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://googleads.g.doubleclick.net https://www.googleadservices.com https://www.clarity.ms https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
+          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://googleads.g.doubleclick.net",
           "media-src 'self' blob:",
           "worker-src 'self' blob:",
         ].join('; '),

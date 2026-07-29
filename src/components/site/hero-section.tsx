@@ -98,15 +98,12 @@ export function HeroSection() {
       </div>
 
       <div className="content-grid relative z-10 flex min-h-[calc(100svh-6rem)] flex-col justify-center px-6 pb-16 pt-8 md:min-h-[calc(100svh-8rem)] md:px-10 md:pb-24 lg:px-16">
-        <h1 ref={titleRef} className="mt-2 md:mt-4">
-          <span className="flex flex-wrap items-baseline gap-x-[0.15em]">
+        <h1 ref={titleRef} className="mt-2 flex flex-col gap-0 leading-none md:mt-4">
+          <span className="flex flex-wrap items-baseline gap-x-[0.15em] leading-none">
             <span className="text-display-filled text-[clamp(2.75rem,12vw,9rem)]">We</span>
             <span className="text-outline-display text-[clamp(2.75rem,12vw,9rem)]">Create</span>
           </span>
-          <span
-            className="relative mt-0 block overflow-hidden text-[clamp(1.75rem,7vw,5.4rem)] leading-[1.05]"
-            style={{ minHeight: '3.15em' }}
-          >
+          <span className="relative block min-h-[2.35em] overflow-hidden text-[clamp(1.75rem,7vw,5.4rem)] leading-[1.05] sm:min-h-[1.2em] md:min-h-[1.1em]">
             <AnimatePresence mode="wait">
               <motion.span
                 key={active.title}
