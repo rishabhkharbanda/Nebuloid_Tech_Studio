@@ -2,7 +2,8 @@
 
 import Link from 'next/link'
 import { useEffect, useRef, useState } from 'react'
-import { ArrowUpRight, MessageCircle, Send, Sparkles, X } from 'lucide-react'
+import { ArrowUpRight, MessageCircle, Send, X } from 'lucide-react'
+import { BrandLogo } from '@/components/site/brand-logo'
 import { useTheme } from '@/hooks/use-theme'
 import { cn } from '@/lib/utils'
 
@@ -141,8 +142,8 @@ export function FloatingChatbot() {
             )}
           >
             <div className="flex items-center gap-2">
-              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#d4af37]/15 text-[#d4af37]">
-                <Sparkles size={16} />
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-[#d4af37]/25 bg-[#d4af37]/10">
+                <BrandLogo className="h-6 w-6" />
               </span>
               <div>
                 <p className={cn('text-sm font-semibold', isDay ? 'text-[#181712]' : 'text-[#F1E9DB]')}>
