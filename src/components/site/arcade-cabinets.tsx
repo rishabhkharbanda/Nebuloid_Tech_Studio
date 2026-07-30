@@ -109,11 +109,15 @@ function SpinWheelCabinet() {
           <div className={styles.wheelDisc} ref={discRef}>
             {prizes.map((prize, i) => {
               const center = i * segAngle + segAngle / 2
+              const onDark = i % 2 === 1
               return (
                 <div
                   key={prize + i}
                   className={styles.wheelLabel}
-                  style={{ transform: `rotate(${center}deg) translate(26px,-6px)` }}
+                  style={{
+                    transform: `rotate(${center}deg) translate(28px,-6px)`,
+                    color: onDark ? '#f1e9db' : '#12100c',
+                  }}
                 >
                   {prize}
                 </div>
@@ -271,39 +275,80 @@ function RaceCabinet() {
       return w * 0.5 + (l - 1) * (w * 0.22)
     }
 
+    function drawCar(x: number, y: number, color: string, accent: string, player = false) {
+      ctx.fillStyle = color
+      if (typeof ctx.roundRect === 'function') {
+        ctx.beginPath()
+        ctx.roundRect(x - 15, y - 22, 30, 40, 6)
+        ctx.fill()
+      } else {
+        ctx.fillRect(x - 15, y - 22, 30, 40)
+      }
+      ctx.fillStyle = accent
+      ctx.fillRect(x - 10, y - 14, 20, 10)
+      ctx.fillRect(x - 10, y + 4, 20, 8)
+      ctx.fillStyle = 'rgba(0,0,0,0.45)'
+      ctx.fillRect(x - 17, y - 16, 4, 10)
+      ctx.fillRect(x + 13, y - 16, 4, 10)
+      ctx.fillRect(x - 17, y + 8, 4, 10)
+      ctx.fillRect(x + 13, y + 8, 4, 10)
+      if (player) {
+        ctx.fillStyle = 'rgba(241,233,219,0.85)'
+        ctx.fillRect(x - 4, y + 14, 8, 3)
+      }
+    }
+
     function drawScene() {
       ctx.clearRect(0, 0, w, h)
-      ctx.fillStyle = '#0c0c0a'
+      // roadside
+      ctx.fillStyle = '#0a0908'
       ctx.fillRect(0, 0, w, h)
-      const roadW = w * 0.62
+      const roadW = w * 0.58
       const roadX = (w - roadW) / 2
-      ctx.fillStyle = '#16140f'
+
+      // grass / gravel edges
+      ctx.fillStyle = '#16130e'
+      ctx.fillRect(0, 0, roadX, h)
+      ctx.fillRect(roadX + roadW, 0, w - (roadX + roadW), h)
+
+      // road
+      const roadGrad = ctx.createLinearGradient(roadX, 0, roadX + roadW, 0)
+      roadGrad.addColorStop(0, '#1a1712')
+      roadGrad.addColorStop(0.5, '#221e17')
+      roadGrad.addColorStop(1, '#1a1712')
+      ctx.fillStyle = roadGrad
       ctx.fillRect(roadX, 0, roadW, h)
 
-      state.dashOffset = (state.dashOffset + state.speed) % 40
-      ctx.strokeStyle = 'rgba(212, 175, 55, 0.45)'
+      // road shoulders
+      ctx.strokeStyle = 'rgba(241,233,219,0.35)'
       ctx.lineWidth = 3
+      ctx.beginPath()
+      ctx.moveTo(roadX + 4, 0)
+      ctx.lineTo(roadX + 4, h)
+      ctx.moveTo(roadX + roadW - 4, 0)
+      ctx.lineTo(roadX + roadW - 4, h)
+      ctx.stroke()
+
+      state.dashOffset = (state.dashOffset + state.speed) % 44
+      ctx.strokeStyle = 'rgba(212, 175, 55, 0.7)'
+      ctx.lineWidth = 3
+      ctx.setLineDash([18, 16])
+      ctx.lineDashOffset = -state.dashOffset
       ;[1 / 3, 2 / 3].forEach((f) => {
         ctx.beginPath()
-        for (let y = -40 + state.dashOffset; y < h; y += 40) {
-          ctx.moveTo(roadX + roadW * f, y)
-          ctx.lineTo(roadX + roadW * f, y + 20)
-        }
+        ctx.moveTo(roadX + roadW * f, 0)
+        ctx.lineTo(roadX + roadW * f, h)
         ctx.stroke()
       })
+      ctx.setLineDash([])
 
       state.obstacles.forEach((o) => {
-        ctx.fillStyle = '#8a6f20'
-        const ox = laneX(o.lane)
-        ctx.fillRect(ox - 16, o.y - 10, 32, 20)
+        drawCar(laneX(o.lane), o.y, '#6b5520', '#3d3114')
       })
 
       const cx = laneX(state.lane)
-      const cy = h - 30
-      ctx.fillStyle = '#d4af37'
-      ctx.fillRect(cx - 16, cy - 8, 32, 16)
-      ctx.fillStyle = '#f1e9db'
-      ctx.fillRect(cx - 9, cy - 14, 18, 10)
+      const cy = h - 38
+      drawCar(cx, cy, '#d4af37', '#f1e9db', true)
     }
 
     function gameOver() {
@@ -323,9 +368,9 @@ function RaceCabinet() {
       state.obstacles.forEach((o) => {
         o.y += state.speed * 2
       })
-      const cy = h - 30
+      const cy = h - 38
       for (const o of state.obstacles) {
-        if (o.lane === state.lane && Math.abs(o.y - cy) < 16) {
+        if (o.lane === state.lane && Math.abs(o.y - cy) < 34) {
           gameOver()
           return
         }
@@ -381,8 +426,20 @@ function RaceCabinet() {
     <CabinetShell
       title="Car Racing"
       description="Arrow keys or on-screen buttons to dodge traffic."
-      tint="rgba(212, 175, 55, 0.1)"
-      controls={<span className={styles.resultLine}>{scoreText}</span>}
+      tint="rgba(212, 175, 55, 0.14)"
+      controls={
+        <>
+          <button
+            type="button"
+            className={styles.playBtn}
+            onClick={() => apiRef.current?.start()}
+            disabled={!showOverlay}
+          >
+            {overlayLabel}
+          </button>
+          <span className={styles.resultLine}>{scoreText}</span>
+        </>
+      }
     >
       <div className={styles.raceWrap}>
         <canvas ref={canvasRef} className={styles.raceCanvas} />

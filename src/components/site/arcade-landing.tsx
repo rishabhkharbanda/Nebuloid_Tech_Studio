@@ -37,7 +37,7 @@ export function ArcadeLanding() {
   const router = useRouter()
 
   return (
-    <div className="theme-preserve-dark">
+    <div className="theme-preserve-dark bg-[#090909] text-[#F1E9DB]">
       <section className="relative isolate min-h-[100svh] overflow-hidden">
         <div
           className="pointer-events-none absolute inset-0"
@@ -118,7 +118,7 @@ export function ArcadeLanding() {
       <section id="arcade" className="section-padding border-t border-white/10">
         <div className="content-grid">
           <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
-            <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold tracking-[-0.03em]">
+            <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold tracking-[-0.03em] text-[#F1E9DB]">
               Four cabinets. One SDK.
             </h2>
             <p className="mt-3 text-[#F1E9DB]/65">
@@ -158,7 +158,7 @@ export function ArcadeLanding() {
       <section className="section-padding">
         <div className="content-grid">
           <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
-            <h2 className="text-[clamp(1.75rem,3.5vw,2.6rem)] font-semibold tracking-[-0.03em]">
+            <h2 className="text-[clamp(1.75rem,3.5vw,2.6rem)] font-semibold tracking-[-0.03em] text-[#F1E9DB]">
               How it plugs into your experience
             </h2>
             <p className="mt-3 text-[#F1E9DB]/65">
@@ -177,7 +177,9 @@ export function ArcadeLanding() {
                 <p className="font-mono text-xs tracking-[0.18em] text-[#F1E9DB]/4">
                   {step.num}
                 </p>
-                <h3 className="mt-4 text-xl font-semibold tracking-[-0.02em]">{step.title}</h3>
+                <h3 className="mt-4 text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB]">
+                  {step.title}
+                </h3>
                 <p className="mt-3 text-sm leading-relaxed text-[#F1E9DB]/6">{step.body}</p>
               </motion.div>
             ))}
@@ -200,7 +202,7 @@ export function ArcadeLanding() {
           <p className="font-mono text-[11px] uppercase tracking-[0.24em] text-[#d4af37]">
             Ready when you are
           </p>
-          <h2 className="mt-5 text-[clamp(1.7rem,3.8vw,2.8rem)] font-semibold tracking-[-0.03em]">
+          <h2 className="mt-5 text-[clamp(1.7rem,3.8vw,2.8rem)] font-semibold tracking-[-0.03em] text-[#F1E9DB]">
             Make retention feel like a game, not a growth hack.
           </h2>
           <div className="mt-10 flex flex-wrap items-center justify-center gap-3 sm:gap-4">

@@ -235,6 +235,27 @@ html.day-theme header [id="mobile-nav"] {
 
 html.day-theme .theme-preserve-dark {
   color: #f1e9db;
+  background-color: #090909;
+}
+
+html.day-theme .theme-preserve-dark header {
+  border-color: rgba(241, 233, 219, 0.1) !important;
+  background: rgba(9, 9, 9, 0.86) !important;
+  box-shadow: none;
+}
+
+html.day-theme .theme-preserve-dark header[data-scrolled='false'] {
+  border-color: rgba(241, 233, 219, 0.08) !important;
+  background: rgba(9, 9, 9, 0.72) !important;
+}
+
+html.day-theme .theme-preserve-dark header [class*='text-[#F1E9DB]'],
+html.day-theme .theme-preserve-dark header[data-scrolled='false'] [class*='text-[#F1E9DB]'] {
+  color: #f1e9db !important;
+}
+
+html.day-theme .theme-preserve-dark header [id='mobile-nav'] {
+  background: rgba(9, 9, 9, 0.96) !important;
 }
 
 /* Keep hero display type light on carousel imagery in day mode */

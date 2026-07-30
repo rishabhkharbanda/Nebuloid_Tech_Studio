@@ -20,7 +20,7 @@ export const metadata: Metadata = createPageMetadata({
 
 export default function ArcadePage() {
   return (
-    <PageShell withTopPadding={false}>
+    <PageShell withTopPadding={false} forceDark>
       <JsonLd
         data={getBreadcrumbSchema([
           { name: 'Home', path: '/' },

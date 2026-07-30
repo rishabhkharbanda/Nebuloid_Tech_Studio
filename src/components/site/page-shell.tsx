@@ -1,15 +1,27 @@
 import { Footer } from '@/components/site/footer'
 import { Navbar } from '@/components/site/navbar'
 import { SiteFloatingActions } from '@/components/site/site-floating-actions'
+import { cn } from '@/lib/utils'
 
 type PageShellProps = {
   children: React.ReactNode
   withTopPadding?: boolean
+  /** Keep charcoal/cream dark palette even when site day theme is on. */
+  forceDark?: boolean
 }
 
-export function PageShell({ children, withTopPadding = true }: PageShellProps) {
+export function PageShell({
+  children,
+  withTopPadding = true,
+  forceDark = false,
+}: PageShellProps) {
   return (
-    <div className="relative overflow-clip bg-[#090909] text-[#F1E9DB]">
+    <div
+      className={cn(
+        'relative overflow-clip bg-[#090909] text-[#F1E9DB]',
+        forceDark && 'theme-preserve-dark',
+      )}
+    >
       <a
         href="#main-content"
         className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-[#F1E9DB] focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-[#090909]"
