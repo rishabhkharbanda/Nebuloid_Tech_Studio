@@ -18,15 +18,24 @@ function googleTagIds() {
 }
 
 /**
- * Single Google tag (gtag.js) for GA4 + Google Ads.
- * Load the library once, then gtag('config') for each ID — do not paste two full snippets.
- *
- * Ads + DoubleClick remarketing requests are skipped for known crawlers so Googlebot
- * does not attempt third-party DoubleClick URLs that block crawlers in robots.txt
- * (those show up as "Googlebot blocked by robots.txt" in DevTools / Search Console).
- * Real visitors still get full GA4 + Ads behavior.
+ * Prefer GTM when configured (container health / Tag Assistant).
+ * Otherwise load a single gtag.js for GA4 + Google Ads.
  */
 export function GoogleAnalyticsTag() {
+  if (GTM_ID) {
+    return (
+      <>
+        <Script id="gtm-bootstrap" strategy="beforeInteractive">
+          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`}
+        </Script>
+      </>
+    )
+  }
+
   const ids = googleTagIds()
   if (ids.length === 0) return null
 
@@ -35,13 +44,15 @@ export function GoogleAnalyticsTag() {
 
   return (
     <>
+      {/* beforeInteractive puts the loader in initial HTML so Tag Assistant / Ads can detect it */}
       <Script
         src={`https://www.googletagmanager.com/gtag/js?id=${primaryId}`}
-        strategy="afterInteractive"
+        strategy="beforeInteractive"
       />
-      <Script id="google-tag" strategy="afterInteractive">
+      <Script id="google-tag" strategy="beforeInteractive">
         {`window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
+window.gtag = gtag;
 gtag('js', new Date());
 (function(){
   var ids = ${idsJson};
@@ -58,7 +69,8 @@ gtag('js', new Date());
     if (id.indexOf('G-') === 0) {
       gtag('config', id, {
         send_page_view: true,
-        page_path: window.location.pathname + window.location.search,
+        anonymize_ip: false,
+        page_path: location.pathname + location.search,
         allow_google_signals: !isBot,
         allow_ad_personalization_signals: !isBot
       });
@@ -72,22 +84,10 @@ gtag('js', new Date());
   )
 }
 
-/** Non-Google marketing tags only. GTM is skipped when gtag is installed. */
+/** Extra marketing pixels. GTM already covers Google tags when GTM_ID is set. */
 export function AnalyticsTags() {
-  const hasGoogleTag = googleTagIds().length > 0
-
   return (
     <>
-      {GTM_ID && !hasGoogleTag ? (
-        <Script id="gtm" strategy="afterInteractive">
-          {`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','${GTM_ID}');`}
-        </Script>
-      ) : null}
-
       {CLARITY_ID ? (
         <Script id="microsoft-clarity" strategy="lazyOnload">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
@@ -123,7 +123,7 @@ s.parentNode.insertBefore(b,s);})(window.lintrk);`}
 }
 
 export function GtmNoscript() {
-  if (!GTM_ID || googleTagIds().length > 0) return null
+  if (!GTM_ID) return null
   return (
     <noscript>
       <iframe

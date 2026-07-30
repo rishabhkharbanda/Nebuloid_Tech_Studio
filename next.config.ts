@@ -87,8 +87,8 @@ const nextConfig: NextConfig = {
         key: 'Strict-Transport-Security',
         value: 'max-age=63072000; includeSubDomains; preload',
       },
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin' },
-      { key: 'Cross-Origin-Resource-Policy', value: 'same-site' },
+      // Keep browsing-context isolation without blocking third-party tag verification.
+      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
       {
         key: 'Content-Security-Policy',
         value: [
@@ -98,14 +98,14 @@ const nextConfig: NextConfig = {
           "frame-ancestors 'none'",
           "form-action 'self'",
           'upgrade-insecure-requests',
-          // Scripts: only first-party + known tag vendors (no generic https:).
-          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.clarity.ms https://connect.facebook.net https://snap.licdn.com",
-          "style-src 'self' 'unsafe-inline'",
+          // Scripts: first-party + Google tag / GTM / Ads + other marketing vendors.
+          "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live https://www.googletagmanager.com https://tagmanager.google.com https://www.google-analytics.com https://ssl.google-analytics.com https://www.googleadservices.com https://googleads.g.doubleclick.net https://www.google.com https://www.gstatic.com https://www.clarity.ms https://connect.facebook.net https://snap.licdn.com",
+          "style-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com",
           "img-src 'self' data: blob: https:",
           "font-src 'self' data:",
-          // XHR/beacon only to analytics + app backends we already use.
-          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://analytics.google.com https://region1.google-analytics.com https://www.googletagmanager.com https://www.google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://googleads.g.doubleclick.net https://td.doubleclick.net https://www.googleadservices.com https://pagead2.googlesyndication.com https://www.clarity.ms https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
-          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://googleads.g.doubleclick.net",
+          // Beacons / XHR used by GA4, Ads, GTM, Clarity, Neon, Blob.
+          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.googletagmanager.com https://tagmanager.google.com https://www.google.com https://google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://googleads.g.doubleclick.net https://td.doubleclick.net https://www.googleadservices.com https://pagead2.googlesyndication.com https://www.clarity.ms https://*.clarity.ms https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
+          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://googleads.g.doubleclick.net https://www.googleadservices.com",
           "media-src 'self' blob:",
           "worker-src 'self' blob:",
         ].join('; '),
