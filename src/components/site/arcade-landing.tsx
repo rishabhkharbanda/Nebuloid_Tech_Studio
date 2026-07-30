@@ -119,11 +119,11 @@ export function ArcadeLanding() {
         <div className="content-grid">
           <motion.div {...fadeUp} className="mx-auto max-w-2xl text-center">
             <h2 className="text-[clamp(1.75rem,3.5vw,2.75rem)] font-semibold tracking-[-0.03em] text-[#F1E9DB]">
-              Four cabinets. One SDK.
+              Try the engagement layer
             </h2>
             <p className="mt-3 text-[#F1E9DB]/65">
-              Each cabinet is a self-contained reward mechanic — try them, then swap the
-              skin and keep the payout logic.
+              Four playable reward mechanics — the same patterns we ship into apps, kiosks,
+              and venue screens. Spin, pull, race, and aim below.
             </p>
           </motion.div>
 
@@ -133,24 +133,6 @@ export function ArcadeLanding() {
             className="mt-12 md:mt-16"
           >
             <ArcadeCabinets />
-          </motion.div>
-
-          <motion.div
-            {...fadeUp}
-            className="mt-14 grid gap-8 border-y border-white/10 py-10 sm:grid-cols-3 sm:gap-6"
-          >
-            {[
-              { value: '+38%', label: 'avg. session length' },
-              { value: '2 days', label: 'typical SDK integration' },
-              { value: '4', label: 'reward mechanics, one config' },
-            ].map((stat) => (
-              <div key={stat.label} className="text-center">
-                <p className="font-[family-name:var(--font-bebas-neue)] text-4xl tracking-[0.04em] text-[#d4af37] md:text-5xl">
-                  {stat.value}
-                </p>
-                <p className="mt-2 text-sm text-[#F1E9DB]/55">{stat.label}</p>
-              </div>
-            ))}
           </motion.div>
         </div>
       </section>
