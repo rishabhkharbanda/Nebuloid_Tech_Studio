@@ -1,9 +1,13 @@
-/** Fallback cover when a blog has no featured image URL set in CMS. */
+import { getSiteSettings } from '@/lib/cms/site-settings'
+
+/** Built-in fallback when CMS default is empty. */
 export const DEFAULT_BLOG_IMAGE = '/assets/site-content/blog-default.jpg'
 
-export function resolveBlogImage(imageUrl?: string | null) {
+export function resolveBlogImage(imageUrl?: string | null, fallback?: string | null) {
   const trimmed = imageUrl?.trim()
-  return trimmed || DEFAULT_BLOG_IMAGE
+  if (trimmed) return trimmed
+  const customFallback = fallback?.trim()
+  return customFallback || DEFAULT_BLOG_IMAGE
 }
 
 /**
@@ -19,4 +23,10 @@ export function resolveBlogImageAlt(
   if (cmsAlt) return cmsAlt
   const hasCustomImage = Boolean(imageUrl?.trim())
   return hasCustomImage ? title : `${title} — Nebuloid Tech Studio`
+}
+
+/** CMS-configured default cover, or the built-in asset. */
+export async function getDefaultBlogImageUrl() {
+  const settings = await getSiteSettings()
+  return resolveBlogImage(null, settings.defaultBlogImageUrl)
 }

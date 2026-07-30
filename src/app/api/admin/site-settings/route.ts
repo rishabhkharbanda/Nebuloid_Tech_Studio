@@ -30,12 +30,14 @@ export async function PUT(request: Request) {
       whatsappLink?: string
       whatsappPhone?: string
       whatsappMessage?: string
+      defaultBlogImageUrl?: string
     }
     const settings = await upsertSiteSettings({
       whatsappEnabled: Boolean(body.whatsappEnabled),
       whatsappLink: body.whatsappLink ?? '',
       whatsappPhone: body.whatsappPhone ?? '',
       whatsappMessage: body.whatsappMessage ?? '',
+      defaultBlogImageUrl: body.defaultBlogImageUrl ?? '',
     })
     return NextResponse.json(settings)
   } catch (error) {

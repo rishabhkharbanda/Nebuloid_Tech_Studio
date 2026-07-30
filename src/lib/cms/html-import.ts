@@ -1,4 +1,5 @@
 import { slugify } from '@/lib/cms/seo-analyzer'
+import { stripAttachedSections } from '@/lib/blog-html'
 
 export type ImportedBlogHtml = {
   title: string
@@ -109,6 +110,7 @@ export function parseBlogHtmlFile(html: string, fileName = ''): ImportedBlogHtml
   const metaDescription = metaContent(html, 'description')
   const image = extractFirstImage(body)
   body = stripLeadingChrome(body, title)
+  body = stripAttachedSections(body)
 
   const baseName = fileName.replace(/\.html?$/i, '').trim()
   const slug = slugify(baseName || title)

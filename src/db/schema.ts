@@ -217,6 +217,8 @@ export const siteSettings = pgTable('site_settings', {
   whatsappMessage: text('whatsapp_message')
     .notNull()
     .default('Hello! I would like to know more about Nebuloid Tech Studio.'),
+  /** Site-wide fallback cover for blogs without a featured image. */
+  defaultBlogImageUrl: text('default_blog_image_url').notNull().default(''),
   updatedAt: timestamp('updated_at', { withTimezone: true }).defaultNow().notNull(),
 })
 

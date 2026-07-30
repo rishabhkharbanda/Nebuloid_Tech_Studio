@@ -321,7 +321,7 @@ export function BlogEditor({ postId }: BlogFormProps) {
             <p className="text-sm font-semibold">Featured image</p>
             <p className="mt-1 text-xs text-[#6b7280]">
               Choose Image or No image. Alt text is stored exactly as typed and is never overwritten.
-              Posts without an image use the site default cover on the public article page.
+              Posts without an image use the site default cover (Admin → Settings).
             </p>
           </div>
           <div className="flex flex-wrap gap-2">

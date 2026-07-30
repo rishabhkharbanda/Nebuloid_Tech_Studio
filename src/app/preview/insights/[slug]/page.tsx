@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import { PageShell } from '@/components/site/page-shell'
+import { enrichBlogHtml } from '@/lib/blog-html'
 import { getBlogByPreviewToken, mapCmsBlogToPublic } from '@/lib/cms/queries'
 
 type PageProps = {
@@ -21,6 +22,7 @@ export default async function PreviewBlogPage({ params, searchParams }: PageProp
   const row = await getBlogByPreviewToken(slug, token)
   if (!row) notFound()
   const post = mapCmsBlogToPublic(row)
+  const { html: bodyHtml } = enrichBlogHtml(post.bodyHtml || '')
 
   return (
     <PageShell>
@@ -36,8 +38,8 @@ export default async function PreviewBlogPage({ params, searchParams }: PageProp
         </h1>
         <p className="mt-6 text-lg text-[#F1E9DB]/70">{post.excerpt}</p>
         <div className="prose prose-invert mt-10 max-w-none space-y-4 text-[#F1E9DB]/80">
-          {post.bodyHtml ? (
-            <div dangerouslySetInnerHTML={{ __html: post.bodyHtml }} />
+          {bodyHtml ? (
+            <div dangerouslySetInnerHTML={{ __html: bodyHtml }} />
           ) : (
             post.body.map((paragraph) => <p key={paragraph}>{paragraph}</p>)
           )}

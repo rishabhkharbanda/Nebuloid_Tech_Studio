@@ -8,7 +8,7 @@ import { BlogToc } from '@/components/site/blog-toc'
 import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { enrichBlogHtml } from '@/lib/blog-html'
-import { resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
+import { getDefaultBlogImageUrl, resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts } from '@/lib/content'
 import {
   absoluteUrl,
@@ -35,13 +35,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) return { title: 'Insight Not Found' }
+  const defaultImage = await getDefaultBlogImageUrl()
 
   return createPageMetadata({
     title: post.metaTitle || post.title,
     description: post.metaDescription || post.excerpt,
     path: `/insights/${slug}`,
     canonicalPath: post.canonicalPath || `/insights/${slug}`,
-    image: resolveBlogImage(post.ogImageUrl || post.image),
+    image: resolveBlogImage(post.ogImageUrl || post.image, defaultImage),
     type: 'article',
     noIndex: post.robotsIndex === false,
     publishedTime: post.datePublished || parseBlogDate(post.date),
@@ -62,12 +63,15 @@ export default async function InsightPage({ params }: PageProps) {
   const { slug } = await params
   const post = await getBlogPostBySlug(slug)
   if (!post) notFound()
-  const related = await getRelatedBlogPosts(slug, 3)
+  const [related, defaultImage] = await Promise.all([
+    getRelatedBlogPosts(slug, 3),
+    getDefaultBlogImageUrl(),
+  ])
   const published = post.datePublished || parseBlogDate(post.date)
   const modified = post.dateModified || published
   const articleUrl = absoluteUrl(post.canonicalPath || `/insights/${slug}`)
   const { html: bodyHtml, headings } = enrichBlogHtml(post.bodyHtml || '')
-  const coverImage = resolveBlogImage(post.image)
+  const coverImage = resolveBlogImage(post.image, defaultImage)
   const coverAlt = resolveBlogImageAlt(post.image, post.imageAlt, post.title)
 
   return (
@@ -83,7 +87,7 @@ export default async function InsightPage({ params }: PageProps) {
             title: post.title,
             description: post.excerpt,
             path: post.canonicalPath || `/insights/${slug}`,
-            image: resolveBlogImage(post.ogImageUrl || post.image),
+            image: resolveBlogImage(post.ogImageUrl || post.image, defaultImage),
             datePublished: published,
             dateModified: modified,
             category: post.category,
@@ -268,7 +272,7 @@ export default async function InsightPage({ params }: PageProps) {
                     <Link href={`/insights/${item.slug}`} className="group block h-full">
                       <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl border border-white/10">
                         <Image
-                          src={resolveBlogImage(item.image)}
+                          src={resolveBlogImage(item.image, defaultImage)}
                           alt={resolveBlogImageAlt(item.image, item.imageAlt, item.title)}
                           fill
                           loading="lazy"

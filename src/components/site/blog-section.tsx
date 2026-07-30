@@ -6,7 +6,7 @@ import { ArrowUpRight } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { SectionReveal } from '@/components/site/section-reveal'
 import { StretchLink } from '@/components/site/stretch-link'
-import { resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
+import { DEFAULT_BLOG_IMAGE, resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
 import { blogPosts } from '@/lib/site-data'
 
 type BlogListItem = {
@@ -66,7 +66,7 @@ export function BlogSection({
               <StretchLink href={`/insights/${featured.slug}`} label="Read featured blog article" />
               <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-white/10 md:col-span-5">
                 <Image
-                  src={resolveBlogImage(featured.image)}
+                  src={resolveBlogImage(featured.image, DEFAULT_BLOG_IMAGE)}
                   alt={resolveBlogImageAlt(featured.image, featured.imageAlt, featured.title)}
                   fill
                   loading="lazy"
@@ -121,7 +121,7 @@ export function BlogSection({
                   />
                   <div className="relative aspect-[16/10] overflow-hidden rounded-xl border border-white/10 md:col-span-3 md:aspect-[4/3]">
                     <Image
-                      src={resolveBlogImage(post.image)}
+                      src={resolveBlogImage(post.image, DEFAULT_BLOG_IMAGE)}
                       alt={resolveBlogImageAlt(post.image, post.imageAlt, post.title)}
                       fill
                       loading="lazy"

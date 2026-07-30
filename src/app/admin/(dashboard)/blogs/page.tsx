@@ -2,10 +2,13 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BlogBulkUpload } from '@/components/admin/blog-bulk-upload'
 import { listBlogPostsCms } from '@/lib/cms/queries'
-import { resolveBlogImage } from '@/lib/blog-image'
+import { getDefaultBlogImageUrl, resolveBlogImage } from '@/lib/blog-image'
 
 export default async function AdminBlogsPage() {
-  const posts = await listBlogPostsCms()
+  const [posts, defaultImage] = await Promise.all([
+    listBlogPostsCms(),
+    getDefaultBlogImageUrl(),
+  ])
 
   return (
     <div className="space-y-6">
@@ -63,7 +66,7 @@ export default async function AdminBlogsPage() {
                       <div className="flex items-center gap-3">
                         <div className="relative h-10 w-14 overflow-hidden rounded-md border border-black/10 bg-[#f3f4f6]">
                           <Image
-                            src={resolveBlogImage(post.featuredImageUrl)}
+                            src={resolveBlogImage(post.featuredImageUrl, defaultImage)}
                             alt=""
                             fill
                             className="object-cover"

@@ -10,6 +10,7 @@ export type PublicSiteSettings = {
   whatsappPhone: string
   whatsappMessage: string
   whatsappHref: string
+  defaultBlogImageUrl: string
 }
 
 const DEFAULTS: PublicSiteSettings = {
@@ -18,6 +19,7 @@ const DEFAULTS: PublicSiteSettings = {
   whatsappPhone: '',
   whatsappMessage: 'Hello! I would like to know more about Nebuloid Tech Studio.',
   whatsappHref: '',
+  defaultBlogImageUrl: '',
 }
 
 /** Accept wa.me / api.whatsapp.com click-to-chat URLs only. */
@@ -58,6 +60,7 @@ export function mapSiteSettings(row: SiteSettings | null | undefined): PublicSit
     whatsappPhone: phone,
     whatsappMessage: message,
     whatsappHref: resolveWhatsAppHref(link, phone, message),
+    defaultBlogImageUrl: (row.defaultBlogImageUrl ?? '').trim(),
   }
 }
 
@@ -81,6 +84,7 @@ export async function upsertSiteSettings(input: {
   whatsappLink: string
   whatsappPhone: string
   whatsappMessage: string
+  defaultBlogImageUrl: string
 }) {
   const db = getDb()
   const normalizedLink = normalizeWhatsAppLink(input.whatsappLink)
@@ -94,6 +98,7 @@ export async function upsertSiteSettings(input: {
     whatsappLink: normalizedLink,
     whatsappPhone: input.whatsappPhone.trim(),
     whatsappMessage: input.whatsappMessage.trim() || DEFAULTS.whatsappMessage,
+    defaultBlogImageUrl: input.defaultBlogImageUrl.trim(),
     updatedAt: new Date(),
   }
   const [row] = await db
@@ -106,6 +111,7 @@ export async function upsertSiteSettings(input: {
         whatsappLink: payload.whatsappLink,
         whatsappPhone: payload.whatsappPhone,
         whatsappMessage: payload.whatsappMessage,
+        defaultBlogImageUrl: payload.defaultBlogImageUrl,
         updatedAt: payload.updatedAt,
       },
     })
