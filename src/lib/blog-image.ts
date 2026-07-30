@@ -3,11 +3,25 @@ import { getSiteSettings } from '@/lib/cms/site-settings'
 /** Built-in fallback when CMS default is empty. */
 export const DEFAULT_BLOG_IMAGE = '/assets/site-content/blog-default.jpg'
 
-export function resolveBlogImage(imageUrl?: string | null, fallback?: string | null) {
+/** Imported HTML used dead CDN placeholders — treat as "no image". */
+const UNUSABLE_IMAGE_RE =
+  /cdnasset\.com\/articles\/placeholder\/|\/placeholder\/[^/]+\.(?:png|jpe?g|webp|gif)(?:\?|$)/i
+
+export function isUsableBlogImageUrl(imageUrl?: string | null) {
   const trimmed = imageUrl?.trim()
-  if (trimmed) return trimmed
+  if (!trimmed) return false
+  const lower = trimmed.toLowerCase()
+  if (lower === '#' || lower === 'about:blank' || lower.startsWith('data:,')) return false
+  if (UNUSABLE_IMAGE_RE.test(trimmed)) return false
+  return true
+}
+
+export function resolveBlogImage(imageUrl?: string | null, fallback?: string | null) {
+  if (isUsableBlogImageUrl(imageUrl)) return imageUrl!.trim()
   const customFallback = fallback?.trim()
-  return customFallback || DEFAULT_BLOG_IMAGE
+  if (customFallback && isUsableBlogImageUrl(customFallback)) return customFallback
+  if (customFallback) return customFallback
+  return DEFAULT_BLOG_IMAGE
 }
 
 /**
@@ -21,7 +35,7 @@ export function resolveBlogImageAlt(
 ) {
   const cmsAlt = imageAlt?.trim()
   if (cmsAlt) return cmsAlt
-  const hasCustomImage = Boolean(imageUrl?.trim())
+  const hasCustomImage = isUsableBlogImageUrl(imageUrl)
   return hasCustomImage ? title : `${title} — Nebuloid Tech Studio`
 }
 

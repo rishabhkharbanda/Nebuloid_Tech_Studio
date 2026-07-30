@@ -4,14 +4,24 @@ import { useEffect, useState } from 'react'
 import type { PublicSiteSettings } from '@/lib/cms/site-settings'
 import { DEFAULT_BLOG_IMAGE } from '@/lib/blog-image'
 
+type SettingsForm = {
+  whatsappEnabled: boolean
+  whatsappLink: string
+  whatsappPhone: string
+  whatsappMessage: string
+  defaultBlogImageUrl: string
+}
+
+const EMPTY_FORM: SettingsForm = {
+  whatsappEnabled: false,
+  whatsappLink: '',
+  whatsappPhone: '',
+  whatsappMessage: 'Hello! I would like to know more about Nebuloid Tech Studio.',
+  defaultBlogImageUrl: '',
+}
+
 export function SiteSettingsEditor() {
-  const [form, setForm] = useState({
-    whatsappEnabled: false,
-    whatsappLink: '',
-    whatsappPhone: '',
-    whatsappMessage: 'Hello! I would like to know more about Nebuloid Tech Studio.',
-    defaultBlogImageUrl: '',
-  })
+  const [form, setForm] = useState<SettingsForm>(EMPTY_FORM)
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
   const [uploading, setUploading] = useState(false)
@@ -36,24 +46,42 @@ export function SiteSettingsEditor() {
       .finally(() => setLoading(false))
   }, [])
 
-  async function save(event: React.FormEvent) {
-    event.preventDefault()
+  async function persist(next: SettingsForm, successMessage: string) {
     setSaving(true)
     setMessage('')
     try {
       const res = await fetch('/api/admin/site-settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify(next),
       })
       const data = await res.json()
       if (!res.ok) throw new Error(data.error ?? 'Save failed')
+      setForm({
+        whatsappEnabled: Boolean(data.whatsappEnabled),
+        whatsappLink: data.whatsappLink ?? '',
+        whatsappPhone: data.whatsappPhone ?? '',
+        whatsappMessage:
+          data.whatsappMessage ??
+          'Hello! I would like to know more about Nebuloid Tech Studio.',
+        defaultBlogImageUrl: data.defaultBlogImageUrl ?? '',
+      })
       setPreview(data)
-      setMessage('Settings saved. Changes appear on the live site within about a minute.')
+      setMessage(successMessage)
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Save failed')
+      throw error
     } finally {
       setSaving(false)
+    }
+  }
+
+  async function save(event: React.FormEvent) {
+    event.preventDefault()
+    try {
+      await persist(form, 'Settings saved. Changes appear on the live site within about a minute.')
+    } catch {
+      // message already set
     }
   }
 
@@ -67,12 +95,14 @@ export function SiteSettingsEditor() {
       body.set('folder', 'blog-defaults')
       body.set('alt', 'Default blog cover')
       const res = await fetch('/api/admin/upload', { method: 'POST', body })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data.error ?? 'Upload failed')
-      const url = String(data.asset?.url || data.url || '')
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error ?? `Upload failed (${res.status})`)
+      const url = String(data.asset?.url || data.url || '').trim()
       if (!url) throw new Error('Upload succeeded but no URL was returned')
-      setForm((prev) => ({ ...prev, defaultBlogImageUrl: url }))
-      setMessage('Image uploaded. Click Save settings to apply it site-wide.')
+
+      const next = { ...form, defaultBlogImageUrl: url }
+      setForm(next)
+      await persist(next, 'Default blog image uploaded and saved.')
     } catch (error) {
       setMessage(error instanceof Error ? error.message : 'Upload failed')
     } finally {
@@ -87,13 +117,13 @@ export function SiteSettingsEditor() {
   const previewUrl = form.defaultBlogImageUrl.trim() || DEFAULT_BLOG_IMAGE
 
   return (
-    <form onSubmit={save} className="mx-auto max-w-2xl space-y-10">
+    <form onSubmit={save} className="mx-auto max-w-2xl space-y-10" noValidate>
       <section className="space-y-6">
         <div>
           <h2 className="text-xl font-semibold text-[#111827]">Default blog image</h2>
           <p className="mt-1 text-sm text-[#6b7280]">
-            Used on every blog that has no featured image yet. Upload once here; individual posts
-            can still override with their own image later.
+            Used on every blog that has no real featured image yet (including old CDN
+            placeholders). Upload once here; individual posts can still override later.
           </p>
         </div>
 
@@ -116,14 +146,18 @@ export function SiteSettingsEditor() {
             Default image URL
           </label>
           <input
-            type="url"
+            type="text"
             value={form.defaultBlogImageUrl}
             onChange={(event) =>
               setForm((prev) => ({ ...prev, defaultBlogImageUrl: event.target.value }))
             }
-            placeholder="Upload below, or paste a Media Library URL"
+            placeholder="/api/media/… or https://…"
             className="w-full rounded-xl border border-black/10 px-4 py-3 text-sm outline-none focus:border-[#b45309]"
           />
+          <p className="mt-2 text-xs text-[#6b7280]">
+            Uploads save automatically. Relative media paths like{' '}
+            <code className="rounded bg-black/5 px-1">/api/media/…</code> are supported.
+          </p>
         </div>
 
         <div className="flex flex-wrap items-center gap-3">
@@ -132,19 +166,24 @@ export function SiteSettingsEditor() {
               type="file"
               accept="image/*"
               className="sr-only"
-              disabled={uploading}
+              disabled={uploading || saving}
               onChange={(event) => {
                 void uploadDefaultImage(event.target.files?.[0] ?? null)
                 event.target.value = ''
               }}
             />
-            {uploading ? 'Uploading…' : 'Upload default image'}
+            {uploading ? 'Uploading…' : saving ? 'Saving…' : 'Upload default image'}
           </label>
           {form.defaultBlogImageUrl.trim() ? (
             <button
               type="button"
-              onClick={() => setForm((prev) => ({ ...prev, defaultBlogImageUrl: '' }))}
-              className="rounded-xl border border-black/10 px-4 py-2.5 text-sm text-[#6b7280] transition hover:text-[#111827]"
+              disabled={uploading || saving}
+              onClick={() => {
+                const next = { ...form, defaultBlogImageUrl: '' }
+                setForm(next)
+                void persist(next, 'Cleared custom default — using built-in fallback.')
+              }}
+              className="rounded-xl border border-black/10 px-4 py-2.5 text-sm text-[#6b7280] transition hover:text-[#111827] disabled:opacity-60"
             >
               Clear to built-in fallback
             </button>
@@ -252,7 +291,7 @@ export function SiteSettingsEditor() {
 
       <button
         type="submit"
-        disabled={saving}
+        disabled={saving || uploading}
         className="rounded-xl bg-[#111827] px-5 py-3 text-sm font-semibold text-white transition hover:bg-black disabled:opacity-60"
       >
         {saving ? 'Saving…' : 'Save settings'}

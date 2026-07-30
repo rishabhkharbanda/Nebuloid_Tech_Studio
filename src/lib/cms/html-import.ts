@@ -1,5 +1,6 @@
 import { slugify } from '@/lib/cms/seo-analyzer'
 import { stripAttachedSections } from '@/lib/blog-html'
+import { isUsableBlogImageUrl } from '@/lib/blog-image'
 
 export type ImportedBlogHtml = {
   title: string
@@ -65,12 +66,15 @@ function extractArticleHtml(html: string) {
 }
 
 function extractFirstImage(html: string) {
-  const match = html.match(/<img[^>]+src=["']([^"']+)["'][^>]*>/i)
-  if (!match) return { url: '', alt: '' }
-  const tag = match[0]
-  const url = match[1].trim()
-  const alt = tag.match(/alt=["']([^"']*)["']/i)?.[1]?.trim() || ''
-  return { url, alt: decodeEntities(alt) }
+  const matches = html.matchAll(/<img\b[^>]*>/gi)
+  for (const match of matches) {
+    const tag = match[0]
+    const url = tag.match(/\ssrc=["']([^"']+)["']/i)?.[1]?.trim() || ''
+    if (!isUsableBlogImageUrl(url)) continue
+    const alt = tag.match(/\salt=["']([^"']*)["']/i)?.[1]?.trim() || ''
+    return { url, alt: decodeEntities(alt) }
+  }
+  return { url: '', alt: '' }
 }
 
 function stripLeadingChrome(body: string, title: string) {

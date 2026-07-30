@@ -1,3 +1,5 @@
+import { isUsableBlogImageUrl } from '@/lib/blog-image'
+
 export type BlogHeading = {
   id: string
   text: string
@@ -32,16 +34,10 @@ function imgSrc(tag: string) {
   return tag.match(/\ssrc=["']([^"']*)["']/i)?.[1]?.trim() ?? ''
 }
 
-function hasUsableSrc(src: string) {
-  if (!src) return false
-  const lower = src.toLowerCase()
-  if (lower === '#' || lower === 'about:blank' || lower.startsWith('data:,')) return false
-  return true
-}
-
 /**
- * Remove WordPress/Notion-style attachment chrome and broken empty images
- * that browsers render as a broken-icon + alt-text pill.
+ * Remove WordPress/Notion-style attachment chrome, broken placeholder images
+ * (cdnasset placeholders render as broken-icon + alt-text pills), and duplicate
+ * leading title/cover chrome already shown by the article template.
  */
 export function stripAttachedSections(html: string) {
   if (!html.trim()) return ''
@@ -64,14 +60,28 @@ export function stripAttachedSections(html: string) {
     '',
   )
 
-  // Empty / unusable images (broken-icon + alt text in the browser)
+  // Drop unusable / placeholder images (broken CDN placeholders, empty src, etc.)
   next = next.replace(/<p>\s*(<img\b[^>]*>)\s*<\/p>/gi, (_match, img: string) => {
-    return hasUsableSrc(imgSrc(img)) ? _match : ''
+    return isUsableBlogImageUrl(imgSrc(img)) ? _match : ''
   })
-  next = next.replace(/<img\b[^>]*>/gi, (tag) => (hasUsableSrc(imgSrc(tag)) ? tag : ''))
+  next = next.replace(/<img\b[^>]*>/gi, (tag) =>
+    isUsableBlogImageUrl(imgSrc(tag)) ? tag : '',
+  )
 
   // Empty figures left behind after image removal
-  next = next.replace(/<figure[^>]*>\s*(?:<figcaption[^>]*>[\s\S]*?<\/figcaption>)?\s*<\/figure>/gi, '')
+  next = next.replace(
+    /<figure[^>]*>\s*(?:<figcaption[^>]*>[\s\S]*?<\/figcaption>)?\s*<\/figure>/gi,
+    '',
+  )
+
+  // Leading chrome already rendered by the article template (title + cover)
+  for (let i = 0; i < 4; i += 1) {
+    const before = next
+    next = next.replace(/^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i, '')
+    next = next.replace(/^\s*(?:<p>\s*)?<img\b[^>]*>\s*(?:<\/p>)?\s*/i, '')
+    next = next.replace(/^\s*(?:<hr\s*\/?>\s*)+/i, '')
+    if (next === before) break
+  }
 
   // Collapse leftover empty paragraphs
   next = next.replace(/(?:<p>\s*<\/p>\s*)+/gi, '')

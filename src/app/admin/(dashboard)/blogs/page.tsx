@@ -2,7 +2,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { BlogBulkUpload } from '@/components/admin/blog-bulk-upload'
 import { listBlogPostsCms } from '@/lib/cms/queries'
-import { getDefaultBlogImageUrl, resolveBlogImage } from '@/lib/blog-image'
+import { getDefaultBlogImageUrl, isUsableBlogImageUrl, resolveBlogImage } from '@/lib/blog-image'
 
 export default async function AdminBlogsPage() {
   const [posts, defaultImage] = await Promise.all([
@@ -50,7 +50,7 @@ export default async function AdminBlogsPage() {
               </tr>
             ) : (
               posts.map((post) => {
-                const hasImage = Boolean(post.featuredImageUrl?.trim())
+                const hasImage = isUsableBlogImageUrl(post.featuredImageUrl)
                 return (
                   <tr key={post.id} className="border-t border-black/5 hover:bg-black/[0.02]">
                     <td className="px-4 py-3">
