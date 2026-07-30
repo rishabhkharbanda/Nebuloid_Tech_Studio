@@ -1,8 +1,10 @@
 'use client'
 
-import { useDeferredValue, useMemo, useState } from 'react'
-import { ArrowUpRight, Search, X } from 'lucide-react'
+import { useDeferredValue, useEffect, useMemo, useState } from 'react'
+import { ArrowUpRight, ChevronLeft, ChevronRight, Search, X } from 'lucide-react'
 import { StretchLink } from '@/components/site/stretch-link'
+
+const PAGE_SIZE = 10
 
 export type InsightsListItem = {
   slug: string
@@ -24,6 +26,7 @@ export function InsightsListing({
 }) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState(initialCategory || 'All')
+  const [page, setPage] = useState(1)
   const deferredQuery = useDeferredValue(query)
 
   const categories = useMemo(() => {
@@ -48,7 +51,26 @@ export function InsightsListing({
     })
   }, [posts, safeCategory, deferredQuery])
 
-  const [featured, ...rest] = filtered
+  const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE))
+  const currentPage = Math.min(page, totalPages)
+
+  useEffect(() => {
+    setPage(1)
+  }, [safeCategory, deferredQuery])
+
+  const pagePosts = useMemo(() => {
+    const start = (currentPage - 1) * PAGE_SIZE
+    return filtered.slice(start, start + PAGE_SIZE)
+  }, [filtered, currentPage])
+
+  const [featured, ...rest] = pagePosts
+  const rangeStart = filtered.length === 0 ? 0 : (currentPage - 1) * PAGE_SIZE + 1
+  const rangeEnd = Math.min(currentPage * PAGE_SIZE, filtered.length)
+
+  function goToPage(nextPage: number) {
+    setPage(Math.min(Math.max(1, nextPage), totalPages))
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
 
   return (
     <div className="section-padding pb-32">
@@ -93,6 +115,7 @@ export function InsightsListing({
 
           <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/40 lg:text-right">
             {filtered.length} {filtered.length === 1 ? 'article' : 'articles'}
+            {filtered.length > 0 ? ` · ${rangeStart}–${rangeEnd}` : ''}
             {safeCategory !== 'All' ? ` · ${safeCategory}` : ''}
           </p>
         </div>
@@ -125,73 +148,112 @@ export function InsightsListing({
         </div>
 
         {featured ? (
-          <div className="mt-10 border-y border-white/10">
-            <article className="group relative py-10 md:py-14">
-              <StretchLink
-                href={`/insights/${featured.slug}`}
-                label={`Read featured article: ${featured.category}`}
-              />
-              <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">
-                <span className="text-[#d4af37]">Featured</span>
-                <span>·</span>
-                <span>{featured.category}</span>
-                <span>·</span>
-                <span>{featured.date}</span>
-                <span>·</span>
-                <span>{featured.readTime}</span>
-              </div>
-
-              <h2 className="mt-5 max-w-4xl text-[clamp(1.85rem,4vw,3.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
-                {featured.title}
-              </h2>
-              <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
-                {featured.excerpt}
-              </p>
-              <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/55 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
-                Read story
-                <ArrowUpRight
-                  size={16}
-                  className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+          <>
+            <div className="mt-10 border-y border-white/10">
+              <article className="group relative py-10 md:py-14">
+                <StretchLink
+                  href={`/insights/${featured.slug}`}
+                  label={`Read featured article: ${featured.category}`}
                 />
-              </span>
-            </article>
+                <div className="flex flex-wrap items-center gap-3 font-mono text-xs uppercase tracking-[0.16em] text-[#F1E9DB]/50">
+                  {currentPage === 1 ? (
+                    <>
+                      <span className="text-[#d4af37]">Featured</span>
+                      <span>·</span>
+                    </>
+                  ) : null}
+                  <span className={currentPage === 1 ? undefined : 'text-[#d4af37]'}>
+                    {featured.category}
+                  </span>
+                  <span>·</span>
+                  <span>{featured.date}</span>
+                  <span>·</span>
+                  <span>{featured.readTime}</span>
+                </div>
 
-            <div className="divide-y divide-white/10">
-              {rest.map((post) => (
-                <article
-                  key={post.slug}
-                  className="group relative grid gap-4 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
-                >
-                  <StretchLink
-                    href={`/insights/${post.slug}`}
-                    label={`Read ${post.category} article`}
+                <h2 className="mt-5 max-w-4xl text-[clamp(1.85rem,4vw,3.4rem)] font-semibold leading-[1.05] tracking-[-0.03em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37]">
+                  {featured.title}
+                </h2>
+                <p className="mt-5 max-w-2xl text-base leading-relaxed text-[#F1E9DB]/65 md:text-lg">
+                  {featured.excerpt}
+                </p>
+                <span className="mt-8 inline-flex items-center gap-2 text-sm font-medium text-[#F1E9DB]/55 transition-all group-hover:gap-3 group-hover:text-[#d4af37]">
+                  Read story
+                  <ArrowUpRight
+                    size={16}
+                    className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
                   />
+                </span>
+              </article>
 
-                  <div className="md:col-span-11">
-                    <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
-                      <span className="text-[#d4af37]">{post.category}</span>
-                      <span>·</span>
-                      <span>{post.date}</span>
-                      <span>·</span>
-                      <span>{post.readTime}</span>
+              <div className="divide-y divide-white/10">
+                {rest.map((post) => (
+                  <article
+                    key={post.slug}
+                    className="group relative grid gap-4 py-8 transition-colors hover:bg-white/[0.02] md:grid-cols-12 md:items-center md:gap-10 md:py-10"
+                  >
+                    <StretchLink
+                      href={`/insights/${post.slug}`}
+                      label={`Read ${post.category} article`}
+                    />
+
+                    <div className="md:col-span-11">
+                      <div className="flex flex-wrap items-center gap-3 font-mono text-[10px] uppercase tracking-[0.14em] text-[#F1E9DB]/45">
+                        <span className="text-[#d4af37]">{post.category}</span>
+                        <span>·</span>
+                        <span>{post.date}</span>
+                        <span>·</span>
+                        <span>{post.readTime}</span>
+                      </div>
+                      <h3 className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37] md:text-2xl">
+                        {post.title}
+                      </h3>
+                      <p className="mt-3 max-w-2xl leading-relaxed text-[#F1E9DB]/55">
+                        {post.excerpt}
+                      </p>
                     </div>
-                    <h3 className="mt-3 text-xl font-semibold tracking-[-0.02em] text-[#F1E9DB] transition-colors group-hover:text-[#d4af37] md:text-2xl">
-                      {post.title}
-                    </h3>
-                    <p className="mt-3 max-w-2xl leading-relaxed text-[#F1E9DB]/55">
-                      {post.excerpt}
-                    </p>
-                  </div>
 
-                  <div className="flex md:col-span-1 md:justify-end">
-                    <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-[#F1E9DB]/40 transition-all group-hover:border-[#d4af37]/50 group-hover:text-[#d4af37]">
-                      <ArrowUpRight size={18} />
-                    </span>
-                  </div>
-                </article>
-              ))}
+                    <div className="flex md:col-span-1 md:justify-end">
+                      <span className="inline-flex h-11 w-11 items-center justify-center rounded-full border border-white/10 text-[#F1E9DB]/40 transition-all group-hover:border-[#d4af37]/50 group-hover:text-[#d4af37]">
+                        <ArrowUpRight size={18} />
+                      </span>
+                    </div>
+                  </article>
+                ))}
+              </div>
             </div>
-          </div>
+
+            {totalPages > 1 ? (
+              <nav
+                className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-8 sm:flex-row"
+                aria-label="Blog pagination"
+              >
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage - 1)}
+                  disabled={currentPage <= 1}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/70 transition enabled:hover:border-[#d4af37]/45 enabled:hover:text-[#d4af37] disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  <ChevronLeft size={14} aria-hidden />
+                  Previous
+                </button>
+
+                <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-[#F1E9DB]/45">
+                  Page {currentPage} of {totalPages}
+                </p>
+
+                <button
+                  type="button"
+                  onClick={() => goToPage(currentPage + 1)}
+                  disabled={currentPage >= totalPages}
+                  className="inline-flex items-center gap-2 rounded-full border border-white/12 px-5 py-2.5 font-mono text-[10px] uppercase tracking-[0.16em] text-[#F1E9DB]/70 transition enabled:hover:border-[#d4af37]/45 enabled:hover:text-[#d4af37] disabled:cursor-not-allowed disabled:opacity-35"
+                >
+                  Next
+                  <ChevronRight size={14} aria-hidden />
+                </button>
+              </nav>
+            ) : null}
+          </>
         ) : (
           <div className="mt-16 border border-dashed border-white/15 px-6 py-16 text-center">
             <p className="text-lg text-[#F1E9DB]/70">No articles match that search.</p>
