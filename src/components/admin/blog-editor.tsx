@@ -41,6 +41,7 @@ export function BlogEditor({ postId }: BlogFormProps) {
   const [seo, setSeo] = useState<SeoAnalysis | null>(null)
   const [previewUrl, setPreviewUrl] = useState('')
   const [importNote, setImportNote] = useState('')
+  const [imageMode, setImageMode] = useState<'image' | 'none'>('image')
   const htmlInputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
@@ -76,6 +77,7 @@ export function BlogEditor({ postId }: BlogFormProps) {
         schemaType: data.post.schemaType || 'BlogPosting',
         displayDate: data.post.displayDate,
       })
+      setImageMode(data.post.featuredImageUrl?.trim() ? 'image' : 'none')
       if (data.post.slug && data.post.previewToken) {
         setPreviewUrl(`/preview/insights/${data.post.slug}?token=${data.post.previewToken}`)
       }
@@ -115,6 +117,9 @@ export function BlogEditor({ postId }: BlogFormProps) {
       slug: form.slug || slugify(form.title),
       bodyHtml: form.body,
       body: form.body,
+      // "No image" clears URL only — alt text is never auto-changed.
+      featuredImageUrl: imageMode === 'none' ? '' : form.featuredImageUrl.trim(),
+      featuredImageAlt: form.featuredImageAlt,
     }
     const response = await fetch(postId ? `/api/admin/blogs/${postId}` : '/api/admin/blogs', {
       method: postId ? 'PUT' : 'POST',
@@ -178,6 +183,7 @@ export function BlogEditor({ postId }: BlogFormProps) {
         metaDescription: imported.metaDescription || prev.metaDescription,
         focusKeyword: prev.focusKeyword || imported.title.split(':')[0]?.trim() || '',
       }))
+      if (imported.featuredImageUrl) setImageMode('image')
       setImportNote(`Imported “${file.name}”. Review fields, then Save or Publish.`)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not parse HTML file.')
@@ -310,22 +316,74 @@ export function BlogEditor({ postId }: BlogFormProps) {
           />
         </Field>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <Field label="Featured image URL">
-            <input
-              value={form.featuredImageUrl}
-              onChange={(e) => setForm((prev) => ({ ...prev, featuredImageUrl: e.target.value }))}
-              className="w-full rounded-xl border border-black/10 px-3 py-2.5"
-              placeholder="Upload in Media Library, then paste URL"
-            />
-          </Field>
-          <Field label="Featured image alt text">
-            <input
-              value={form.featuredImageAlt}
-              onChange={(e) => setForm((prev) => ({ ...prev, featuredImageAlt: e.target.value }))}
-              className="w-full rounded-xl border border-black/10 px-3 py-2.5"
-            />
-          </Field>
+        <div className="space-y-4 rounded-2xl border border-black/10 bg-[#fafafa] p-4">
+          <div>
+            <p className="text-sm font-semibold">Featured image</p>
+            <p className="mt-1 text-xs text-[#6b7280]">
+              Choose Image or No image. Alt text is stored exactly as typed and is never overwritten.
+              Posts without an image use the site default cover on the public article page.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <button
+              type="button"
+              onClick={() => setImageMode('image')}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium ${
+                imageMode === 'image'
+                  ? 'bg-[#111827] text-white'
+                  : 'border border-black/10 bg-white text-[#374151]'
+              }`}
+            >
+              Image
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                setImageMode('none')
+                setForm((prev) => ({
+                  ...prev,
+                  featuredImageUrl: '',
+                  // Keep featuredImageAlt as-is.
+                }))
+              }}
+              className={`rounded-full px-3.5 py-1.5 text-xs font-medium ${
+                imageMode === 'none'
+                  ? 'bg-[#111827] text-white'
+                  : 'border border-black/10 bg-white text-[#374151]'
+              }`}
+            >
+              No image
+            </button>
+          </div>
+          <div className="grid gap-4 md:grid-cols-2">
+            <Field label="Featured image URL">
+              <input
+                value={form.featuredImageUrl}
+                onChange={(e) => {
+                  setImageMode('image')
+                  setForm((prev) => ({ ...prev, featuredImageUrl: e.target.value }))
+                }}
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5 disabled:bg-black/[0.03]"
+                placeholder="Upload in Media Library, then paste URL"
+                disabled={imageMode === 'none'}
+              />
+              {imageMode === 'none' ? (
+                <p className="mt-1.5 text-xs text-[#6b7280]">
+                  No image — public article will show the default cover.
+                </p>
+              ) : null}
+            </Field>
+            <Field label="Featured image alt text">
+              <input
+                value={form.featuredImageAlt}
+                onChange={(e) =>
+                  setForm((prev) => ({ ...prev, featuredImageAlt: e.target.value }))
+                }
+                className="w-full rounded-xl border border-black/10 px-3 py-2.5"
+                placeholder="Saved as-is (not auto-filled)"
+              />
+            </Field>
+          </div>
         </div>
 
         <Field label="Tags">

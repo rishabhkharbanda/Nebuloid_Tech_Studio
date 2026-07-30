@@ -8,6 +8,7 @@ import { BlogToc } from '@/components/site/blog-toc'
 import { JsonLd } from '@/components/site/json-ld'
 import { PageShell } from '@/components/site/page-shell'
 import { enrichBlogHtml } from '@/lib/blog-html'
+import { resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
 import { getAllBlogSlugs, getBlogPostBySlug, getRelatedBlogPosts } from '@/lib/content'
 import {
   absoluteUrl,
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
     description: post.metaDescription || post.excerpt,
     path: `/insights/${slug}`,
     canonicalPath: post.canonicalPath || `/insights/${slug}`,
-    image: post.ogImageUrl || post.image,
+    image: resolveBlogImage(post.ogImageUrl || post.image),
     type: 'article',
     noIndex: post.robotsIndex === false,
     publishedTime: post.datePublished || parseBlogDate(post.date),
@@ -66,6 +67,8 @@ export default async function InsightPage({ params }: PageProps) {
   const modified = post.dateModified || published
   const articleUrl = absoluteUrl(post.canonicalPath || `/insights/${slug}`)
   const { html: bodyHtml, headings } = enrichBlogHtml(post.bodyHtml || '')
+  const coverImage = resolveBlogImage(post.image)
+  const coverAlt = resolveBlogImageAlt(post.image, post.imageAlt, post.title)
 
   return (
     <PageShell>
@@ -80,7 +83,7 @@ export default async function InsightPage({ params }: PageProps) {
             title: post.title,
             description: post.excerpt,
             path: post.canonicalPath || `/insights/${slug}`,
-            image: post.ogImageUrl || post.image,
+            image: resolveBlogImage(post.ogImageUrl || post.image),
             datePublished: published,
             dateModified: modified,
             category: post.category,
@@ -141,20 +144,18 @@ export default async function InsightPage({ params }: PageProps) {
 
           <BlogArticleTools title={post.title} url={articleUrl} />
 
-          {post.image ? (
-            <div className="relative mt-12 aspect-[21/9] overflow-hidden rounded-3xl border border-white/10">
-              <Image
-                src={post.image}
-                alt={post.imageAlt || post.title}
-                fill
-                className="object-cover"
-                sizes="100vw"
-                priority
-                quality={70}
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
-            </div>
-          ) : null}
+          <div className="relative mt-12 aspect-[21/9] overflow-hidden rounded-3xl border border-white/10">
+            <Image
+              src={coverImage}
+              alt={coverAlt}
+              fill
+              className="object-cover"
+              sizes="100vw"
+              priority
+              quality={70}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent" />
+          </div>
 
           <div className="mx-auto mt-12 grid max-w-5xl gap-10 border-t border-white/10 pt-12 lg:grid-cols-[minmax(0,1fr)_220px]">
             <div id="blog-article-body" className="min-w-0">
@@ -265,19 +266,17 @@ export default async function InsightPage({ params }: PageProps) {
                 {related.map((item) => (
                   <li key={item.slug}>
                     <Link href={`/insights/${item.slug}`} className="group block h-full">
-                      {item.image ? (
-                        <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl border border-white/10">
-                          <Image
-                            src={item.image}
-                            alt={item.imageAlt || item.title}
-                            fill
-                            loading="lazy"
-                            quality={65}
-                            className="object-cover transition duration-500 group-hover:scale-105"
-                            sizes="(max-width: 768px) 100vw, 30vw"
-                          />
-                        </div>
-                      ) : null}
+                      <div className="relative mb-4 aspect-[16/10] overflow-hidden rounded-xl border border-white/10">
+                        <Image
+                          src={resolveBlogImage(item.image)}
+                          alt={resolveBlogImageAlt(item.image, item.imageAlt, item.title)}
+                          fill
+                          loading="lazy"
+                          quality={65}
+                          className="object-cover transition duration-500 group-hover:scale-105"
+                          sizes="(max-width: 768px) 100vw, 30vw"
+                        />
+                      </div>
                       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-[#d4af37]">
                         {item.category}
                       </p>
