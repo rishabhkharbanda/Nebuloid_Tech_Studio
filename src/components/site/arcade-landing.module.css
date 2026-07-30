@@ -1,0 +1,447 @@
+/* Scoped arcade cabinet styles — Nebuloid gold / charcoal palette */
+.cabinet {
+  position: relative;
+  border-radius: 1.25rem;
+  border: 1px solid rgba(241, 233, 219, 0.1);
+  background: linear-gradient(165deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.015));
+  padding: 0.875rem;
+  transition: border-color 0.35s ease, background 0.35s ease;
+}
+
+.cabinet:hover {
+  border-color: rgba(212, 175, 55, 0.35);
+}
+
+.marquee {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.15rem 0.35rem 0.75rem;
+}
+
+.marqueeLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.68rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: #d4af37;
+}
+
+.pulse {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #d4af37;
+  animation: arcadeBlink 1.6s ease-in-out infinite;
+}
+
+.badge {
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(241, 233, 219, 0.55);
+  border: 1px solid rgba(241, 233, 219, 0.14);
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+.screen {
+  position: relative;
+  height: 210px;
+  border-radius: 0.85rem;
+  overflow: hidden;
+  background: radial-gradient(
+    120% 100% at 50% 0%,
+    var(--screen-tint, rgba(212, 175, 55, 0.12)),
+    #0c0c0a 70%
+  );
+  border: 1px solid rgba(241, 233, 219, 0.06);
+  user-select: none;
+}
+
+.screen::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  background: linear-gradient(115deg, rgba(255, 255, 255, 0.05) 0%, transparent 32%);
+}
+
+.cabFoot {
+  padding: 0.9rem 0.35rem 0.25rem;
+}
+
+.cabFoot h3 {
+  font-size: 1.05rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+  color: #f1e9db;
+}
+
+.cabFoot p {
+  margin-top: 0.3rem;
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: rgba(241, 233, 219, 0.58);
+}
+
+.cabControls {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin-top: 0.85rem;
+  flex-wrap: wrap;
+}
+
+.playBtn {
+  padding: 0.5rem 1rem;
+  border-radius: 0.65rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  border: none;
+  cursor: pointer;
+  font-family: inherit;
+  background: linear-gradient(135deg, #f1e9db, #d4af37);
+  color: #12100c;
+  transition: transform 0.15s ease, filter 0.15s ease;
+}
+
+.playBtn:hover {
+  filter: brightness(1.05);
+}
+
+.playBtn:active {
+  transform: scale(0.96);
+}
+
+.playBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.iconBtn {
+  width: 34px;
+  height: 34px;
+  border-radius: 0.5rem;
+  border: 1px solid rgba(241, 233, 219, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: #f1e9db;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+.iconBtn:hover {
+  border-color: rgba(212, 175, 55, 0.4);
+}
+
+.resultLine {
+  font-size: 0.75rem;
+  min-height: 1.1em;
+  color: rgba(241, 233, 219, 0.55);
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+}
+
+@keyframes arcadeBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pulse {
+    animation: none;
+  }
+}
+
+/* Spin wheel */
+.wheelStage {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.wheelPlate {
+  width: 172px;
+  height: 172px;
+  position: relative;
+}
+
+.wheelDisc {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: conic-gradient(
+    #d4af37 0deg 45deg,
+    #1a1814 45deg 90deg,
+    #d4af37 90deg 135deg,
+    #1a1814 135deg 180deg,
+    #d4af37 180deg 225deg,
+    #1a1814 225deg 270deg,
+    #d4af37 270deg 315deg,
+    #1a1814 315deg 360deg
+  );
+  border: 3px solid #f1e9db;
+  position: relative;
+  box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.65);
+  transition: transform 4s cubic-bezier(0.15, 0.7, 0.25, 1);
+}
+
+.wheelDisc::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 50%, transparent 60%, rgba(0, 0, 0, 0.35) 100%);
+}
+
+.wheelLabel {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 60px;
+  text-align: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  font-family: var(--font-jetbrains-mono), ui-monospace, monospace;
+  color: #12100c;
+  transform-origin: 0 0;
+}
+
+.wheelHub {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f1e9db, #d4af37 70%);
+  border: 2px solid #12100c;
+  z-index: 3;
+}
+
+.wheelPointer {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 9px solid transparent;
+  border-right: 9px solid transparent;
+  border-top: 16px solid #f1e9db;
+  z-index: 4;
+}
+
+.wheelLights {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.wheelLights span {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: #f1e9db;
+  animation: arcadeBlink 1.4s ease-in-out infinite;
+}
+
+/* Slots */
+.slotFrame {
+  position: absolute;
+  inset: 12px;
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+}
+
+.reelWindow {
+  width: 30%;
+  height: 70%;
+  border-radius: 0.5rem;
+  overflow: hidden;
+  position: relative;
+  background: linear-gradient(180deg, #0a0a08, #16140f);
+  border: 1px solid rgba(212, 175, 55, 0.22);
+  box-shadow:
+    inset 0 8px 14px -8px #000,
+    inset 0 -8px 14px -8px #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.1rem;
+}
+
+.reelSpinning {
+  filter: blur(2px);
+}
+
+.slotLever {
+  position: absolute;
+  right: 6px;
+  top: 14px;
+  width: 6px;
+  height: 36px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, #d4af37, #8a6f20);
+  transform-origin: bottom center;
+  cursor: pointer;
+  z-index: 4;
+}
+
+.slotLever::after {
+  content: '';
+  position: absolute;
+  top: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #f1e9db, #d4af37);
+}
+
+.slotLeverPulled {
+  animation: arcadeLever 0.5s ease-in-out;
+}
+
+@keyframes arcadeLever {
+  0%,
+  100% {
+    transform: rotate(0deg);
+  }
+  50% {
+    transform: rotate(-16deg);
+  }
+}
+
+/* Race */
+.raceWrap {
+  position: absolute;
+  inset: 0;
+}
+
+.raceCanvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.raceOverlay {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+  background: rgba(9, 9, 9, 0.55);
+  z-index: 6;
+}
+
+.raceTouch {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: space-between;
+  padding: 0 8px;
+  z-index: 6;
+}
+
+/* Archery */
+.archScene {
+  position: absolute;
+  inset: 0;
+  cursor: crosshair;
+}
+
+.target {
+  position: absolute;
+  top: 50%;
+  right: 26%;
+  transform: translateY(-50%);
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle, #d4af37 0 8%, transparent 8.5%),
+    radial-gradient(circle, #f1e9db 0 22%, transparent 22.5%),
+    radial-gradient(circle, #2a261c 0 38%, transparent 38.5%),
+    radial-gradient(circle, #f1e9db 0 55%, transparent 55.5%),
+    radial-gradient(circle, #d4af37 0 72%, transparent 72.5%),
+    radial-gradient(circle, #f1e9db 0 100%);
+  pointer-events: none;
+}
+
+.bow {
+  position: absolute;
+  left: 10%;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 14px;
+  height: 90px;
+  border: 3px solid #d4af37;
+  border-left: none;
+  border-radius: 0 60px 60px 0;
+  opacity: 0.75;
+  pointer-events: none;
+}
+
+.crosshair {
+  position: absolute;
+  width: 16px;
+  height: 16px;
+  border: 2px solid #f1e9db;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 4;
+  display: none;
+}
+
+.crosshair::before,
+.crosshair::after {
+  content: '';
+  position: absolute;
+  background: #f1e9db;
+}
+
+.crosshair::before {
+  width: 8px;
+  height: 2px;
+  top: 7px;
+  left: -2px;
+}
+
+.crosshair::after {
+  width: 2px;
+  height: 8px;
+  left: 7px;
+  top: -2px;
+}
+
+.shaft {
+  position: absolute;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, #f1e9db);
+  transform-origin: left center;
+  z-index: 3;
+}

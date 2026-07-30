@@ -149,7 +149,7 @@ export function HeroSection({ slides }: { slides: PublicHeroSlide[] }) {
         </div>
 
         <div className="mt-10 flex flex-wrap items-center gap-3 sm:gap-4">
-          <MagneticButton size="lg" onClick={() => router.push('/contact')}>
+          <MagneticButton size="lg" onClick={() => router.push('/arcade')}>
             Start Your Experience <ArrowUpRight size={18} />
           </MagneticButton>
           <Button

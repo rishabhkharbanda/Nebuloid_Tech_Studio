@@ -24,6 +24,7 @@ const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/process'), changeFrequency: 'monthly', priority: 0.75 },
   { url: absoluteUrl('/faq'), changeFrequency: 'monthly', priority: 0.75 },
   { url: absoluteUrl('/contact'), changeFrequency: 'monthly', priority: 0.9 },
+  { url: absoluteUrl('/arcade'), changeFrequency: 'monthly', priority: 0.85 },
   { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.3 },
   { url: absoluteUrl('/terms'), changeFrequency: 'yearly', priority: 0.3 },
   { url: absoluteUrl('/feed.xml'), changeFrequency: 'daily', priority: 0.4 },
