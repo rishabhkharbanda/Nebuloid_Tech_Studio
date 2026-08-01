@@ -3,6 +3,7 @@ import { requireSessionUser } from '@/lib/auth/session'
 import { listExperienceServicesCms, upsertExperienceServiceCms } from '@/lib/cms/queries'
 import { apiErrorStatus } from '@/lib/cms/validation'
 import { serviceDetails } from '@/lib/detail-content'
+import { interactiveExperienceSeoBySlug } from '@/lib/interactive-experience-products'
 import { services } from '@/lib/site-data'
 import { hasDatabase } from '@/db/client'
 
@@ -20,6 +21,7 @@ export async function POST() {
     for (const [index, service] of services.entries()) {
       if (existingSlugs.has(service.slug)) continue
       const details = serviceDetails[service.slug]
+      const seo = interactiveExperienceSeoBySlug[service.slug]
       await upsertExperienceServiceCms(null, {
         title: service.title,
         slug: service.slug,
@@ -27,7 +29,7 @@ export async function POST() {
         detail: service.detail,
         tags: [...service.tags],
         imageUrl: service.image,
-        imageAlt: `${service.title} — event experience by Nebuloid Tech Studio`,
+        imageAlt: seo?.imageAlt || `${service.title} — event experience by Nebuloid Tech Studio`,
         intro: details?.intro ?? service.description,
         sections: details?.sections ?? [],
         highlights: details?.highlights ?? [],
@@ -35,9 +37,10 @@ export async function POST() {
         displayOrder: index,
         enabled: true,
         status: 'published',
-        metaTitle: service.title,
-        metaDescription: details?.intro ?? service.description,
-        canonicalPath: `/experiences/${service.slug}`,
+        metaTitle: seo?.metaTitle || service.title,
+        metaDescription: seo?.metaDescription || details?.intro || service.description,
+        focusKeyword: seo?.focusKeyword || '',
+        canonicalPath: seo?.canonicalPath || `/experiences/${service.slug}`,
         ogImageUrl: service.image,
         robotsIndex: true,
         schemaType: 'Service',

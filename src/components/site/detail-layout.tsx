@@ -161,9 +161,17 @@ export function DetailLayout({
                     <BulletList items={section.items} />
                   )
                 ) : (
-                  <p className="mt-4 leading-relaxed text-[#F1E9DB]/65 md:text-lg">
-                    {section.content}
-                  </p>
+                  <div className="mt-4 space-y-4 leading-relaxed text-[#F1E9DB]/65 md:text-lg">
+                    {(section.content || '')
+                      .split(/\n{2,}/)
+                      .map((paragraph) => paragraph.trim())
+                      .filter(Boolean)
+                      .map((paragraph) => (
+                        <p key={paragraph.slice(0, 48)} className="whitespace-pre-line">
+                          {paragraph}
+                        </p>
+                      ))}
+                  </div>
                 )}
               </section>
             ))}

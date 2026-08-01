@@ -38,8 +38,14 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       title: service.metaTitle || service.title,
       description: service.metaDescription || service.intro,
       path: `/experiences/${slug}`,
+      canonicalPath: service.canonicalPath || `/experiences/${slug}`,
       image: service.image,
-      keywords: [...service.tags.map((tag) => tag.toLowerCase()), 'event experience'],
+      keywords: [
+        service.focusKeyword,
+        ...service.tags.map((tag) => tag.toLowerCase()),
+        'event experience',
+        'interactive installation',
+      ].filter((item): item is string => Boolean(item)),
     })
   }
 

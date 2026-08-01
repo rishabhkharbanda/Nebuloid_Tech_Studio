@@ -1,3 +1,5 @@
+import { interactiveExperienceGeoBySlug } from '@/lib/interactive-experience-products'
+
 export type GeoFaq = { question: string; answer: string }
 export type GeoLink = { label: string; href: string }
 
@@ -439,6 +441,7 @@ export const technologyGeoBySlug: Record<string, GeoEnrichment> = {
       ],
     },
   ),
+  ...interactiveExperienceGeoBySlug,
 }
 
 export function getServiceGeo(slug: string) {

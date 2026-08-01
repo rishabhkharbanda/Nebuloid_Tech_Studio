@@ -1,3 +1,5 @@
+import { interactiveExperienceServiceCards } from '@/lib/interactive-experience-products'
+
 export const defaultHeroDescription =
   'Nebuloid designs, builds, and delivers complete event ecosystems — from branding and motion to kiosks, AI experiences, and digital engagement. One partner. One seamless experience.'
 
@@ -254,7 +256,8 @@ export const services = [
     tags: ['Dashboards', 'Lead Capture', 'Analytics', 'Reporting'],
     image: '/assets/site-content/analytics-event-intelligence.jpg',
   },
-] as const
+  ...interactiveExperienceServiceCards,
+]
 
 export const projects = [
   {

@@ -1,3 +1,5 @@
+import { interactiveExperienceServiceDetails } from '@/lib/interactive-experience-products'
+
 export const projectDetails: Record<
   string,
   {
@@ -436,6 +438,7 @@ export const serviceDetails: Record<
       'Automated post-event reporting',
     ],
   },
+  ...interactiveExperienceServiceDetails,
 }
 
 export const blogDetails: Record<
