@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { usePathname, useSearchParams } from 'next/navigation'
 
 const GA_MEASUREMENT_ID =
@@ -21,11 +21,12 @@ declare global {
 
 /**
  * Fires GA4 + Meta Pixel page views on App Router client navigations.
- * Initial page views are handled by the bootstrap scripts.
+ * Initial Meta PageView comes from the <head> base code — skip the first effect run.
  */
 export function AnalyticsRouteListener() {
   const pathname = usePathname()
   const searchParams = useSearchParams()
+  const isFirstMetaPageView = useRef(true)
 
   useEffect(() => {
     const pagePath = `${pathname}${searchParams?.toString() ? `?${searchParams}` : ''}`
@@ -47,7 +48,12 @@ export function AnalyticsRouteListener() {
     }
 
     if (META_PIXEL_ID && typeof window.fbq === 'function') {
-      window.fbq('track', 'PageView')
+      if (isFirstMetaPageView.current) {
+        // Initial PageView is already fired by the <head> base code.
+        isFirstMetaPageView.current = false
+      } else {
+        window.fbq('track', 'PageView')
+      }
     }
   }, [pathname, searchParams])
 
