@@ -8,9 +8,12 @@ export const GA_MEASUREMENT_ID =
 export const GOOGLE_ADS_ID =
   process.env.NEXT_PUBLIC_GOOGLE_ADS_ID?.trim() || 'AW-18308378295'
 
+/** Meta (Facebook) Pixel ID. Overridable via env. */
+export const META_PIXEL_ID =
+  process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim() || '1583262146501649'
+
 const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID?.trim()
 const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID?.trim()
-const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID?.trim()
 const LINKEDIN_PARTNER_ID = process.env.NEXT_PUBLIC_LINKEDIN_PARTNER_ID?.trim()
 
 function googleTagIds() {
@@ -84,26 +87,53 @@ gtag('js', new Date());
   )
 }
 
+/** Meta Pixel bootstrap + PageView. */
+export function MetaPixelTag() {
+  if (!META_PIXEL_ID) return null
+
+  return (
+    <Script id="meta-pixel" strategy="afterInteractive">
+      {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init','${META_PIXEL_ID}');
+fbq('track','PageView');`}
+    </Script>
+  )
+}
+
+/** Noscript fallback required by Meta Pixel install instructions. */
+export function MetaPixelNoscript() {
+  if (!META_PIXEL_ID) return null
+
+  return (
+    <noscript>
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        height={1}
+        width={1}
+        style={{ display: 'none' }}
+        src={`https://www.facebook.com/tr?id=${META_PIXEL_ID}&ev=PageView&noscript=1`}
+        alt=""
+      />
+    </noscript>
+  )
+}
+
 /** Extra marketing pixels. GTM already covers Google tags when GTM_ID is set. */
 export function AnalyticsTags() {
   return (
     <>
+      <MetaPixelTag />
+
       {CLARITY_ID ? (
         <Script id="microsoft-clarity" strategy="lazyOnload">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
 t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
 y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
 })(window, document, "clarity", "script", "${CLARITY_ID}");`}
-        </Script>
-      ) : null}
-
-      {META_PIXEL_ID ? (
-        <Script id="meta-pixel" strategy="lazyOnload">
-          {`!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
-n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
-t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script',
-'https://connect.facebook.net/en_US/fbevents.js');fbq('init','${META_PIXEL_ID}');fbq('track','PageView');`}
         </Script>
       ) : null}
 

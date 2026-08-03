@@ -4,7 +4,7 @@ import { Bebas_Neue, Space_Grotesk, JetBrains_Mono } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
 import { AnalyticsRouteListener } from '@/components/site/analytics-route-listener'
-import { AnalyticsTags, GoogleAnalyticsTag, GtmNoscript } from '@/components/site/analytics-tags'
+import { AnalyticsTags, GoogleAnalyticsTag, GtmNoscript, MetaPixelNoscript } from '@/components/site/analytics-tags'
 import { JsonLd } from '@/components/site/json-ld'
 import { SmoothScrollProvider } from '@/components/site/smooth-scroll-provider'
 import { DeferredCustomCursor } from '@/components/site/deferred-custom-cursor'
@@ -135,6 +135,7 @@ export default function RootLayout({
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
         <GoogleAnalyticsTag />
         <GtmNoscript />
+        <MetaPixelNoscript />
         <AnalyticsTags />
         <Suspense fallback={null}>
           <AnalyticsRouteListener />
