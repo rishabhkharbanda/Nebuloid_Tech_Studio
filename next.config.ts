@@ -76,7 +76,8 @@ const nextConfig: NextConfig = {
     // works without widening XSS / data-exfiltration surface.
     const securityHeaders = [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
-      { key: 'X-Frame-Options', value: 'DENY' },
+      // Do not send X-Frame-Options: DENY — Meta Events Manager Event Setup Tool
+      // embeds the site in an iframe. Framing is controlled via CSP frame-ancestors.
       { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
       {
         key: 'Permissions-Policy',
@@ -95,7 +96,8 @@ const nextConfig: NextConfig = {
           "default-src 'self'",
           "base-uri 'self'",
           "object-src 'none'",
-          "frame-ancestors 'none'",
+          // Allow Meta Event Setup Tool to iframe the site; block other embedders.
+          "frame-ancestors 'self' https://www.facebook.com https://web.facebook.com https://business.facebook.com https://*.facebook.com https://*.meta.com",
           "form-action 'self'",
           'upgrade-insecure-requests',
           // Scripts: first-party + Google tag / GTM / Ads + other marketing vendors.
