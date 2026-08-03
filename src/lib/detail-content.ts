@@ -1,4 +1,15 @@
+import { delhiExpoBlogs2026 } from '@/lib/delhi-expo-blogs-2026'
 import { interactiveExperienceServiceDetails } from '@/lib/interactive-experience-products'
+
+const delhiExpoBlogDetails = Object.fromEntries(
+  delhiExpoBlogs2026.map((post) => [
+    post.slug,
+    {
+      image: post.featuredImageUrl,
+      body: [...post.paragraphs],
+    },
+  ]),
+)
 
 export const projectDetails: Record<
   string,
@@ -448,6 +459,7 @@ export const blogDetails: Record<
     body: string[]
   }
 > = {
+  ...delhiExpoBlogDetails,
   'why-event-branding-starts-before-venue-doors-open': {
     image:
       'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80',

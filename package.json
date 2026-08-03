@@ -10,7 +10,8 @@
     "cms:generate": "drizzle-kit generate",
     "cms:migrate": "drizzle-kit migrate",
     "cms:push": "drizzle-kit push",
-    "cms:seed": "tsx scripts/seed-admin.ts"
+    "cms:seed": "tsx scripts/seed-admin.ts",
+    "cms:seed-delhi-expo-blogs": "tsx scripts/seed-delhi-expo-blogs-2026.ts"
   },
   "dependencies": {
     "@ai-sdk/google": "^4.0.26",

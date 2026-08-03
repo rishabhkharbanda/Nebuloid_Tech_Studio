@@ -1,3 +1,4 @@
+import { delhiExpoBlogs2026, estimateWordCount } from '@/lib/delhi-expo-blogs-2026'
 import { interactiveExperienceServiceCards } from '@/lib/interactive-experience-products'
 
 export const defaultHeroDescription =
@@ -494,7 +495,7 @@ export const testimonials = [
   },
 ] as const
 
-export const blogPosts = [
+const evergreenBlogPosts = [
   {
     slug: 'why-event-branding-starts-before-venue-doors-open',
     title: 'Why Event Branding Starts Before the Venue Doors Open',
@@ -550,6 +551,17 @@ export const blogPosts = [
     readTime: '8 min read',
   },
 ] as const
+
+const delhiExpoBlogPosts = delhiExpoBlogs2026.map((post) => ({
+  slug: post.slug,
+  title: post.title,
+  excerpt: post.excerpt,
+  date: post.displayDate,
+  category: post.category,
+  readTime: `${Math.max(8, Math.ceil(estimateWordCount(post) / 200))} min read`,
+}))
+
+export const blogPosts = [...delhiExpoBlogPosts, ...evergreenBlogPosts]
 
 export const faqs = [
   {
