@@ -127,11 +127,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <head>
+        <MetaPixelHead />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
         <JsonLd
           data={[getOrganizationSchema(), getWebsiteSchema(), getLocalBusinessSchema()]}
         />
-        <MetaPixelHead />
       </head>
       <body className="bg-[#090909] text-[#F1E9DB] antialiased">
         <GoogleAnalyticsTag />

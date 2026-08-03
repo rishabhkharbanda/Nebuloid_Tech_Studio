@@ -74,10 +74,12 @@ const nextConfig: NextConfig = {
   async headers() {
     // Keep allowlists explicit (no broad wildcards for script/frame) so analytics
     // works without widening XSS / data-exfiltration surface.
+    // Intentionally omit X-Frame-Options, frame-ancestors, and COOP on the public
+    // site. Meta Events Manager Event Setup Tool embeds the site in nested
+    // iframes (facebook.com / meta.com / fbcdn). Meta's docs say response
+    // headers that block framing prevent pixel detection in that tool.
     const securityHeaders = [
       { key: 'X-Content-Type-Options', value: 'nosniff' },
-      // Do not send X-Frame-Options: DENY — Meta Events Manager Event Setup Tool
-      // embeds the site in an iframe. Framing is controlled via CSP frame-ancestors.
       { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
       {
         key: 'Permissions-Policy',
@@ -88,16 +90,12 @@ const nextConfig: NextConfig = {
         key: 'Strict-Transport-Security',
         value: 'max-age=63072000; includeSubDomains; preload',
       },
-      // Keep browsing-context isolation without blocking third-party tag verification.
-      { key: 'Cross-Origin-Opener-Policy', value: 'same-origin-allow-popups' },
       {
         key: 'Content-Security-Policy',
         value: [
           "default-src 'self'",
           "base-uri 'self'",
           "object-src 'none'",
-          // Allow Meta Event Setup Tool to iframe the site; block other embedders.
-          "frame-ancestors 'self' https://www.facebook.com https://web.facebook.com https://business.facebook.com https://*.facebook.com https://*.meta.com",
           "form-action 'self'",
           'upgrade-insecure-requests',
           // Scripts: first-party + Google tag / GTM / Ads + other marketing vendors.
@@ -105,9 +103,9 @@ const nextConfig: NextConfig = {
           "style-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://tagmanager.google.com",
           "img-src 'self' data: blob: https:",
           "font-src 'self' data:",
-          // Beacons / XHR used by GA4, Ads, GTM, Clarity, Neon, Blob.
-          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.googletagmanager.com https://tagmanager.google.com https://www.google.com https://google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://googleads.g.doubleclick.net https://td.doubleclick.net https://www.googleadservices.com https://pagead2.googlesyndication.com https://www.clarity.ms https://*.clarity.ms https://connect.facebook.net https://www.facebook.com https://facebook.com https://*.facebook.com https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
-          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://googleads.g.doubleclick.net https://www.googleadservices.com",
+          // Beacons / XHR used by GA4, Ads, GTM, Clarity, Meta, Neon, Blob.
+          "connect-src 'self' https://va.vercel-scripts.com https://vitals.vercel-insights.com https://www.google-analytics.com https://*.google-analytics.com https://analytics.google.com https://*.analytics.google.com https://region1.google-analytics.com https://www.googletagmanager.com https://*.googletagmanager.com https://tagmanager.google.com https://www.google.com https://google.com https://stats.g.doubleclick.net https://ad.doubleclick.net https://googleads.g.doubleclick.net https://td.doubleclick.net https://www.googleadservices.com https://pagead2.googlesyndication.com https://www.clarity.ms https://*.clarity.ms https://connect.facebook.net https://www.facebook.com https://facebook.com https://*.facebook.com https://graph.facebook.com https://*.neon.tech https://*.blob.vercel-storage.com https://*.public.blob.vercel-storage.com",
+          "frame-src 'self' https://www.google.com https://maps.google.com https://www.googletagmanager.com https://td.doubleclick.net https://googleads.g.doubleclick.net https://www.googleadservices.com https://www.facebook.com https://*.facebook.com",
           "media-src 'self' blob:",
           "worker-src 'self' blob:",
         ].join('; '),
@@ -118,6 +116,14 @@ const nextConfig: NextConfig = {
       {
         source: '/:path*',
         headers: securityHeaders,
+      },
+      // Keep the admin app unframeable even though the public site must allow Meta.
+      {
+        source: '/admin/:path*',
+        headers: [
+          { key: 'X-Frame-Options', value: 'DENY' },
+          { key: 'Content-Security-Policy', value: "frame-ancestors 'none'" },
+        ],
       },
       {
         source: '/gone',
