@@ -116,6 +116,11 @@ export function createPageMetadata({
     : absoluteUrl(siteConfig.defaultOgImage)
   const mergedKeywords = [...new Set([...siteConfig.defaultKeywords, ...keywords])]
 
+  const brandSuffix = ` | ${siteConfig.shortName}`
+  const ogTitle = title.endsWith(brandSuffix) || title.includes('| Nebuloid')
+    ? title
+    : `${title}${brandSuffix}`
+
   return {
     title,
     description,
@@ -127,7 +132,7 @@ export function createPageMetadata({
       },
     },
     openGraph: {
-      title: `${title} | ${siteConfig.shortName}`,
+      title: ogTitle,
       description,
       url,
       siteName: siteConfig.name,
@@ -151,7 +156,7 @@ export function createPageMetadata({
     },
     twitter: {
       card: 'summary_large_image',
-      title: `${title} | ${siteConfig.shortName}`,
+      title: ogTitle,
       description,
       images: [ogImage],
     },
@@ -210,7 +215,7 @@ export function getOrganizationSchema() {
 export function getLocalBusinessSchema() {
   return {
     '@context': 'https://schema.org',
-    '@type': 'ProfessionalService',
+    '@type': ['ProfessionalService', 'LocalBusiness'],
     '@id': absoluteUrl('/#localbusiness'),
     name: siteConfig.name,
     url: siteConfig.url,

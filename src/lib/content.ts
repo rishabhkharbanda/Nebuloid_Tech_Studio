@@ -14,6 +14,7 @@ import {
 } from '@/lib/cms/queries'
 import type { PublicDigitalProject, PublicExperienceService, PublicHeroSlide } from '@/lib/cms/types'
 import { digitalProjects } from '@/lib/digital-data'
+import { delhiExpoBlogs2026 } from '@/lib/delhi-expo-blogs-2026'
 import {
   blogPosts,
   defaultHeroDescription,
@@ -154,8 +155,9 @@ function getStaticBlogPostBySlug(slug: string) {
     ...post,
     ...details,
     imageAlt: '',
-    metaTitle: post.title,
-    metaDescription: post.excerpt,
+    metaTitle: 'metaTitle' in post && post.metaTitle ? post.metaTitle : post.title,
+    metaDescription:
+      'metaDescription' in post && post.metaDescription ? post.metaDescription : post.excerpt,
     bodyHtml: '',
     datePublished,
     dateModified: datePublished,
@@ -170,11 +172,38 @@ function getStaticBlogPostBySlug(slug: string) {
   }
 }
 
+const delhiExpoSeoBySlug = new Map(delhiExpoBlogs2026.map((post) => [post.slug, post]))
+
+/** Prefer authored static SEO/images when CMS still has long titles or remote Unsplash URLs. */
+function withDelhiExpoStaticSeo<T extends {
+  slug: string
+  metaTitle: string
+  metaDescription: string
+  image: string
+  imageAlt: string
+  ogImageUrl: string
+  twitterImageUrl: string
+  focusKeyword: string
+}>(post: T): T {
+  const seo = delhiExpoSeoBySlug.get(post.slug)
+  if (!seo) return post
+  return {
+    ...post,
+    metaTitle: seo.metaTitle,
+    metaDescription: seo.metaDescription,
+    image: seo.featuredImageUrl,
+    imageAlt: seo.featuredImageAlt || post.imageAlt,
+    ogImageUrl: seo.featuredImageUrl,
+    twitterImageUrl: seo.featuredImageUrl,
+    focusKeyword: seo.focusKeyword || post.focusKeyword,
+  }
+}
+
 export async function getBlogPostBySlug(slug: string) {
   if (cmsEnabled()) {
     try {
       const cmsPost = await getPublishedBlogBySlug(slug)
-      if (cmsPost) return mapCmsBlogToPublic(cmsPost)
+      if (cmsPost) return withDelhiExpoStaticSeo(mapCmsBlogToPublic(cmsPost))
     } catch {
       // Fall through to static content.
     }
@@ -245,8 +274,9 @@ export async function getBlogPostsForListing() {
       ...post,
       image: details?.image ?? '',
       imageAlt: '',
-      metaTitle: post.title,
-      metaDescription: post.excerpt,
+      metaTitle: 'metaTitle' in post && post.metaTitle ? post.metaTitle : post.title,
+      metaDescription:
+        'metaDescription' in post && post.metaDescription ? post.metaDescription : post.excerpt,
       body: details?.body ?? [],
       bodyHtml: '',
       datePublished,
@@ -266,7 +296,7 @@ export async function getBlogPostsForListing() {
     try {
       const cmsPosts = await getPublishedBlogPostsCms()
       if (cmsPosts.length > 0) {
-        const cmsMapped = cmsPosts.map(mapCmsBlogToPublic)
+        const cmsMapped = cmsPosts.map((post) => withDelhiExpoStaticSeo(mapCmsBlogToPublic(post)))
         const cmsSlugs = new Set(cmsMapped.map((post) => post.slug))
         return [...cmsMapped, ...staticList.filter((post) => !cmsSlugs.has(post.slug))]
       }

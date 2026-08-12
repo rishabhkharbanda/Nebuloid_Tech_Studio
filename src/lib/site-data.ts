@@ -37,8 +37,7 @@ export const heroStates = [
   },
   {
     title: 'Motion Design.',
-    image:
-      'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1920&q=80',
+    image: '/assets/hero/event-graphics.jpg',
     classes:
       'from-[#161022]/60 via-[#2f1b4d]/45 to-[#090909]/70 before:bg-[radial-gradient(circle_at_50%_20%,rgba(229,112,255,.12),transparent_50%)]',
   },
@@ -137,56 +136,49 @@ export const industries = [
     title: 'Entertainment',
     description:
       'Concerts, award nights, launches, and live experiences with stage graphics, LED content, and immersive audience engagement.',
-    image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/led-wall-content.webp',
   },
   {
     slug: 'textile',
     title: 'Textile',
     description:
       'Trade fairs, fashion showcases, and textile exhibitions with interactive booths, digital signage, and lead capture.',
-    image:
-      'https://images.unsplash.com/photo-1558171817-ef7d8f8a9d9e?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/event-branding-creative-production.jpg',
   },
   {
     slug: 'tourism',
     title: 'Tourism',
     description:
       'Destination activations, visitor experiences, and digital platforms that make journeys more engaging and memorable.',
-    image:
-      'https://images.unsplash.com/photo-1488646953014-85c44e702cc0?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/venue-navigation.jpg',
   },
   {
     slug: 'tech',
     title: 'Tech',
     description:
       'Product launches, demo days, and innovation forums with AI activations, kiosks, and high-impact digital layers.',
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/ai-photo-booth.jpg',
   },
   {
     slug: 'agriculture',
     title: 'Agriculture',
     description:
       'Agri expos, farmer outreach, and institutional platforms with clear information design and interactive engagement.',
-    image:
-      'https://images.unsplash.com/photo-1625246333195-78d9c38ad449?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/interactive-installations.jpg',
   },
   {
     slug: 'religious',
     title: 'Religious',
     description:
       'Pilgrimage destinations, cultural gatherings, and sacred spaces enhanced through respectful digital storytelling.',
-    image:
-      'https://images.unsplash.com/photo-1582510001474-0a105357a152?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/digital-signage.jpg',
   },
   {
     slug: 'more-sectors',
     title: 'And More',
     description:
       'Corporate, healthcare, education, government, exhibitions, and emerging sectors — tailored to your audience and protocol.',
-    image:
-      'https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/site-content/touchscreen-kiosk.webp',
   },
 ] as const
 
@@ -462,8 +454,7 @@ export const technologies = [
     title: 'Motion Graphics',
     category: 'Digital',
     tagline: 'Animated content systems for stages, screens, and environments.',
-    image:
-      'https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?auto=format&fit=crop&w=1200&q=80',
+    image: '/assets/hero/event-graphics.jpg',
   },
 ] as const
 
@@ -559,6 +550,8 @@ const delhiExpoBlogPosts = delhiExpoBlogs2026.map((post) => ({
   date: post.displayDate,
   category: post.category,
   readTime: `${Math.max(8, Math.ceil(estimateWordCount(post) / 200))} min read`,
+  metaTitle: post.metaTitle,
+  metaDescription: post.metaDescription,
 }))
 
 export const blogPosts = [...delhiExpoBlogPosts, ...evergreenBlogPosts]
@@ -610,6 +603,10 @@ export const footerLinks = [
   { label: 'Experiences We Offer', href: '/experiences' },
   { label: 'Our Work', href: '/digital-experiences' },
   { label: 'Blogs', href: '/insights' },
+  { label: 'Technology', href: '/technology' },
+  { label: 'Industries', href: '/industries' },
+  { label: 'Process', href: '/process' },
+  { label: 'FAQ', href: '/faq' },
   { label: 'About', href: '/about' },
   { label: 'Contact', href: '/contact' },
 ] as const

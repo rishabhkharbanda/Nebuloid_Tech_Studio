@@ -7,12 +7,16 @@ export const DEFAULT_BLOG_IMAGE = '/assets/site-content/blog-default.jpg'
 const UNUSABLE_IMAGE_RE =
   /cdnasset\.com\/articles\/placeholder\/|\/placeholder\/[^/]+\.(?:png|jpe?g|webp|gif)(?:\?|$)/i
 
+/** Hosted Unsplash URLs often 404 after photo removal — prefer local site assets. */
+const UNUSABLE_REMOTE_HOST_RE = /(?:^|\/\/)(?:images\.)?unsplash\.com\//i
+
 export function isUsableBlogImageUrl(imageUrl?: string | null) {
   const trimmed = imageUrl?.trim()
   if (!trimmed) return false
   const lower = trimmed.toLowerCase()
   if (lower === '#' || lower === 'about:blank' || lower.startsWith('data:,')) return false
   if (UNUSABLE_IMAGE_RE.test(trimmed)) return false
+  if (UNUSABLE_REMOTE_HOST_RE.test(trimmed)) return false
   return true
 }
 

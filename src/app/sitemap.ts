@@ -8,13 +8,13 @@ import {
   getAllTechnologySlugs,
   getBlogPostsForListing,
 } from '@/lib/content'
-import { getAllLocationLandingSlugs, resolveAllLocationLandingSlugs } from '@/lib/location-landings'
+import { resolveAllLocationLandingSlugs } from '@/lib/location-landings'
 import { absoluteUrl } from '@/lib/seo'
 
 const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/'), changeFrequency: 'weekly', priority: 1 },
   { url: absoluteUrl('/about'), changeFrequency: 'monthly', priority: 0.9 },
-  { url: absoluteUrl('/solutions'), changeFrequency: 'weekly', priority: 0.9 },
+  // /solutions permanently redirects to /experiences — do not list redirect sources.
   { url: absoluteUrl('/experiences'), changeFrequency: 'weekly', priority: 0.9 },
   { url: absoluteUrl('/digital-experiences'), changeFrequency: 'weekly', priority: 0.9 },
   { url: absoluteUrl('/capabilities'), changeFrequency: 'weekly', priority: 0.9 },
@@ -27,7 +27,6 @@ const staticRoutes: MetadataRoute.Sitemap = [
   { url: absoluteUrl('/arcade'), changeFrequency: 'monthly', priority: 0.85 },
   { url: absoluteUrl('/privacy'), changeFrequency: 'yearly', priority: 0.3 },
   { url: absoluteUrl('/terms'), changeFrequency: 'yearly', priority: 0.3 },
-  { url: absoluteUrl('/feed.xml'), changeFrequency: 'daily', priority: 0.4 },
 ]
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -60,7 +59,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 0.85,
     })),
     ...serviceSlugs.map((slug) => ({
-      url: absoluteUrl(`/solutions/${slug}`),
+      url: absoluteUrl(`/experiences/${slug}`),
       lastModified: fallbackDate,
       changeFrequency: 'monthly' as const,
       priority: 0.85,
@@ -91,5 +90,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ]
 
-  return [...staticRoutes, ...dynamicRoutes]
+  const seen = new Set<string>()
+  return [...staticRoutes, ...dynamicRoutes].filter((entry) => {
+    if (seen.has(entry.url)) return false
+    seen.add(entry.url)
+    return true
+  })
 }

@@ -461,8 +461,7 @@ export const blogDetails: Record<
 > = {
   ...delhiExpoBlogDetails,
   'why-event-branding-starts-before-venue-doors-open': {
-    image:
-      'https://images.unsplash.com/photo-1561070791-2526d30994b5?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/event-branding-creative-production.jpg',
     body: [
       'The most memorable events do not begin at the venue. They begin the moment an invitation arrives, a social post appears, or a colleague mentions the date. Event branding is the thread that connects these moments into a single feeling — anticipation.',
       'When branding is treated as an afterthought, the event feels assembled rather than designed. Guests notice the disconnect between a polished stage and a generic email. Sponsors feel underrepresented. Teams scramble to produce last-minute assets that never quite match.',
@@ -471,8 +470,7 @@ export const blogDetails: Record<
     ],
   },
   'designing-registration-that-disappears-into-the-experience': {
-    image:
-      'https://images.unsplash.com/photo-1540575467063-178a50c2df87?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/registration-guest-journey.jpg',
     body: [
       'Registration should be invisible. Not because it lacks importance, but because when it works perfectly, guests do not think about it at all — they simply arrive and the event begins.',
       'The friction points are predictable: long queues, manual lookups, badge reprints, and unclear signage. Each one erodes the emotional investment guests brought with them.',
@@ -481,8 +479,7 @@ export const blogDetails: Record<
     ],
   },
   'ai-at-events-beyond-the-photo-booth': {
-    image:
-      'https://images.unsplash.com/photo-1516035069371-29a1b244cc32?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/ai-photo-booth.jpg',
     body: [
       'AI at events is often reduced to a novelty — a photo booth with filters and a queue. But the technology is capable of far more when integrated thoughtfully into the experience ecosystem.',
       'Personalised content delivery, intelligent wayfinding, real-time translation, and adaptive signage are all within reach. The key is designing AI as an invisible layer that enhances human moments rather than replacing them.',
@@ -491,8 +488,7 @@ export const blogDetails: Record<
     ],
   },
   'the-art-of-stage-design-in-corporate-celebrations': {
-    image:
-      'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/led-wall-content.webp',
     body: [
       'The stage is the emotional anchor of any corporate celebration. It is where attention converges, stories are told, and the brand speaks loudest.',
       'Great stage design goes beyond backdrop graphics. It considers sightlines, lighting transitions, motion content timing, and the rhythm of reveal moments that keep an audience of hundreds engaged for hours.',
@@ -501,8 +497,7 @@ export const blogDetails: Record<
     ],
   },
   'experiential-marketing-that-earns-attention-not-just-impressions': {
-    image:
-      'https://images.unsplash.com/photo-1492684223066-81342ee5ff30?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/interactive-installations.jpg',
     body: [
       'Impressions measure exposure. Engagement measures impact. Experiential marketing should aim for the second — creating moments that earn attention rather than buying it.',
       'Interactive installations outperform passive displays at every exhibition because they invite participation. A guest who plays, touches, or creates something carries your brand story out of the venue and into their network.',
@@ -511,8 +506,7 @@ export const blogDetails: Record<
     ],
   },
   'conference-experiences-that-people-actually-remember': {
-    image:
-      'https://images.unsplash.com/photo-1475721027889-d74a52b22810?auto=format&fit=crop&w=1400&q=80',
+    image: '/assets/site-content/event-intelligence-dashboard.jpg',
     body: [
       'Most conferences are well-run. Few are remembered. The difference is not budget — it is intention. Memorable conferences are designed as experiences, not agendas.',
       'The elements that stick are consistent: a strong visual identity, frictionless navigation, moments of surprise, and technology that serves the guest rather than showcasing itself.',

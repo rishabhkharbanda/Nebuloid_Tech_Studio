@@ -17,7 +17,7 @@ export const delhiExpoBlogsBatch2: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'August 2026',
-    metaTitle: 'Delhi Water Expo and Sport India 2026 Activation Ideas | Nebuloid',
+    metaTitle: 'Water Expo and Sport India 2026 Activations',
     metaDescription:
       'Interactive activation ideas for Delhi Water Expo and Sport India 2026, 19 to 21 August, Halls 11 and 12A. Practical guidance for water technology, sports and fitness exhibitors.',
     focusKeyword: 'delhi water expo sport india 2026 activation',
@@ -46,7 +46,7 @@ export const delhiExpoBlogsBatch2: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'August 2026',
-    metaTitle: 'PackPlus 2026 Experiential Marketing Guide | Nebuloid',
+    metaTitle: 'PackPlus 2026 Experiential Marketing Guide',
     metaDescription:
       'How to plan experiential marketing for PackPlus 2026, 19 to 21 August, Hall 5GF. Interactive stand ideas for packaging, printing, logistics and supply chain exhibitors.',
     focusKeyword: 'packplus 2026 experiential marketing',
@@ -75,7 +75,7 @@ export const delhiExpoBlogsBatch2: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'August 2026',
-    metaTitle: 'India Health 2026 Visitor Engagement Guide | Nebuloid',
+    metaTitle: 'India Health 2026 Visitor Engagement Guide',
     metaDescription:
       'Visitor engagement ideas for India Health 2026, 20 to 22 August, Hall 6. Credible interactive formats for medical device, diagnostics and hospital solutions exhibitors.',
     focusKeyword: 'india health 2026 visitor engagement',
@@ -104,7 +104,7 @@ export const delhiExpoBlogsBatch2: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'August 2026',
-    metaTitle: 'Photo Video Asia 2026 Brand Experience Guide | Nebuloid',
+    metaTitle: 'Photo Video Asia 2026 Brand Experiences',
     metaDescription:
       'Brand experience ideas for Photo Video Asia 2026, 29 to 31 August, Halls 12 and 12A. Capture rigs, virtual production and hands-on formats for imaging exhibitors.',
     focusKeyword: 'photo video asia 2026 brand experience',

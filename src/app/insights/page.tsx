@@ -3,6 +3,7 @@ import { JsonLd } from '@/components/site/json-ld'
 import { InsightsListing } from '@/components/site/insights-listing'
 import { PageShell } from '@/components/site/page-shell'
 import { getBlogPostsForListing } from '@/lib/content'
+import { getDefaultBlogImageUrl, resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
 import { createPageMetadata, getBreadcrumbSchema, getItemListSchema } from '@/lib/seo'
 
 /** Keep CMS publishes visible without a full redeploy. */
@@ -30,6 +31,7 @@ export default async function InsightsIndexPage({ searchParams }: PageProps) {
   const posts = await getBlogPostsForListing()
   const params = await searchParams
   const initialCategory = params.category?.trim() || 'All'
+  const defaultImage = await getDefaultBlogImageUrl()
 
   return (
     <PageShell>
@@ -53,16 +55,19 @@ export default async function InsightsIndexPage({ searchParams }: PageProps) {
       />
       <InsightsListing
         initialCategory={initialCategory}
-        posts={posts.map((post) => ({
-          slug: post.slug,
-          title: post.title,
-          excerpt: post.excerpt,
-          date: post.date,
-          category: post.category,
-          readTime: post.readTime,
-          image: post.image || post.ogImageUrl || undefined,
-          imageAlt: post.imageAlt || post.title,
-        }))}
+        posts={posts.map((post) => {
+          const rawImage = post.image || post.ogImageUrl || undefined
+          return {
+            slug: post.slug,
+            title: post.title,
+            excerpt: post.excerpt,
+            date: post.date,
+            category: post.category,
+            readTime: post.readTime,
+            image: resolveBlogImage(rawImage, defaultImage),
+            imageAlt: resolveBlogImageAlt(rawImage, post.imageAlt, post.title),
+          }
+        })}
       />
     </PageShell>
   )

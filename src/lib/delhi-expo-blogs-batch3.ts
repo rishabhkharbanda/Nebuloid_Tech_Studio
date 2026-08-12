@@ -17,7 +17,7 @@ export const delhiExpoBlogsBatch3: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'September 2026',
-    metaTitle: 'IPHEX 2026 Pharma Export Stand Strategy | Nebuloid',
+    metaTitle: 'IPHEX 2026 Pharma Export Stand Strategy',
     metaDescription:
       'How to plan stands, interactive content and lead follow-up for IPHEX 2026, 6 to 8 September, across multiple halls at Bharat Mandapam. Guidance for pharma and healthcare export exhibitors.',
     focusKeyword: 'iphex 2026 pharma export expo',
@@ -46,7 +46,7 @@ export const delhiExpoBlogsBatch3: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'September 2026',
-    metaTitle: 'Bharat Nutraverse Expo 2026 Wellness Activations | Nebuloid',
+    metaTitle: 'Bharat Nutraverse 2026 Wellness Activations',
     metaDescription:
       'Activation guidance for Bharat Health and Bharat Nutraverse Expo 2026, 6 to 8 September, Halls 4FF and 6. Sampling design, personalisation and trade conversion for wellness brands.',
     focusKeyword: 'bharat nutraverse expo 2026 wellness activation',
@@ -75,7 +75,7 @@ export const delhiExpoBlogsBatch3: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'September 2026',
-    metaTitle: 'Sanjeevani 2026 AYUSH and Medical Travel Experience Guide | Nebuloid',
+    metaTitle: 'Sanjeevani 2026 AYUSH Experience Design',
     metaDescription:
       'Experience design guidance for Sanjeevani 2026, 6 and 7 September, Hall 2FF at Bharat Mandapam. AYUSH storytelling, consultation zones and medical value travel conversion.',
     focusKeyword: 'sanjeevani 2026 ayush medical tourism',
@@ -104,7 +104,7 @@ export const delhiExpoBlogsBatch3: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'September 2026',
-    metaTitle: 'Media Expo New Delhi 2026 Signage Stand Guide | Nebuloid',
+    metaTitle: 'Media Expo Delhi 2026 Signage Activations',
     metaDescription:
       'Demonstration, signage and lead conversion guidance for Media Expo New Delhi 2026, 16 to 18 September, Halls 4GF and 5GF at Bharat Mandapam.',
     focusKeyword: 'media expo new delhi 2026 signage',
@@ -133,7 +133,7 @@ export const delhiExpoBlogsBatch3: DelhiExpoBlog[] = [
       'Delhi NCR Exhibitions',
     ],
     displayDate: 'September 2026',
-    metaTitle: 'Delhi Jewellery and Gem Fair 2026 Stand Design Guide | Nebuloid',
+    metaTitle: 'DJGF 2026 Luxury Retail Experience Guide',
     metaDescription:
       'Stand design guidance for the Delhi Jewellery and Gem Fair 2026, 25 to 27 September, Halls 1GF to 5GF at Bharat Mandapam. Lighting, security, viewing rooms and order conversion.',
     focusKeyword: 'delhi jewellery gem fair 2026 stand',
