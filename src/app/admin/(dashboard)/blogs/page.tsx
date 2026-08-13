@@ -5,10 +5,19 @@ import { listBlogPostsCms } from '@/lib/cms/queries'
 import { getDefaultBlogImageUrl, isUsableBlogImageUrl, resolveBlogImage } from '@/lib/blog-image'
 
 export default async function AdminBlogsPage() {
-  const [posts, defaultImage] = await Promise.all([
-    listBlogPostsCms(),
-    getDefaultBlogImageUrl(),
-  ])
+  let posts: Awaited<ReturnType<typeof listBlogPostsCms>> = []
+  let loadError = ''
+  let defaultImage = ''
+
+  try {
+    ;[posts, defaultImage] = await Promise.all([
+      listBlogPostsCms(),
+      getDefaultBlogImageUrl(),
+    ])
+  } catch {
+    loadError =
+      'Could not load blog posts from the database. Check your Neon plan and DATABASE_URL, then refresh.'
+  }
 
   return (
     <div className="space-y-6">
@@ -26,6 +35,12 @@ export default async function AdminBlogsPage() {
           New post
         </Link>
       </div>
+
+      {loadError ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {loadError}
+        </p>
+      ) : null}
 
       <BlogBulkUpload />
 

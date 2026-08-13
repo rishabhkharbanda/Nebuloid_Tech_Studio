@@ -2,7 +2,15 @@ import Link from 'next/link'
 import { listDigitalCardsCms } from '@/lib/cms/queries'
 
 export default async function DigitalExperiencesAdminPage() {
-  const cards = await listDigitalCardsCms(true)
+  let cards: Awaited<ReturnType<typeof listDigitalCardsCms>> = []
+  let loadError = ''
+
+  try {
+    cards = await listDigitalCardsCms(true)
+  } catch {
+    loadError =
+      'Could not load digital experiences from the database. Check your Neon plan and DATABASE_URL, then refresh.'
+  }
 
   return (
     <div className="space-y-6">
@@ -20,6 +28,12 @@ export default async function DigitalExperiencesAdminPage() {
           Add experience
         </Link>
       </div>
+
+      {loadError ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {loadError}
+        </p>
+      ) : null}
 
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
         {cards.length === 0 ? (

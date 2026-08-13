@@ -4,7 +4,15 @@ import { listLocationLandingsCms } from '@/lib/cms/queries'
 import { SeedLocationLandingsButton } from '@/components/admin/seed-location-landings-button'
 
 export default async function AdminLocationLandingsPage() {
-  const pages = await listLocationLandingsCms()
+  let pages: Awaited<ReturnType<typeof listLocationLandingsCms>> = []
+  let loadError = ''
+
+  try {
+    pages = await listLocationLandingsCms()
+  } catch {
+    loadError =
+      'Could not load location landings from the database. Check your Neon plan and DATABASE_URL, then refresh.'
+  }
 
   return (
     <div className="space-y-6">
@@ -25,6 +33,12 @@ export default async function AdminLocationLandingsPage() {
           </Link>
         </div>
       </div>
+
+      {loadError ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {loadError}
+        </p>
+      ) : null}
 
       <LocationLandingBulkUpload />
 

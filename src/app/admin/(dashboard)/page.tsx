@@ -4,9 +4,23 @@ import { hasDatabase } from '@/db/client'
 
 export default async function AdminDashboardPage() {
   const enabled = hasDatabase()
-  const [posts, cards, media] = enabled
-    ? await Promise.all([listBlogPostsCms(), listDigitalCardsCms(true), listMediaAssets()])
-    : [[], [], []]
+  let posts: Awaited<ReturnType<typeof listBlogPostsCms>> = []
+  let cards: Awaited<ReturnType<typeof listDigitalCardsCms>> = []
+  let media: Awaited<ReturnType<typeof listMediaAssets>> = []
+  let loadError = ''
+
+  if (enabled) {
+    try {
+      ;[posts, cards, media] = await Promise.all([
+        listBlogPostsCms(),
+        listDigitalCardsCms(true),
+        listMediaAssets(),
+      ])
+    } catch {
+      loadError =
+        'Could not load CMS stats from the database. Check your Neon plan and DATABASE_URL, then refresh.'
+    }
+  }
 
   const published = posts.filter((p) => p.status === 'published').length
   const drafts = posts.filter((p) => p.status === 'draft').length
@@ -27,6 +41,12 @@ export default async function AdminDashboardPage() {
           Manage website content without changing the public UI.
         </p>
       </div>
+
+      {loadError ? (
+        <p className="rounded-xl border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-900">
+          {loadError}
+        </p>
+      ) : null}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (

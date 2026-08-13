@@ -4,6 +4,8 @@ import { getSessionUser } from '@/lib/auth/session'
 import { AdminSidebar } from '@/components/admin/admin-sidebar'
 import { hasDatabase } from '@/db/client'
 
+export const dynamic = 'force-dynamic'
+
 export default async function AdminDashboardLayout({
   children,
 }: {
