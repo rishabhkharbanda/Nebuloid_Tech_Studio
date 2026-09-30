@@ -3,6 +3,7 @@ import { requireSessionUser } from '@/lib/auth/session'
 import { upsertSiteSettings } from '@/lib/cms/site-settings'
 import { apiErrorStatus } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function GET() {
   try {
@@ -39,6 +40,7 @@ export async function PUT(request: Request) {
       whatsappMessage: body.whatsappMessage ?? '',
       defaultBlogImageUrl: body.defaultBlogImageUrl ?? '',
     })
+    refreshPublicSite()
     return NextResponse.json(settings)
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

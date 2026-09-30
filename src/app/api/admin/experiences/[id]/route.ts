@@ -7,6 +7,7 @@ import {
 } from '@/lib/cms/queries'
 import { apiErrorStatus, experienceServiceInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -33,6 +34,7 @@ export async function PUT(request: Request, context: Ctx) {
     const body = await request.json()
     const input = parseWithZod(experienceServiceInputSchema, body)
     const service = await upsertExperienceServiceCms(id, input)
+    refreshPublicSite()
     return NextResponse.json({ service })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)
@@ -45,6 +47,7 @@ export async function DELETE(_request: Request, context: Ctx) {
     await requireSessionUser(['admin'])
     const { id } = await context.params
     await deleteExperienceServiceCms(id)
+    refreshPublicSite()
     return NextResponse.json({ ok: true })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

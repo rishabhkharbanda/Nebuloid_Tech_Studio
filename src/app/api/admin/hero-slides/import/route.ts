@@ -4,6 +4,7 @@ import { listHeroSlidesCms, upsertHeroSlideCms } from '@/lib/cms/queries'
 import { apiErrorStatus } from '@/lib/cms/validation'
 import { defaultHeroDescription, heroStates } from '@/lib/site-data'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function POST() {
   try {
@@ -31,6 +32,7 @@ export async function POST() {
       imported += 1
     }
 
+    refreshPublicSite()
     return NextResponse.json({ imported })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

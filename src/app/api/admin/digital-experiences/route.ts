@@ -12,6 +12,7 @@ import {
   reorderDigitalSchema,
 } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function GET() {
   try {
@@ -37,11 +38,13 @@ export async function POST(request: Request) {
     if (Array.isArray(body.orderedIds)) {
       const { orderedIds } = parseWithZod(reorderDigitalSchema, body)
       await reorderDigitalCardsCms(orderedIds)
+      refreshPublicSite()
       const cards = await listDigitalCardsCms(true)
       return NextResponse.json({ cards })
     }
     const input = parseWithZod(digitalCardInputSchema, body)
     const card = await upsertDigitalCardCms(null, input)
+    refreshPublicSite()
     return NextResponse.json({ card })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

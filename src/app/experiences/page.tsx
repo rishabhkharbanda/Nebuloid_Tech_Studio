@@ -23,7 +23,7 @@ export const metadata: Metadata = createPageMetadata({
   ],
 })
 
-export const revalidate = 60
+export const revalidate = 86400
 
 export default async function ExperiencesIndexPage() {
   const services = await getExperienceServices()

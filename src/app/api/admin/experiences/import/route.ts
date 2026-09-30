@@ -6,6 +6,7 @@ import { serviceDetails } from '@/lib/detail-content'
 import { interactiveExperienceSeoBySlug } from '@/lib/interactive-experience-products'
 import { services } from '@/lib/site-data'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function POST() {
   try {
@@ -48,6 +49,7 @@ export async function POST() {
       imported += 1
     }
 
+    refreshPublicSite()
     return NextResponse.json({ imported })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server'
 import {
-  getAllBlogSlugs,
-  getBlogPostsForListing,
-  getDigitalExperienceCards,
-  getExperienceServices,
-} from '@/lib/content'
+  getBlogPostsForListingCached,
+  getDigitalExperienceCardsCached,
+  getExperienceServicesCached,
+} from '@/lib/cms/cached-content'
 import {
   filterSearchResults,
   mergeSearchResults,
@@ -13,8 +12,6 @@ import {
 } from '@/lib/search-index'
 import { digitalProjects } from '@/lib/digital-data'
 import { projects } from '@/lib/site-data'
-
-export const revalidate = 60
 
 function projectResults(): SearchResult[] {
   return projects.map((project) => ({
@@ -25,7 +22,7 @@ function projectResults(): SearchResult[] {
   }))
 }
 
-function digitalResults(cards: Awaited<ReturnType<typeof getDigitalExperienceCards>>): SearchResult[] {
+function digitalResults(cards: Awaited<ReturnType<typeof getDigitalExperienceCardsCached>>): SearchResult[] {
   if (cards.length) {
     return cards.map((card) => ({
       title: card.title,
@@ -48,9 +45,9 @@ export async function GET(request: Request) {
   const limit = Math.min(Number(searchParams.get('limit') ?? 8), 20)
 
   const [blogs, digitalCards, experienceServices] = await Promise.all([
-    getBlogPostsForListing(),
-    getDigitalExperienceCards(),
-    getExperienceServices(),
+    getBlogPostsForListingCached(),
+    getDigitalExperienceCardsCached(),
+    getExperienceServicesCached(),
   ])
 
   const serviceResults: SearchResult[] = experienceServices.map((service) => ({
@@ -74,9 +71,6 @@ export async function GET(request: Request) {
     digitalResults(digitalCards),
     blogResults,
   )
-
-  // Warm blog slugs cache for generateStaticParams parity (no-op side effect ok)
-  void getAllBlogSlugs()
 
   return NextResponse.json({
     results: filterSearchResults(index, q, limit),

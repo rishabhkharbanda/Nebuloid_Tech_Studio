@@ -4,6 +4,7 @@ import { listBlogPostsCms, upsertBlogPostCms } from '@/lib/cms/queries'
 import { analyzeBlogSeo } from '@/lib/cms/seo-analyzer'
 import { apiErrorStatus, blogInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function GET() {
   try {
@@ -45,6 +46,7 @@ export async function POST(request: Request) {
       ogImageUrl: post.ogImageUrl || post.featuredImageUrl,
       robotsIndex: post.robotsIndex,
     })
+    refreshPublicSite()
     return NextResponse.json({ post, seo })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

@@ -1,7 +1,7 @@
 import { getBlogPostsForListing } from '@/lib/content'
 import { absoluteUrl, siteConfig } from '@/lib/seo'
 
-export const revalidate = 60
+export const revalidate = 86400
 
 function escapeXml(value: string) {
   return value

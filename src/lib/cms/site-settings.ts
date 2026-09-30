@@ -1,5 +1,7 @@
+import { unstable_cache } from 'next/cache'
 import { eq } from 'drizzle-orm'
 import { getDb, hasDatabase } from '@/db/client'
+import { CMS_CACHE_TAG, ONE_DAY_IN_SECONDS } from '@/lib/cms/cache-config'
 import { siteSettings, type SiteSettings } from '@/db/schema'
 
 export const SITE_SETTINGS_ID = 'default'
@@ -64,7 +66,7 @@ export function mapSiteSettings(row: SiteSettings | null | undefined): PublicSit
   }
 }
 
-export async function getSiteSettings(): Promise<PublicSiteSettings> {
+async function loadSiteSettings(): Promise<PublicSiteSettings> {
   if (!hasDatabase()) return DEFAULTS
   try {
     const db = getDb()
@@ -78,6 +80,11 @@ export async function getSiteSettings(): Promise<PublicSiteSettings> {
     return DEFAULTS
   }
 }
+export const getSiteSettings = unstable_cache(loadSiteSettings, ['site-settings'], {
+  revalidate: ONE_DAY_IN_SECONDS,
+  tags: [CMS_CACHE_TAG],
+})
+
 
 export async function upsertSiteSettings(input: {
   whatsappEnabled: boolean

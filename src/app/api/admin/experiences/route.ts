@@ -12,6 +12,7 @@ import {
   reorderExperienceServicesSchema,
 } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function GET() {
   try {
@@ -37,11 +38,13 @@ export async function POST(request: Request) {
     if (Array.isArray(body.orderedIds)) {
       const { orderedIds } = parseWithZod(reorderExperienceServicesSchema, body)
       await reorderExperienceServicesCms(orderedIds)
+      refreshPublicSite()
       const services = await listExperienceServicesCms(true)
       return NextResponse.json({ services })
     }
     const input = parseWithZod(experienceServiceInputSchema, body)
     const service = await upsertExperienceServiceCms(null, input)
+    refreshPublicSite()
     return NextResponse.json({ service })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

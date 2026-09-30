@@ -7,6 +7,7 @@ import {
 } from '@/lib/cms/queries'
 import { apiErrorStatus, locationLandingInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 import { locationLandings } from '@/lib/location-landings'
 
 export async function GET() {
@@ -29,10 +30,12 @@ export async function POST(request: Request) {
     const body = await request.json()
     if (body?.action === 'seed-defaults') {
       const pages = await seedLocationLandingsFromStatic(locationLandings)
+      refreshPublicSite()
       return NextResponse.json({ pages })
     }
     const input = parseWithZod(locationLandingInputSchema, body)
     const page = await upsertLocationLandingCms(null, input)
+    refreshPublicSite()
     return NextResponse.json({ page })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

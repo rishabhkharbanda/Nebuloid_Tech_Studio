@@ -23,7 +23,7 @@ type PageProps = {
 }
 
 /** Keep CMS publishes visible without a full redeploy. */
-export const revalidate = 60
+export const revalidate = 86400
 export const dynamicParams = true
 
 export async function generateStaticParams() {

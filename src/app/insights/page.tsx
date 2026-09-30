@@ -2,12 +2,12 @@ import type { Metadata } from 'next'
 import { JsonLd } from '@/components/site/json-ld'
 import { InsightsListing } from '@/components/site/insights-listing'
 import { PageShell } from '@/components/site/page-shell'
-import { getBlogPostsForListing } from '@/lib/content'
+import { getBlogPostsForListingCached } from '@/lib/cms/cached-content'
 import { getDefaultBlogImageUrl, resolveBlogImage, resolveBlogImageAlt } from '@/lib/blog-image'
 import { createPageMetadata, getBreadcrumbSchema, getItemListSchema } from '@/lib/seo'
 
 /** Keep CMS publishes visible without a full redeploy. */
-export const revalidate = 60
+export const revalidate = 86400
 
 export const metadata: Metadata = createPageMetadata({
   title: 'Event Industry Insights',
@@ -28,7 +28,7 @@ type PageProps = {
 }
 
 export default async function InsightsIndexPage({ searchParams }: PageProps) {
-  const posts = await getBlogPostsForListing()
+  const posts = await getBlogPostsForListingCached()
   const params = await searchParams
   const initialCategory = params.category?.trim() || 'All'
   const defaultImage = await getDefaultBlogImageUrl()

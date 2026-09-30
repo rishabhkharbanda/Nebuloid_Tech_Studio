@@ -8,6 +8,7 @@ import {
   parseWithZod,
 } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function POST(request: Request) {
   try {
@@ -65,6 +66,7 @@ export async function POST(request: Request) {
       }
     }
 
+    refreshPublicSite()
     return NextResponse.json({
       ok: failed.length === 0,
       savedCount: saved.length,

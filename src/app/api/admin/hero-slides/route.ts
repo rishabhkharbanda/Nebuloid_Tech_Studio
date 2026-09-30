@@ -12,6 +12,7 @@ import {
   reorderHeroSlidesSchema,
 } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 export async function GET() {
   try {
@@ -37,11 +38,13 @@ export async function POST(request: Request) {
     if (Array.isArray(body.orderedIds)) {
       const { orderedIds } = parseWithZod(reorderHeroSlidesSchema, body)
       await reorderHeroSlidesCms(orderedIds)
+      refreshPublicSite()
       const slides = await listHeroSlidesCms(true)
       return NextResponse.json({ slides })
     }
     const input = parseWithZod(heroSlideInputSchema, body)
     const slide = await upsertHeroSlideCms(null, input)
+    refreshPublicSite()
     return NextResponse.json({ slide })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

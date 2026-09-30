@@ -8,6 +8,7 @@ import {
 import { analyzeBlogSeo } from '@/lib/cms/seo-analyzer'
 import { apiErrorStatus, blogInputSchema, parseWithZod } from '@/lib/cms/validation'
 import { hasDatabase } from '@/db/client'
+import { refreshPublicSite } from '@/lib/cms/refresh-site'
 
 type Ctx = { params: Promise<{ id: string }> }
 
@@ -48,6 +49,7 @@ export async function PUT(request: Request, context: Ctx) {
     const body = await request.json()
     const input = parseWithZod(blogInputSchema, body)
     const post = await upsertBlogPostCms(id, input)
+    refreshPublicSite()
     const seo = analyzeBlogSeo({
       title: post.title,
       slug: post.slug,
@@ -74,6 +76,7 @@ export async function DELETE(_request: Request, context: Ctx) {
     await requireSessionUser(['admin'])
     const { id } = await context.params
     await deleteBlogPostCms(id)
+    refreshPublicSite()
     return NextResponse.json({ ok: true })
   } catch (error) {
     const { status, message } = apiErrorStatus(error)

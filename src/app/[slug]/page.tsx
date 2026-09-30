@@ -19,7 +19,7 @@ type PageProps = { params: Promise<{ slug: string }> }
 
 /** Known static landings always build; CMS-only slugs resolve at request time. */
 export const dynamicParams = true
-export const revalidate = 60
+export const revalidate = 86400
 
 export async function generateStaticParams() {
   return getAllLocationLandingSlugs().map((slug) => ({ slug }))
