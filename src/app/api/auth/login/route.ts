@@ -53,7 +53,14 @@ export async function POST(request: Request) {
     return NextResponse.json({ ok: true, user: sessionUser })
   } catch (error) {
     console.error('admin login failed', error)
-    const detail = error instanceof Error ? error.message : 'Unknown error'
+    // Drizzle wraps driver errors as "Failed query: ..."; the real reason is in `cause`.
+    const cause = error instanceof Error ? error.cause : undefined
+    const detail =
+      cause instanceof Error
+        ? cause.message
+        : error instanceof Error
+          ? error.message
+          : 'Unknown error'
     return NextResponse.json(
       { error: `Unable to sign in. ${detail}` },
       { status: 500 },
